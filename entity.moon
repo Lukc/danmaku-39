@@ -44,6 +44,9 @@ class
 		dx = @speed * math.cos @angle
 		dy = @speed * math.sin @angle
 
+		if @frame >= 60 * 60 * 2 and not @isPlayer
+			@readyForRemoval = true
+
 		if @dying
 			@dyingFrame += 1
 
