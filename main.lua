@@ -1,0 +1,5 @@
+
+require "moonscript"
+
+require "game"
+
