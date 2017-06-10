@@ -44,8 +44,6 @@ class
 		@\onDraw!
 
 	update: =>
-		@frame += 1
-
 		dx = @speed * math.cos @angle
 		dy = @speed * math.sin @angle
 
@@ -75,6 +73,8 @@ class
 
 		if @outOfScreenTime >= 30
 			@readyForRemoval = true
+
+		@frame += 1
 
 	collides: (x, ...) =>
 		unless @touchable

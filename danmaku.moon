@@ -101,5 +101,7 @@ class
 
 		entity.game = self
 
+		entity\update!
+
 	__tostring: => "<Danmaku: frame #{@frame}>"
 

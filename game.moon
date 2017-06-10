@@ -30,7 +30,27 @@ love.load = ->
 						radius: 7
 						x: danmaku.width / 2
 						y: danmaku.height / 5
+						draw: =>
+							love.graphics.setColor 15, 255, 15
+							love.graphics.circle "line", @x, @y, @radius + 6
+
+							love.graphics.setColor 31, 255, 31
+							love.graphics.circle "line", @x, @y, @radius + 8
+
+							love.graphics.setColor 63, 255, 63
+							love.graphics.circle "line", @x, @y, @radius + 10
 						update: =>
+							if @frame == 0
+								@\setBoss
+									name: "???"
+									lives: 999
+							elseif @frame == 60
+								@\setBoss
+									name: "Mi~mi~midori~"
+									lives: 42
+							elseif @frame < 60
+								return
+
 							draw = =>
 								if @dying
 									c = 255 - (@dyingFrame / @dyingTime) * 255
