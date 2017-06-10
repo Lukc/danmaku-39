@@ -55,9 +55,11 @@ class extends Enemy
 
 		if @firing
 			if @firingFrame == false
-				@firingFrame = 0
+				@firingFrame = -1
 
 			@firingFrame += 1
+		else
+			@firingFrame = false
 
 		if @dying
 			@dyingFrame += 1
