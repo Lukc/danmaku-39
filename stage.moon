@@ -18,14 +18,14 @@ class
 		@boss = nil -- For reference.
 
 	-- game: Danmaku
-	update: (game) =>
+	update: =>
 		@frame += 1
 
 		if @frameEvents[@frame]
-			@frameEvents[@frame] game, self
+			@frameEvents[@frame] @game, self
 
 		if @onUpdate
-			@.onUpdate game, self
+			@.onUpdate @game, self
 
 		if @boss
 			entity = @boss.entity
@@ -33,20 +33,18 @@ class
 			if entity.readyForRemoval
 				@boss = nil
 
-	draw: (game, where) =>
-		{:x, :y} = where
-
+	draw: =>
 		if @frame <= 90
 			love.graphics.setColor 200, 200, 200
-			love.graphics.print @title, x + 40, y
-			love.graphics.print @subtitle, x + 40, y + 20
+			love.graphics.print @title, 40, 0
+			love.graphics.print @subtitle, 40,  20
 
 		if @boss
 			font = love.graphics.getFont!
 
 			love.graphics.setColor 255, 255, 255
 			love.graphics.print @boss.name,
-				game.width - font\getWidth(@boss.name) - 20, y + 20
+				@game.width - font\getWidth(@boss.name) - 20, 20
 
 	setBoss: (data) =>
 		@boss = data

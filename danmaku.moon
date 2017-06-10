@@ -23,6 +23,7 @@ class
 		@entities = {}
 
 		@currentStage = arg.stage
+		@currentStage.game = self
 
 		@frame = 0
 
@@ -102,6 +103,8 @@ class
 		entity.game = self
 
 		entity\update!
+
+		entity
 
 	__tostring: => "<Danmaku: frame #{@frame}>"
 

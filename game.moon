@@ -10,6 +10,7 @@ Stage = require "stage"
 local danmaku
 
 love.load = ->
+	local testBullet
 	danmaku = Danmaku
 		stage: Stage {
 			title: "A Stage for Testers"
@@ -23,6 +24,17 @@ love.load = ->
 					y: 0
 					angle: math.pi / 3
 					speed: 2.5
+				testBullet = @\addEntity Bullet
+					hitbox: Entity.Rectangle
+					w: 130
+					h: 50
+					angle: math.pi / 5
+					x: @width * 4 / 5
+					y: @height / 2
+					angle: math.pi * 2 / 3
+					speed: 0
+					update: =>
+						@angle += math.pi / 2400
 
 			update: =>
 				if @frame == 60
@@ -60,19 +72,30 @@ love.load = ->
 
 								love.graphics.circle "line", @x, @y, @radius + 2
 
-							if (@frame % 20) == 0
-								@\fire
-									speed: 3
-									radius: 3
-									:draw
-
-							if @frame == 1
+							if @frame % 750 == 0
 								for i = 1, 800
+									local color
+
 									@\fire
-										speed: 1 + math.random!
+										speed: 0.1 + math.random! * 3
 										angle: math.pi * 2 * math.random!
-										radius: 3
+										radius: math.random 2, 15
 										:draw
+										draw: =>
+											love.graphics.setColor color
+											love.graphics.circle "line",
+												@x, @y, @radius
+										update: =>
+											dist = math.sqrt 0 +
+												(testBullet.x-@x)^2 +
+												(testBullet.y-@y)^2
+											collides = dist < 200 and
+												@\collides testBullet
+
+											if collides
+												color = {63, 63, 255}
+											else
+												color = {255, 255, 255}
 		}
 
 	danmaku\addEntity Player
