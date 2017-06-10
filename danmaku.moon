@@ -27,6 +27,10 @@ class
 		@frame = 0
 
 	draw: =>
+		oldCanvas = love.graphics.getCanvas!
+		canvas = love.graphics.newCanvas @width, @height
+		love.graphics.setCanvas canvas
+
 		love.graphics.rectangle "line", @x + 0.5, @y + 0.5, @width - 1, @height - 1
 
 		for collection in *{@players, @enemies, @playerBullets, @bullets}
@@ -39,6 +43,9 @@ class
 			@currentStage\draw self,
 				x: @x
 				y: @y
+
+		love.graphics.setCanvas oldCanvas
+		love.graphics.draw canvas, @x, @y
 
 	update: =>
 		@frame += 1
@@ -61,7 +68,6 @@ class
 					bullet\inflictDamage 1, "collision"
 
 		for bullet in *@playerBullets
-			print bullet
 			for enemy in *@enemies
 				if bullet\collides enemy
 					enemy\inflictDamage bullet.damage, bullet.damageType
