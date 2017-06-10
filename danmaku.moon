@@ -22,6 +22,10 @@ class
 		-- Should contain all of the above, or something like that.
 		@entities = {}
 
+		@currentStage = arg.stage
+
+		@frame = 0
+
 	draw: =>
 		love.graphics.rectangle "line", @x + 0.5, @y + 0.5, @width - 1, @height - 1
 
@@ -31,7 +35,17 @@ class
 					x: @x
 					y: @y
 
+		if @currentStage
+			@currentStage\draw self,
+				x: @x
+				y: @y
+
 	update: =>
+		@frame += 1
+
+		if @currentStage
+			@currentStage\update self
+
 		for entity in *@entities
 			entity\update!
 
@@ -80,4 +94,6 @@ class
 		table.insert @entities, entity
 
 		entity.game = self
+
+	__tostring: => "<Danmaku: frame #{@frame}>"
 
