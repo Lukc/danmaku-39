@@ -19,6 +19,7 @@ class
 		@frame = 0
 
 		@onUpdate = arg.update
+		@onDraw = arg.draw or ->
 
 		@dx, @dy = 0, 0
 
@@ -29,9 +30,9 @@ class
 
 		@outOfScreenTime = 0
 
-	draw: (r) =>
-		x = r.x + @x
-		y = r.y + @y
+	draw: =>
+		x = @x
+		y = @y
 
 		if @dying
 			love.graphics.setColor 255, 0, 0
@@ -39,6 +40,8 @@ class
 			love.graphics.setColor 255, 255, 255
 
 		love.graphics.circle "line", x, y, @radius
+
+		@\onDraw!
 
 	update: =>
 		@frame += 1

@@ -27,13 +27,24 @@ love.load = ->
 			update: =>
 				if @frame == 60
 					@\addEntity Enemy
+						radius: 7
 						x: danmaku.width / 2
 						y: danmaku.height / 5
 						update: =>
+							draw = =>
+								if @dying
+									c = 255 - (@dyingFrame / @dyingTime) * 255
+									love.graphics.setColor 255, 255, 255, c
+								else
+									love.graphics.setColor 255, 255, 255
+
+								love.graphics.circle "line", @x, @y, @radius + 2
+
 							if (@frame % 20) == 0
 								@\fire
 									speed: 3
 									radius: 3
+									:draw
 
 							if @frame == 1
 								for i = 1, 800
@@ -41,6 +52,7 @@ love.load = ->
 										speed: 1 + math.random!
 										angle: math.pi * 2 * math.random!
 										radius: 3
+										:draw
 		}
 
 	danmaku\addEntity Player
@@ -49,9 +61,13 @@ love.load = ->
 		y: danmaku.height * 4 / 5
 		update: =>
 			if @firingFrame and @firingFrame % 8 == 0
-				@\fire
-					angle: -math.pi/2
-					speed: 5
+				for i = -1, 1, 2
+					@\fire
+						angle: -math.pi/2
+						speed: 5
+						x: @x + 8 * i
+						y: @y - 5
+						radius: 3
 
 
 love.draw = ->
