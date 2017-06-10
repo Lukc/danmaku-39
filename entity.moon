@@ -27,6 +27,8 @@ class
 		@dyingTime = 60 * 0.5
 		@readyForRemoval = false
 
+		@outOfScreenTime = 0
+
 	draw: (r) =>
 		x = r.x + @x
 		y = r.y + @y
@@ -58,6 +60,18 @@ class
 
 		@x += dx
 		@y += dy
+
+		if @x + @radius < 0
+			@outOfScreenTime += 1
+		elseif @y + @radius < 0
+			@outOfScreenTime += 1
+		elseif @x - @radius > @game.width
+			@outOfScreenTime += 1
+		elseif @y - @radius > @game.height
+			@outOfScreenTime += 1
+
+		if @outOfScreenTime >= 30
+			@readyForRemoval = true
 
 	collides: (x, ...) =>
 		unless @touchable
