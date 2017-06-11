@@ -1,6 +1,6 @@
 
-Entity = require "entity"
-Bullet = require "bullet"
+Entity = require "danmaku.entity"
+Bullet = require "danmaku.bullet"
 
 class extends Entity
 	fire: (data) =>

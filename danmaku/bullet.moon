@@ -1,5 +1,5 @@
 
-Entity = require "entity"
+Entity = require "danmaku.entity"
 
 class extends Entity
 	new: (arg) =>

@@ -1,5 +1,5 @@
 
-Enemy = require "enemy"
+Enemy = require "danmaku.enemy"
 
 class extends Enemy
 	new: (arg) =>
