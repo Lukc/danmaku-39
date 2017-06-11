@@ -34,18 +34,21 @@ class
 
 		love.graphics.rectangle "line", @x + 0.5, @y + 0.5, @width - 1, @height - 1
 
+		if @currentStage
+			@currentStage\drawBackground self
+
+			love.graphics.setColor 255, 255, 255, 255
+
 		for collection in *{@players, @enemies, @playerBullets, @bullets}
 			for entity in *collection
-				entity\draw
-					x: @x
-					y: @y
+				entity\draw!
 
 		if @currentStage
-			@currentStage\draw self,
-				x: @x
-				y: @y
+			@currentStage\draw self
 
 		love.graphics.setCanvas oldCanvas
+
+		love.graphics.setColor 255, 255, 255
 		love.graphics.draw canvas, @x, @y
 
 	update: =>

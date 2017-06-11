@@ -17,6 +17,21 @@ class
 
 		@boss = nil -- For reference.
 
+		@onDrawBackground = arg.drawBackground
+		@onDraw = arg.draw
+
+		@drawTitle = arg.drawTitle or =>
+			love.graphics.setColor 200, 200, 200
+			love.graphics.print @title, 40, 0
+			love.graphics.print @subtitle, 40,  20
+
+		@drawBossData = arg.drawBossData or =>
+			font = love.graphics.getFont!
+
+			love.graphics.setColor 255, 255, 255
+			love.graphics.print @boss.name,
+				@game.width - font\getWidth(@boss.name) - 20, 20
+
 	-- game: Danmaku
 	update: =>
 		@frame += 1
@@ -33,18 +48,20 @@ class
 			if entity.readyForRemoval
 				@boss = nil
 
+	drawBackground: =>
+		if @onDrawBackground
+			@\onDrawBackground!
+
 	draw: =>
-		if @frame <= 90
-			love.graphics.setColor 200, 200, 200
-			love.graphics.print @title, 40, 0
-			love.graphics.print @subtitle, 40,  20
+		-- FIXME: There are constants that should be configurable, here…
+		if @frame <= 180
+			@\drawTitle!
 
 		if @boss
-			font = love.graphics.getFont!
+			@\drawBossData!
 
-			love.graphics.setColor 255, 255, 255
-			love.graphics.print @boss.name,
-				@game.width - font\getWidth(@boss.name) - 20, 20
+		if @onDraw
+			@\onDraw!
 
 	setBoss: (data) =>
 		@boss = data

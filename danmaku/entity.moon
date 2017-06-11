@@ -28,7 +28,7 @@ class
 		@frame = 0
 
 		@onUpdate = arg.update
-		@onDraw = arg.draw or ->
+		@onDraw = arg.draw
 
 		@dx, @dy = 0, 0
 
@@ -43,30 +43,32 @@ class
 		x = @x
 		y = @y
 
-		if @dying
-			love.graphics.setColor 255, 0, 0
-		else
-			love.graphics.setColor 255, 255, 255
+		if @game.debug or not @onDraw
+			if @dying
+				love.graphics.setColor 255, 0, 0
+			else
+				love.graphics.setColor 255, 255, 255
 
-		if @hitboxType == @@Circle
-			love.graphics.circle "line", x, y, @radius
-		elseif @hitboxType == @@Rectangle
-			w, h = @width, @height
-			d = math.sqrt((w/2)^2 + (h/2)^2)
-			a = @angle
+			if @hitboxType == @@Circle
+				love.graphics.circle "line", x, y, @radius
+			elseif @hitboxType == @@Rectangle
+				w, h = @width, @height
+				d = math.sqrt((w/2)^2 + (h/2)^2)
+				a = @angle
 
-			a1 = a + math.atan2(-h/2, -w/2)
-			a2 = a + math.atan2(h/2, -w/2)
-			a3 = a + math.atan2(h/2, w/2)
-			a4 = a + math.atan2(-h/2, w/2)
+				a1 = a + math.atan2(-h/2, -w/2)
+				a2 = a + math.atan2(h/2, -w/2)
+				a3 = a + math.atan2(h/2, w/2)
+				a4 = a + math.atan2(-h/2, w/2)
 
-			love.graphics.polygon "line",
-				x + d * math.cos(a1), y + d * math.sin(a1),
-				x + d * math.cos(a2), y + d * math.sin(a2),
-				x + d * math.cos(a3), y + d * math.sin(a3),
-				x + d * math.cos(a4), y + d * math.sin(a4)
+				love.graphics.polygon "line",
+					x + d * math.cos(a1), y + d * math.sin(a1),
+					x + d * math.cos(a2), y + d * math.sin(a2),
+					x + d * math.cos(a3), y + d * math.sin(a3),
+					x + d * math.cos(a4), y + d * math.sin(a4)
 
-		@\onDraw!
+		if @onDraw
+			@\onDraw!
 
 	update: =>
 		dx = @speed * math.cos @angle
