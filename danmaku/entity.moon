@@ -108,6 +108,10 @@ class
 		@frame += 1
 
 	collides: (x, ...) =>
+		if not self.touchable or not x.touchable
+			print self, x
+			print self.touchable, x.touchable
+
 		unless @touchable
 			return false
 		unless x.touchable
@@ -173,10 +177,13 @@ class
 		@health -= amount
 
 		if @health <= 0
-			@health = 0
+			@\die!
 
-			@dying = true
-			@touchable = false
+	die: =>
+		@health = 0
+
+		@dying = true
+		@touchable = false
 
 	__tostring: => "<Entity: frame #{@frame}>"
 

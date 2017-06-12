@@ -113,7 +113,7 @@ stage1 = Stage {
 				color: {255, 0, 0}
 
 				update: =>
-					@dying = true if @frame > 20
+					@\die! if @frame > 20
 
 	[1]: =>
 		testBullet = @\addEntity Bullet
