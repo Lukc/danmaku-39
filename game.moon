@@ -30,6 +30,10 @@ love.load = ->
 						x: @x + 8 * i
 						y: @y - 5
 						radius: 3
+		bomb: (game) =>
+			print "Bombing… NAO"
+		death: =>
+			print "Lost a life, right about now."
 
 	-- Mostly serves to print entity hitboxes.
 	danmaku.debug = false
@@ -44,11 +48,23 @@ love.draw = ->
 	love.graphics.print "#{love.timer.getFPS!} FPS", w + 10, 10
 	love.graphics.print "#{#danmaku.entities} entities", w + 10, 30
 
+	for k, player in ipairs danmaku.players
+		for i = 1, player.lives
+			love.graphics.rectangle "line", w + 20 * i - 10, 20 + k * 40,
+				15, 15
+		for i = 1, player.bombs
+			love.graphics.rectangle "line", w + 20 * i - 10, 40 + k * 40,
+				15, 15
+
 love.update = (dt) ->
-	for key in *{"left", "right", "up", "down"}
-		danmaku.players[1].movement[key] = love.keyboard.isDown key
-	danmaku.players[1].firing = love.keyboard.isDown "y"
-	danmaku.players[1].focusing = love.keyboard.isDown "lshift"
+	if danmaku.players[1]
+		for key in *{"left", "right", "up", "down"}
+			danmaku.players[1].movement[key] = love.keyboard.isDown key
+		danmaku.players[1].bombing = love.keyboard.isDown "x"
+		danmaku.players[1].firing = love.keyboard.isDown "y"
+		danmaku.players[1].focusing = love.keyboard.isDown "lshift"
+	else
+		false -- Game over, duh.
 
 	danmaku\update dt
 

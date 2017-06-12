@@ -11,8 +11,10 @@ class extends Enemy
 		@focusSpeed = arg.focusSpeed or (@speed / 2)
 
 		@dyingTime = arg.dyingTime or 60 * 3
+		@bombingTime = arg.bombingTime or 60
 
-		@firingFrame = false
+		@firingFrame = false -- boolean or positive integer
+		@bombingFrame = false -- boolean or positive integer
 
 		-- Controls.
 		@movement =
@@ -22,8 +24,16 @@ class extends Enemy
 			down: false
 		@firing = false
 		@focusing = false
+		@bombing = false
 
 		@isPlayer = true
+
+		@lives = arg.lives or 3
+		@bombs = arg.bombs or 2
+		@bombsPerLife = @bombs
+
+		@onDeath = arg.death
+		@onBomb = arg.bomb
 
 	update: =>
 		@frame += 1
@@ -53,11 +63,28 @@ class extends Enemy
 			dx *= hsr2
 			dy *= hsr2
 
+		if @bombing and @bombs >= 1
+			if @bombingFrame == false
+				-- FIXME: The player should be invulnerable during bombs.
+				--        … or should it?
+				@bombingFrame = 0
+				@bombs -= 1
+
+				if @onBomb
+					@\onBomb!
+			else
+				@bombingFrame += 1
+		else
+			@bombingFrame = false
+
+		if @bombingFrame and @bombingFrame >= @bombingTime
+			@bombingFrame = false
+
 		if @firing
 			if @firingFrame == false
-				@firingFrame = -1
-
-			@firingFrame += 1
+				@firingFrame = 0
+			else
+				@firingFrame += 1
 		else
 			@firingFrame = false
 
@@ -65,6 +92,13 @@ class extends Enemy
 			@dyingFrame += 1
 
 			if @dyingFrame >= @dyingTime
+				@lives -= 1
+				@bombs = @bombsPerLife
+
+				if @lives <= 0
+					-- FIXME: We may want to trigger.
+					@readyForRemoval = true
+
 				-- FIXME: We’ll need the same code for bosses, right?
 				@touchable = true
 				@dyingFrame = 0
