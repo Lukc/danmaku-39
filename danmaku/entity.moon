@@ -1,8 +1,34 @@
 
-class
-	@Circle = 1
-	@Rectangle = 2
+---
+-- Base class of an on-screen entity within a game of danmaku.
+--
+-- @see Enemy
+-- @see Player
+-- @see Bullet
+--
+-- @classmod Entity
 
+
+class
+	@Circle = 1     --- @field Entity.Circle
+	@Rectangle = 2  --- @field Entity.Rectangle
+
+	---
+	-- All parameters are optional and have sane default values.
+	--
+	-- @param arg {}
+	-- @param arg.x Initial x-position of the entity.
+	-- @param arg.y Initial y-position of the entity.
+	-- @@param hitboxType Shape of the entity's hitbox.
+	--  Can be `Circle` or `Rectangle`.
+	-- @param arg.radius  Hitbox radius if it is a `Circle`.
+	-- @param arg.width   Width of the hitbox if it is a `Rectangle`.
+	-- @param arg.height  Height of the hitbox if it is a `Rectangle`.
+	-- @param arg.speed   Speed of the entity.
+	-- @param arg.angle   Direction the entity is moving towards.
+	-- @param arg.health  Starting health and maximum health of the entity.
+	-- @param arg.update  Code to execute each frame to update the entity.
+	-- @param arg.draw Code to execute each frame to draw the entity.
 	new: (arg) =>
 		arg or= {}
 
@@ -44,6 +70,10 @@ class
 
 		@outOfScreenTime = 0
 
+	---
+	-- Draws the entity.
+	-- 
+	-- Used internally.
 	draw: =>
 		x = @x
 		y = @y
@@ -75,6 +105,12 @@ class
 		if @onDraw
 			@\onDraw!
 
+	---
+	-- Updates the entity.
+	--
+	-- Its position is updated, its custom update code is executed, and
+	-- the entity is marked as being ready to be removed if it's been out of
+	-- screen for too long.
 	update: =>
 		dx = @speed * math.cos @angle
 		dy = @speed * math.sin @angle
@@ -115,7 +151,10 @@ class
 
 		@frame += 1
 
-	collides: (x, ...) =>
+	---
+	-- Returns whether two entities are colliding with one another or not.
+	-- @param x Entity with which to check for collision.
+	collides: (x) =>
 		if not self.touchable or not x.touchable
 			print self, x
 			print self.touchable, x.touchable
@@ -181,12 +220,23 @@ class
 			print "Unimplemented collision detection (Rectangle/Rectangle)…"
 			false -- FIXME: needs math here. We may not need it, though.
 
+	---
+	-- Damages the entity, and kills it if its health became 0.
+	--
+	-- Collision damage is usually of type `"collision"`.
+	--
+	-- @param amount Amount of health to remove.
+	-- @param type Type of damage to inflict. It is ignored by default,
+	--  but you can overwrite this method if you plan to have damages of
+	--  different types and variable resistances.
 	inflictDamage: (amount, type) =>
 		@health -= amount
 
 		if @health <= 0
 			@\die!
 
+	---
+	-- Makes the entity untouchable and marks it as dying.
 	die: =>
 		@health = 0
 

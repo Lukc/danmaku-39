@@ -1,8 +1,17 @@
 
+---
+-- Class of destructible entities within the game.
+--
+-- @classmod Enemy
+
 Entity = require "danmaku.entity"
 Bullet = require "danmaku.bullet"
 
 class extends Entity
+	---
+	-- Creates a Bullet and adds it to the game.
+	--
+	-- @param data Arguments passed to create the `Bullet`.
 	fire: (data) =>
 		bullet = Bullet data
 
@@ -18,6 +27,11 @@ class extends Entity
 
 		return bullet
 
+	---
+	-- Promotes the entity to boss status.
+	--
+	-- Bosses are likely displayed differently by the UI or the stage itself.
+	-- Their health, name, and possibly other data are usually displayed.
 	setBoss: (data) =>
 		{
 			:name,

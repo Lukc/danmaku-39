@@ -1,4 +1,14 @@
 
+---
+-- Class for playable entities.
+--
+-- It adds various fields to control the movement and behavior of the entity,
+-- as well as checking that it will not leave the game screen.
+--
+-- Instances of `Player` also have a count of lives and bombs.
+--
+-- @classmod Player
+
 Enemy = require "danmaku.enemy"
 
 class extends Enemy
@@ -35,6 +45,8 @@ class extends Enemy
 		@onDeath = arg.death
 		@onBomb = arg.bomb
 
+	---
+	-- Overwritten update function.
 	update: =>
 		@frame += 1
 

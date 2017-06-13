@@ -1,5 +1,24 @@
 
+---
+-- Class to store stage-wide data and update code.
+--
+-- An instance of Stage is supposed to be able to generate its own entities
+-- (enemies, random bullets, etc.) and draw its own background and overlay.
+--
+-- @classmod Stage
+
 class
+	---
+	-- Stages constructor.
+	--
+	-- @param arg {}
+	-- @param arg.title  Stage's title.
+	-- @param arg.subtitle  Stage's subtitle.
+	-- @param arg.update  Custom code to execute on update.
+	-- @param arg.drawBackground  Background drawing function.
+	-- @param arg.draw  Overlay drawing function. See `draw`.
+	-- @param arg.drawTitle  Title drawing function.
+	-- @param arg.drawBossDatva  Boss overlay drawing function.
 	new: (arg) =>
 		arg or= {}
 
@@ -32,7 +51,8 @@ class
 			love.graphics.print @boss.name,
 				@game.width - font\getWidth(@boss.name) - 20, 20
 
-	-- game: Danmaku
+	---
+	-- Update function.
 	update: =>
 		@frame += 1
 
@@ -48,10 +68,21 @@ class
 			if entity.readyForRemoval
 				@boss = nil
 
+	---
+	-- Used by `Danmaku.draw` to draw the game's background.
+	--
+	-- It is called before anything else from the game has been drawn.
 	drawBackground: =>
 		if @onDrawBackground
 			@\onDrawBackground!
 
+	---
+	-- Draw method.
+	--
+	-- Draws the title and the current boss’ data (if any).
+	--
+	-- This method is called after all other entities of the game have been
+	-- drawn.
 	draw: =>
 		-- FIXME: There are constants that should be configurable, here…
 		if @frame <= 180

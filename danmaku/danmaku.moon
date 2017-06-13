@@ -1,10 +1,31 @@
 
+---
+-- A class that represents a game of danmaku.
+--
+-- Its purpose is to store, update and draw a set of entities (`Entity`),
+-- removing them and creating them as needed or requested by the game scripts
+-- it is provided.
+--
+-- @see Entity
+-- @classmod Danmaku
+
 Entity = require "danmaku.entity"
 Bullet = require "danmaku.bullet"
 Enemy = require "danmaku.enemy"
 Player = require "danmaku.player"
 
 class
+	---
+	-- Generic constructor.
+	--
+	-- All parameters are optionnal and have sane default values.
+	--
+	-- @param arg {}
+	-- @param arg.x   The x-position at which to draw the game with `\draw`
+	-- @param arg.y   The y-position at which to draw the game with `\draw`
+	-- @param arg.width   Width of the game area.
+	-- @param arg.height  Height of the game area.
+	-- @param arg.stage   The `Stage` to play.
 	new: (arg) =>
 		arg or= {}
 
@@ -27,6 +48,8 @@ class
 
 		@frame = 0
 
+	---
+	-- Draws the game at the requested `x` and `y` coordinates.
 	draw: =>
 		oldCanvas = love.graphics.getCanvas!
 		canvas = love.graphics.newCanvas @width, @height
@@ -51,6 +74,15 @@ class
 		love.graphics.setColor 255, 255, 255
 		love.graphics.draw canvas, @x, @y
 
+	---
+	-- Updates the game.
+	--
+	-- It is noteworthy that the delta-time provided by love or other tools
+	-- are ignored. This is done so that the framerate becomes the speed of
+	-- the game, and so that the game becomes more easily repeatable.
+	--
+	-- Repeatable games are needed to print replays, for online play, and
+	-- possibly for other uses.
 	update: =>
 		@frame += 1
 
@@ -87,6 +119,17 @@ class
 					if not entity.readyForRemoval
 						table.insert _, entity
 
+	---
+	-- Adds an `Entity` to the game.
+	--
+	-- Entities are identified based on their class: players are instances of
+	-- `Player`, bullets of `Bullet`, and enemies of `Enemy`.
+	--
+	-- Direct instances of `Entity` are also added, but no collision detection
+	-- is made on them.
+	--
+	-- Also of note is that `Bullet`s are distinguished between player bullets
+	-- and enemy bullets based on their `.player` field.
 	addEntity: (entity) =>
 		switch entity.__class
 			when Bullet

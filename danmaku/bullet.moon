@@ -1,7 +1,19 @@
 
+---
+-- Class for bullets and other projectiles fired by an `Enemy` or a `Player`.
+--
+-- @classmod Bullet
+
 Entity = require "danmaku.entity"
 
 class extends Entity
+	---
+	-- Bullet constructeur.
+	--
+	-- @param arg {}
+	-- @param arg.player The `Player` who fired the bullet. May be nil.
+	-- @param arg.damageType The type of damage the bullet will inflict.
+	--  Defaults to "bullet".
 	new: (arg) =>
 		arg or= {}
 
