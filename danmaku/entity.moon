@@ -155,10 +155,6 @@ class
 	-- Returns whether two entities are colliding with one another or not.
 	-- @param x Entity with which to check for collision.
 	collides: (x) =>
-		if not self.touchable or not x.touchable
-			print self, x
-			print self.touchable, x.touchable
-
 		unless @touchable
 			return false
 		unless x.touchable
