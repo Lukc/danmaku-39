@@ -27,26 +27,5 @@ class extends Entity
 
 		return bullet
 
-	---
-	-- Promotes the entity to boss status.
-	--
-	-- Bosses are likely displayed differently by the UI or the stage itself.
-	-- Their health, name, and possibly other data are usually displayed.
-	setBoss: (data) =>
-		{
-			:name,
-			:lives
-		} = data
-
-		unless lives
-			error "No lives count (:lives, integer) received."
-		unless name
-			error "No name (:name, string) received."
-
-		@game.currentStage\setBoss
-			entity: self
-			:name
-			:lives
-
 	__tostring: => "<Enemy: frame #{@frame}>"
 

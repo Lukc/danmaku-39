@@ -13,6 +13,7 @@ Entity = require "danmaku.entity"
 Bullet = require "danmaku.bullet"
 Enemy = require "danmaku.enemy"
 Player = require "danmaku.player"
+Boss = require "danmaku.boss"
 
 class
 	---
@@ -109,8 +110,6 @@ class
 					enemy\inflictDamage bullet.damage, bullet.damageType
 					bullet\inflictDamage 1, "collision"
 
-					print "BOOM"
-
 		for name in *{"entities", "players", "playerBullets", "enemies", "bullets"}
 			collection = self[name]
 
@@ -139,7 +138,7 @@ class
 					table.insert @bullets, entity
 			when Player
 				table.insert @players, entity
-			when Enemy
+			when Enemy, Boss
 				table.insert @enemies, entity
 			when Entity
 				print "Adding generic entity to the game. wtf is going on?"

@@ -55,7 +55,7 @@ class
 
 		@frameEvents = {}
 		for key, value in pairs arg
-			if type(key) == "number"
+			if type(key) == "number" and type(value) == "function"
 				@frameEvents[key] = value
 
 		@onUpdate = arg.update
@@ -69,6 +69,7 @@ class
 		@readyForRemoval = false
 
 		@outOfScreenTime = 0
+		@disableTimeoutRemoval = false
 
 	---
 	-- Draws the entity.
@@ -112,12 +113,22 @@ class
 	-- the entity is marked as being ready to be removed if it's been out of
 	-- screen for too long.
 	update: =>
+		@\doUpdate ->
+			if @onUpdate
+				@\onUpdate!
+
+	---
+	-- Used internally to update entities.
+	--
+	-- Its purpose is to be used by children classes.
+	doUpdate: (onUpdate) =>
 		dx = @speed * math.cos @angle
 		dy = @speed * math.sin @angle
 
 		-- That time should be greated for bosses, maybe even disabled completely.
-		if @frame >= 60 * 60 * 5 and not @isPlayer
-			@readyForRemoval = true
+		unless @disableTimeoutRemoval
+			if @frame >= 60 * 60 * 5 and not @isPlayer
+				@readyForRemoval = true
 
 		if @dying
 			@dyingFrame += 1
@@ -128,8 +139,7 @@ class
 			if @frameEvents[@frame]
 				@frameEvents[@frame] self
 
-			if @onUpdate
-				@\onUpdate!
+			onUpdate self
 
 		@x += dx
 		@y += dy

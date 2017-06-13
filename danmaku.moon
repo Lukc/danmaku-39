@@ -18,5 +18,6 @@
 	Player:  require "danmaku.player"
 	Stage:   require "danmaku.stage"
 	Danmaku: require "danmaku.danmaku"
+	Boss:    require "danmaku.boss"
 }
 

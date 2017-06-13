@@ -62,11 +62,8 @@ class
 		if @onUpdate
 			@.onUpdate @game, self
 
-		if @boss
-			entity = @boss.entity
-
-			if entity.readyForRemoval
-				@boss = nil
+		if @boss and @boss.readyForRemoval
+			@boss = nil
 
 	---
 	-- Used by `Danmaku.draw` to draw the game's background.
