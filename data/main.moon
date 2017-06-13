@@ -144,18 +144,17 @@ stage1 = Stage {
 				love.graphics.setColor 63, 255, 63
 				love.graphics.circle "line", @x, @y, @radius + 10
 
+			[0]: =>
+				@\setBoss
+					name: "???"
+					lives: 999
+			[60]: =>
+				@\setBoss
+					name: "Mi~mi~midori~"
+					lives: 42
+
 			update: =>
-				if @frame == 0
-					@\setBoss
-						name: "???"
-						lives: 999
-					return
-				elseif @frame == 60
-					@\setBoss
-						name: "Mi~mi~midori~"
-						lives: 42
-					return
-				elseif @frame < 60
+				if @frame < 60
 					return
 
 				draw = =>

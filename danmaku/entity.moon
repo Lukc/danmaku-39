@@ -27,6 +27,11 @@ class
 
 		@frame = 0
 
+		@frameEvents = {}
+		for key, value in pairs arg
+			if type(key) == "number"
+				@frameEvents[key] = value
+
 		@onUpdate = arg.update
 		@onDraw = arg.draw
 
@@ -84,6 +89,9 @@ class
 			if @dyingFrame >= @dyingTime
 				@readyForRemoval = true
 		else
+			if @frameEvents[@frame]
+				@frameEvents[@frame] self
+
 			if @onUpdate
 				@\onUpdate!
 
