@@ -8,6 +8,13 @@ Entity = require "danmaku.entity"
 Bullet = require "danmaku.bullet"
 
 class extends Entity
+	new: (arg) =>
+		arg or= {}
+
+		Entity.__init self, arg
+
+		@score = arg.score or 1
+
 	---
 	-- Creates a Bullet and adds it to the game.
 	--

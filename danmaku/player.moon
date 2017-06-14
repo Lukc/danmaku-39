@@ -27,6 +27,8 @@ class extends Enemy
 		@grazeDelay = arg.grazeDelay or 60
 		@graze = 0
 
+		@score = 0
+
 		@dyingTime = arg.dyingTime or 60 * 3
 		@bombingTime = arg.bombingTime or 60
 

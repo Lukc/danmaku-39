@@ -46,6 +46,9 @@ class
 		-- Should contain all of the above, or something like that.
 		@entities = {}
 
+		-- Total, common score shared by all players.
+		@score = 0
+
 		@currentStage = arg.stage
 		@currentStage.game = self
 
@@ -130,6 +133,10 @@ class
 				if bullet\collides enemy
 					enemy\inflictDamage bullet.damage, bullet.damageType
 					bullet\inflictDamage 1, "collision"
+
+					if enemy.dying
+						bullet.player.score += enemy.score
+						@score += enemy.score
 
 		for name in *{"entities", "players", "playerBullets", "enemies", "bullets", "items"}
 			collection = self[name]
