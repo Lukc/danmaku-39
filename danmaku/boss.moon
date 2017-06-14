@@ -37,6 +37,9 @@ class extends Enemy
 			if currentSpell
 				if @health <= @spellEndHealth
 					@\switchToNextSpell!
+				elseif @frame == @spellStartFrame
+					@damageable = true
+					currentSpell.update self
 				elseif @frame >= @spellStartFrame
 					currentSpell.update self
 			else
@@ -93,8 +96,7 @@ class extends Enemy
 			@spellStartFrame = @frame + @interSpellDelay
 			@spellEndFrame = @frame + spell.timeout + @interSpellDelay
 
-			-- FIXME: Make the Boss invulnerable until the next spell starts.
-			--        Invulnerability is not implemented right now, though.
+			@damageable = false
 		else -- end of spells list
 			@health = 1
 

@@ -50,6 +50,7 @@ class
 		@maxHealth = @health
 
 		@touchable = true
+		@damageable = true
 
 		@frame = 0
 
@@ -236,6 +237,9 @@ class
 	--  but you can overwrite this method if you plan to have damages of
 	--  different types and variable resistances.
 	inflictDamage: (amount, type) =>
+		unless @damageable
+			return false
+
 		@health -= amount
 
 		if @health <= 0
