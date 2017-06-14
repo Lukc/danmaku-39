@@ -40,20 +40,25 @@ love.load = ->
 
 
 love.draw = ->
+	x = (love.graphics.getWidth! - 1024) / 2
+	y = (love.graphics.getHeight! - 800) / 2
+
+	danmaku.x = x
+	danmaku.y = y
 	danmaku\draw!
 
 	w = danmaku.width
 
 	love.graphics.setColor 255, 255, 255
-	love.graphics.print "#{love.timer.getFPS!} FPS", w + 10, 10
-	love.graphics.print "#{#danmaku.entities} entities", w + 10, 30
+	love.graphics.print "#{love.timer.getFPS!} FPS", x + w + 10, y + 10
+	love.graphics.print "#{#danmaku.entities} entities", x + w + 10, y + 30
 
 	for k, player in ipairs danmaku.players
 		for i = 1, player.lives
-			love.graphics.rectangle "line", w + 20 * i - 10, 20 + k * 40,
+			love.graphics.rectangle "line", x + w + 20 * i - 10, y + 20 + k * 40,
 				15, 15
 		for i = 1, player.bombs
-			love.graphics.rectangle "line", w + 20 * i - 10, 40 + k * 40,
+			love.graphics.rectangle "line", x + w + 20 * i - 10, y + 40 + k * 40,
 				15, 15
 
 love.update = (dt) ->

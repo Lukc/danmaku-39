@@ -61,7 +61,7 @@ class
 		canvas = love.graphics.newCanvas @width, @height
 		love.graphics.setCanvas canvas
 
-		love.graphics.rectangle "line", @x + 0.5, @y + 0.5, @width - 1, @height - 1
+		love.graphics.rectangle "line", 0.5, 0.5, @width - 1, @height - 1
 
 		if @currentStage
 			@currentStage\drawBackground self
