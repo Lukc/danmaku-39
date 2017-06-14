@@ -22,6 +22,7 @@ class extends Enemy
 			if type(spell) == "table"
 				table.insert @spells, spell
 
+		@currentSpell = false
 		@currentSpellIndex = 0
 		@spellStartFrame = 0
 		@spellEndFrame = 0
@@ -105,6 +106,8 @@ class extends Enemy
 			@damageable = false
 		else -- end of spells list
 			@health = 1
+
+		@currentSpell = spell
 
 	die: =>
 		if @spells[@currentSpellIndex]

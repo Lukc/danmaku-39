@@ -5,7 +5,8 @@
 	:Bullet,
 	:Player,
 	:Stage,
-	:Boss
+	:Boss,
+	:Spellcard
 } = require "danmaku"
 
 {:BigBullet, :SmallBullet} = require "data.bullets"
@@ -51,6 +52,10 @@ stage1 = Stage {
 		love.graphics.setColor 255, 255, 255
 		love.graphics.print "#{@boss.name}, #{@boss.health}/#{@boss.maxHealth}", 20, 20
 
+		spell = @boss.currentSpell
+		if spell and spell.name
+			love.graphics.print "#{spell.name}", 40,60
+
 	update: =>
 		if @frame % 4 == 0
 			@\addEntity Bullet SmallBullet
@@ -82,13 +87,10 @@ stage1 = Stage {
 			y: @height / 5
 			name: "Mi~mi~midori"
 
-			{
+			Spellcard {
 				health: 40
 				timeout: 30 * 60
 				update: =>
-					if @frame < 60
-						return
-
 					if @frame % 40 == 0
 						for i = 1, 32
 							@\fire BigBullet
@@ -117,7 +119,8 @@ stage1 = Stage {
 									192 + 63 * math.sin(@frame / 60),
 								}
 			}
-			{
+			Spellcard {
+				name: "Test sign - Named Spellcards test"
 				health: 60
 				timeout: 30 * 60
 				update: =>

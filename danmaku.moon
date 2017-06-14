@@ -19,5 +19,6 @@
 	Stage:   require "danmaku.stage"
 	Danmaku: require "danmaku.danmaku"
 	Boss:    require "danmaku.boss"
+	Spellcard: require "danmaku.spellcard"
 }
 
