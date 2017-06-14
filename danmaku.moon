@@ -14,6 +14,7 @@
 {
 	Entity:  require "danmaku.entity"
 	Bullet:  require "danmaku.bullet"
+	Item:    require "danmaku.item"
 	Enemy:   require "danmaku.enemy"
 	Player:  require "danmaku.player"
 	Stage:   require "danmaku.stage"

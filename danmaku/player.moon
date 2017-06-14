@@ -20,6 +20,8 @@ class extends Enemy
 		@speed = arg.speed or 4
 		@focusSpeed = arg.focusSpeed or (@speed / 2)
 
+		@itemAttractionRadius = arg.itemAttractionRadius or 32
+
 		@dyingTime = arg.dyingTime or 60 * 3
 		@bombingTime = arg.bombingTime or 60
 

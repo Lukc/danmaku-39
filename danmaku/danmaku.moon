@@ -11,6 +11,7 @@
 
 Entity = require "danmaku.entity"
 Bullet = require "danmaku.bullet"
+Item = require "danmaku.item"
 Enemy = require "danmaku.enemy"
 Player = require "danmaku.player"
 Boss = require "danmaku.boss"
@@ -40,6 +41,7 @@ class
 		@enemies = {}
 		@playerBullets = {}
 		@bullets = {}
+		@items = {}
 
 		-- Should contain all of the above, or something like that.
 		@entities = {}
@@ -63,7 +65,7 @@ class
 
 			love.graphics.setColor 255, 255, 255, 255
 
-		for collection in *{@players, @enemies, @playerBullets, @bullets}
+		for collection in *{@players, @enemies, @playerBullets, @bullets, @items}
 			for entity in *collection
 				entity\draw!
 
@@ -99,6 +101,10 @@ class
 					player\inflictDamage 1, "collision"
 					enemy\inflictDamage 1, "collision"
 
+			for item in *@items
+				if item\collides player
+					item\collected player
+
 			for bullet in *@bullets
 				if player\collides bullet
 					player\inflictDamage 1, bullet.damageType
@@ -110,7 +116,7 @@ class
 					enemy\inflictDamage bullet.damage, bullet.damageType
 					bullet\inflictDamage 1, "collision"
 
-		for name in *{"entities", "players", "playerBullets", "enemies", "bullets"}
+		for name in *{"entities", "players", "playerBullets", "enemies", "bullets", "items"}
 			collection = self[name]
 
 			self[name] = with _ = {}
@@ -140,6 +146,8 @@ class
 				table.insert @players, entity
 			when Enemy, Boss
 				table.insert @enemies, entity
+			when Item
+				table.insert @items, entity
 			when Entity
 				print "Adding generic entity to the game. wtf is going on?"
 

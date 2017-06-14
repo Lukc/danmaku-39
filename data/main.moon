@@ -4,6 +4,7 @@
 	:Enemy,
 	:Bullet,
 	:Player,
+	:Item,
 	:Stage,
 	:Boss,
 } = require "danmaku"
@@ -80,7 +81,21 @@ stage1 = Stage {
 			update: =>
 				@angle += math.pi / 2400
 
-	[60]: =>
+		sprite = love.graphics.newImage "data/art/item_test_point.png"
+		@\addEntity Item
+			radius: 4
+			x: @width / 2
+			y: @height / 9
+			update: =>
+				@y += 1
+			draw: =>
+				love.graphics.setColor 255, 255, 255
+				love.graphics.circle "line", @x, @y, @radius
+				love.graphics.draw sprite, @x - 16, @y - 16
+			collection: =>
+				print "Hey hey, item’s collected!"
+
+	[120]: =>
 		@\addEntity Boss {
 			radius: 7
 			x: @width / 2
