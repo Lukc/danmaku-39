@@ -29,6 +29,9 @@ class extends Enemy
 
 		-- FIXME: Calculate this from spellcards count.
 		@lives = 0
+		for spell in *@spells
+			if spell.endOfLife or spell == @spells[#@spells]
+				@lives += 1
 
 	update: =>
 		@\doUpdate =>
@@ -92,6 +95,9 @@ class extends Enemy
 
 			@health = health
 			@spellEndHealth = health - spell.health
+
+			if not oldSpell or oldSpell.endOfLife
+				@maxHealth = health
 
 			@spellStartFrame = @frame + @interSpellDelay
 			@spellEndFrame = @frame + spell.timeout + @interSpellDelay

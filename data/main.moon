@@ -47,6 +47,10 @@ stage1 = Stage {
 	drawBackground: =>
 			-- No background for now.
 
+	drawBossData: =>
+		love.graphics.setColor 255, 255, 255
+		love.graphics.print "#{@boss.name}, #{@boss.health}/#{@boss.maxHealth}", 20, 20
+
 	update: =>
 		if @frame % 4 == 0
 			@\addEntity Bullet SmallBullet
