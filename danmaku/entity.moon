@@ -44,7 +44,8 @@ class
 			@height = arg.h or 1
 
 		@speed = arg.speed or 0
-		@angle = arg.angle or 0
+		@angle = arg.angle or math.pi / 2
+		@direction = arg.direction or arg.angle or math.pi / 2
 
 		@health = arg.health or 1
 		@maxHealth = @health
@@ -123,8 +124,8 @@ class
 	--
 	-- Its purpose is to be used by children classes.
 	doUpdate: (onUpdate) =>
-		dx = @speed * math.cos @angle
-		dy = @speed * math.sin @angle
+		dx = @speed * math.cos @direction
+		dy = @speed * math.sin @direction
 
 		-- That time should be greated for bosses, maybe even disabled completely.
 		unless @disableTimeoutRemoval
@@ -145,17 +146,24 @@ class
 		@x += dx
 		@y += dy
 
-		if @hitboxType == @@Circle
-			if @x + @radius < 0
+		do
+			-- FIXME: That stuff should be somehow configurable, even if it’s
+			--        still a simple radius-based check.
+			radius = if @hitboxType == @@Circle
+				@radius
+			elseif @hitboxType == @@Rectangle
+				math.sqrt(@width^2 + @height^2)
+
+			if @x + radius < 0
 				@outOfScreenTime += 1
-			elseif @y + @radius < 0
+			elseif @y + radius < 0
 				@outOfScreenTime += 1
-			elseif @x - @radius > @game.width
+			elseif @x - radius > @game.width
 				@outOfScreenTime += 1
-			elseif @y - @radius > @game.height
+			elseif @y - radius > @game.height
 				@outOfScreenTime += 1
-		elseif @hitboxType == @@rectangle
-			true -- FIXME: needs math here
+			else
+				@outOfScreenTime = 0
 
 		if @outOfScreenTime >= 30
 			@readyForRemoval = true

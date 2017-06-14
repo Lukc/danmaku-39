@@ -97,7 +97,7 @@ stage1 = Stage {
 
 	[120]: =>
 		@\addEntity Boss {
-			radius: 7
+			radius: 32
 			x: @width / 2
 			y: @height / 5
 			name: "Mi~mi~midori"
