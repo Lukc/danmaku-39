@@ -32,13 +32,13 @@ class extends Entity
 				distance = math.sqrt((player.x - @x)^2 + (player.y - @y)^2)
 
 				if distance <= player.itemAttractionRadius
-					@angle = math.atan2 player.y - @y, player.x - @x
+					@direction = math.atan2 player.y - @y, player.x - @x
 
 					attracted = true
 					break
 
 			unless attracted
-				@angle = math.pi / 2
+				@direction = math.pi / 2
 
 	collected: (player) =>
 		if @onCollection
