@@ -75,7 +75,6 @@ circle = (arg) ->
 			.y = y
 			.angle = a
 			.direction = angle
-		
 
 sinusoid = (arg) ->
 	arg or= {}
@@ -108,7 +107,6 @@ sinusoid = (arg) ->
 						@direction = angle - math.cos @frame / 10
 					else
 						@direction = angle + math.cos @frame / 10
-		
 
 s1 = Spellcard {
 	health: 40
