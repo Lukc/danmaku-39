@@ -17,10 +17,15 @@ class extends Enemy
 
 		super.__init self, arg
 
+		@grazeRadius = arg.grazeRadius or 16
 		@speed = arg.speed or 4
 		@focusSpeed = arg.focusSpeed or (@speed / 2)
 
 		@itemAttractionRadius = arg.itemAttractionRadius or 32
+
+		@grazedBullets = {}
+		@grazeDelay = arg.grazeDelay or 60
+		@graze = 0
 
 		@dyingTime = arg.dyingTime or 60 * 3
 		@bombingTime = arg.bombingTime or 60
@@ -47,10 +52,22 @@ class extends Enemy
 		@onDeath = arg.death
 		@onBomb = arg.bomb
 
+	draw: =>
+		super\draw!
+
+		love.graphics.setColor 255, 255, 0
+		love.graphics.circle "line", @x, @y, @grazeRadius
+
 	---
 	-- Overwritten update function.
 	update: =>
 		@frame += 1
+
+		for bullet, delay in pairs @grazedBullets
+			if delay > 1
+				@grazedBullets[bullet] -= 1
+			else
+				@grazedBullets[bullet] = nil
 
 		speed = if @focusing
 			@focusSpeed
@@ -130,6 +147,13 @@ class extends Enemy
 
 		@x = math.min @x, @game.width - @radius * 5
 		@y = math.min @y, @game.height - @radius * 5
+
+	grazeBullet: (bullet) =>
+		if @grazedBullets[bullet]
+			return false
+		else
+			@grazedBullets[bullet] = @grazeDelay
+			@graze += 1
 
 	__tostring: => "<Player: frame #{@frame}, [#{@x}:#{@y}]>"
 

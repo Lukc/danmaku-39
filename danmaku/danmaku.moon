@@ -106,9 +106,24 @@ class
 					item\collected player
 
 			for bullet in *@bullets
+				radius = player.radius
+				touchable = player.touchable
+
+				player.radius = player.grazeRadius
+				player.touchable = true
+
 				if player\collides bullet
-					player\inflictDamage 1, bullet.damageType
-					bullet\inflictDamage 1, "collision"
+					player.radius = radius
+					player.touchable = touchable
+
+					if player\collides bullet
+						player\inflictDamage 1, bullet.damageType
+						bullet\inflictDamage 1, "collision"
+					else
+						player\grazeBullet bullet
+
+				player.radius = radius
+				player.touchable = touchable
 
 		for bullet in *@playerBullets
 			for enemy in *@enemies
