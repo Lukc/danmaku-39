@@ -29,6 +29,9 @@ class extends Enemy
 
 		@score = 0
 
+		@power = arg.power or 0
+		@maxPower = arg.maxPower or @power
+
 		@dyingTime = arg.dyingTime or 60 * 3
 		@bombingTime = arg.bombingTime or 60
 
@@ -57,6 +60,21 @@ class extends Enemy
 
 		@onDeath = arg.death
 		@onBomb = arg.bomb
+
+	addPower: (amount) =>
+		if amount > 0 and @power == @maxPower
+			return false
+		elseif amount < 0 and @power == 0
+			return false
+
+		@power += amount
+
+		if @power < 0
+			power = 0
+		elseif @power > @maxPower
+			@power = @maxPower
+
+		true
 
 	addFragment: (type) =>
 		if type == "life"

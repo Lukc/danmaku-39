@@ -30,6 +30,24 @@ items = {
 			}
 				for k,v in pairs arg
 					[k] = v
+	power: do
+		sprite = love.graphics.newImage "data/art/item_test_power.png"
+
+		draw = =>
+			love.graphics.setColor 255, 255, 255
+			love.graphics.draw sprite, @x - 16, @y - 16
+		collection = (player) =>
+			unless player\addPower 1
+				player.score += 100
+				@game.score += 100
+
+		(arg) -> Item with {
+				radius: 10
+				:draw
+				:collection
+			}
+				for k,v in pairs arg
+					[k] = v
 	lifeFragment: do
 		sprite = love.graphics.newImage "data/art/item_test_life.png"
 		draw = =>
@@ -135,6 +153,11 @@ stage1 = Stage {
 			@\addEntity items.point
 				x: @width / 2 + 25 * i
 				y: @height / 9 - 50
+
+		for i = -16, 16, 1
+			@\addEntity items.power
+				x: @width / 2 + 25 * i
+				y: @height / 9 + 50
 
 		for i = 1, 9
 			@\addEntity items.lifeFragment
