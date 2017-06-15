@@ -113,8 +113,6 @@ sinusoid = (arg) ->
 laser = do
 	update = (parent, duration, oldUpdate) ->
 		=>
-			print @, @damageable
-
 			if parent.readyForRemoval
 				@\die!
 
