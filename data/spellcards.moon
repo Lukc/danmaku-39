@@ -130,7 +130,7 @@ s1 = Spellcard {
 		if @frame % 12 == 0
 			bullet =
 				speed: 3.6
-				direction: math.sin((@frame - 60) / 90) * math.pi / 6
+				direction: math.sin((@frame - 60) / 90) * math.pi / 6 + @\angleToPlayer!
 				color: {
 					192 + 63 * math.sin(@frame / 60 + math.pi),
 					96 + 31 * math.sin(@frame / 60),
