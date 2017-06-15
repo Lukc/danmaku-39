@@ -20,8 +20,8 @@ radial = (arg) ->
 	unless entity
 		return ->
 
-	direction  = bulletData.angle or math.pi / 2
-	angle      = bulletData.direction or bulletData.angle or math.pi / 2
+	angle     = bulletData.angle or math.pi / 2
+	direction = bulletData.direction or bulletData.angle or math.pi / 2
 
 	i = 0
 	->
@@ -30,7 +30,7 @@ radial = (arg) ->
 		if i > bulletsPerCircle
 			return
 
-		a = angle + math.pi * 2 / bulletsPerCircle * i
+		a = direction + math.pi * 2 / bulletsPerCircle * i
 		x, y = entity.x, entity.y
 
 		x = x + radius * math.cos a
@@ -40,7 +40,7 @@ radial = (arg) ->
 			.x = x
 			.y = y
 			.angle = a
-			.direction = direction
+			.direction = a
 
 circle = (arg) ->
 	arg or= {}
@@ -92,6 +92,13 @@ sinusoid = (arg) ->
 	unless entity
 		return ->
 
+	a, b = arg[1], arg[2]
+
+	unless a
+		a = 1
+	unless b
+		b = 10
+
 	returned = false
 
 	->
@@ -104,31 +111,34 @@ sinusoid = (arg) ->
 						oldUpdate self
 
 					if reversed
-						@direction = angle - math.cos @frame / 10
+						@direction = angle - a * math.cos @frame / b
 					else
-						@direction = angle + math.cos @frame / 10
+						@direction = angle + a * math.cos @frame / b
 
 s1 = Spellcard {
 	health: 40
 	timeout: 30 * 60
 	update: =>
 		if @frame % 40 == 0
-			for i = 1, 32
-				@\fire BigBullet
-					speed: 2.4
-					angle: math.pi / 16 * i + (@frame / 60 * math.pi / 32)
+			bullet =
+				speed: 2.4
+				direction:  @frame / 60 * math.pi / 32
+
+			for bullet in radial {from: self, bullets: 32, :bullet}
+				@\fire BigBullet bullet
 
 		if @frame % 12 == 0
-			for i = 1, 8
-				@\fire SmallBullet
-					speed: 3.6
-					-- The “60” here is the start of the attacks.
-					angle: math.pi / 4 * (i - 0.5) + math.sin (@frame - 60) / 90 * math.pi / 6
-					color: {
-						192 + 63 * math.sin(@frame / 60 + math.pi),
-						96 + 31 * math.sin @frame / 60,
-						192 + 63 * math.sin(@frame / 60),
-					}
+			bullet =
+				speed: 3.6
+				direction: math.sin((@frame - 60) / 90) * math.pi / 6
+				color: {
+					192 + 63 * math.sin(@frame / 60 + math.pi),
+					96 + 31 * math.sin(@frame / 60),
+					192 + 63 * math.sin(@frame / 60),
+				}
+
+			for bullet in radial {from: self, bullets: 8, :bullet}
+				@\fire SmallBullet bullet
 }
 s2 = Spellcard {
 	name: "Test sign - Named Spellcards test"
