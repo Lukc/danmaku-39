@@ -66,6 +66,8 @@ class extends Enemy
 					@\onUpdate!
 
 	switchToNextSpell: =>
+		@game\clearScreen!
+
 		if @currentSpellIndex > 0
 			difference = @spellEndFrame - @frame
 			print difference
