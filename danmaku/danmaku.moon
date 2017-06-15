@@ -181,5 +181,11 @@ class
 
 		entity
 
+	clearScreen: =>
+		for collection in *{@bullets, @enemies}
+			for entity in *collection
+				if entity.__class != Boss
+					entity\die!
+
 	__tostring: => "<Danmaku: frame #{@frame}>"
 

@@ -31,7 +31,7 @@ love.load = ->
 						y: @y - 5
 						radius: 3
 		bomb: (game) =>
-			print "Bombing… NAO"
+			@game\clearScreen!
 		death: =>
 			print "Lost a life, right about now."
 
