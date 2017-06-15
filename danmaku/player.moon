@@ -17,6 +17,8 @@ class extends Enemy
 
 		super.__init self, arg
 
+		@name = arg.name or "???"
+
 		@grazeRadius = arg.grazeRadius or 16
 		@speed = arg.speed or 4
 		@focusSpeed = arg.focusSpeed or (@speed / 2)

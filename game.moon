@@ -18,6 +18,7 @@ love.load = ->
 		stage: data.stages[1]
 
 	danmaku\addEntity Player
+		name: "Meirusa"
 		radius: 3
 		x: danmaku.width / 2
 		y: danmaku.height * 4 / 5
@@ -55,6 +56,15 @@ love.load = ->
 		death: =>
 			print "Lost a life, right about now."
 
+	for i = 2, 4
+		danmaku\addEntity Player
+			name: "Player #{i} test"
+			x: 0
+			y: 0
+			lives: 999
+			bombs: 999
+			radius: 4
+
 	-- Mostly serves to print entity hitboxes.
 	danmaku.debug = false
 
@@ -70,16 +80,44 @@ love.draw = ->
 	w = danmaku.width
 
 	love.graphics.setColor 255, 255, 255
-	love.graphics.print "#{love.timer.getFPS!} FPS", x + w + 10, y + 10
-	love.graphics.print "#{#danmaku.entities} entities", x + w + 10, y + 30
+	love.graphics.print "#{love.timer.getFPS!} FPS", x + w + 10, y + 745
+	love.graphics.print "#{#danmaku.entities} entities", x + w + 10, y + 770
+
+	love.graphics.print "Score", x + w + 10, y + 10
+	love.graphics.print "#{danmaku.score}", x + w + 255, y + 10
+
+	love.graphics.print "Highscore", x + w + 10, y + 40
+	love.graphics.print "HiScore here", x + w + 255, y + 40
+
+	drawPlayer = (player, x, y) ->
+		love.graphics.rectangle "line", x, y, 405, 160
+
+		love.graphics.print "#{player.name}", x + 5, y + 5
+		love.graphics.print "#{player.score}", x + 250, y + 5
+
+		love.graphics.setColor 255, 125, 1955
+		for i = 0, 9
+			if (i + 1) <= player.lives
+				love.graphics.rectangle "line", 5 + x + 40 * i, 40 + y,
+					35, 35
+
+		love.graphics.setColor 127, 255, 127
+		for i = 0, 9
+			if (i + 1) <= player.bombs
+				love.graphics.rectangle "line", 5 + x + 40 * i, 80 + y,
+					35, 35
+
+		love.graphics.setColor 255, 63, 63
+		love.graphics.rectangle "line", 5 + x, 120 + y, 245 * (player.power / player.maxPower), 35
+		love.graphics.print "#{player.power}/#{player.maxPower}", 5 + x, 125 + y
+
+		love.graphics.setColor 255, 255, 255
+		love.graphics.print "#{player.graze}", 250 + x, 125 + y
+
+		love.graphics.setColor 255, 255, 255
 
 	for k, player in ipairs danmaku.players
-		for i = 1, player.lives
-			love.graphics.rectangle "line", x + w + 20 * i - 10, y + 20 + k * 40,
-				15, 15
-		for i = 1, player.bombs
-			love.graphics.rectangle "line", x + w + 20 * i - 10, y + 40 + k * 40,
-				15, 15
+		drawPlayer player, x + w + 5, y + 80 + (k - 1) * 165
 
 love.update = (dt) ->
 	if danmaku.players[1]
