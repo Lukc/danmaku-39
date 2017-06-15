@@ -23,6 +23,7 @@ class extends Enemy
 		@speed = arg.speed or 4
 		@focusSpeed = arg.focusSpeed or (@speed / 2)
 
+		@itemAttractionSpeed = arg.itemAttractionSpeed or 4
 		@itemAttractionRadius = arg.itemAttractionRadius or 32
 
 		@grazedBullets = {}

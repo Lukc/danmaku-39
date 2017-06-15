@@ -11,6 +11,8 @@ class extends Entity
 		unless arg.speed
 			@speed = 2
 
+		@normalSpeed = @speed
+
 		@onCollection = arg.collection or nil
 
 	-- Items are entities that collide only with players.
@@ -34,11 +36,14 @@ class extends Entity
 				if distance <= player.itemAttractionRadius
 					@direction = math.atan2 player.y - @y, player.x - @x
 
+					@speed = player.itemAttractionSpeed or @speed
+
 					attracted = true
 					break
 
 			unless attracted
 				@direction = math.pi / 2
+				@speed = @normalSpeed
 
 	collected: (player) =>
 		if @onCollection
