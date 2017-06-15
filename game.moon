@@ -12,12 +12,14 @@ data = require "data.main"
 
 local danmaku
 
+players = {}
+
 love.load = ->
 	local testBullet
 	danmaku = Danmaku
 		stage: data.stages[1]
 
-	danmaku\addEntity Player
+	table.insert players, danmaku\addEntity Player
 		name: "Meirusa"
 		radius: 3
 		x: danmaku.width / 2
@@ -57,7 +59,7 @@ love.load = ->
 			print "Lost a life, right about now."
 
 	for i = 2, 2
-		danmaku\addEntity Player
+		table.insert players, danmaku\addEntity Player
 			name: "Player #{i} test"
 			x: 0
 			y: 0
@@ -156,13 +158,13 @@ love.draw = ->
 
 			love.graphics.setColor 255, 255, 255
 
-	box = if #danmaku.players > 2
+	box = if #players > 2
 		smallPlayerBox
 	else
 		normalPlayerBox
 
-	for k, player in ipairs danmaku.players
-		box\draw player, x + w + 5, y + 80 + (k - 1) * (box.height + 5)
+	for i, player in ipairs players
+		box\draw player, x + w + 5, y + 80 + (i - 1) * (box.height + 5)
 
 love.update = (dt) ->
 	if danmaku.players[1]
