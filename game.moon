@@ -21,6 +21,7 @@ love.load = ->
 		radius: 3
 		x: danmaku.width / 2
 		y: danmaku.height * 4 / 5
+		itemAttractionRadius: 36
 		update: =>
 			if @firingFrame and @firingFrame % 8 == 0
 				for i = -1, 1, 2

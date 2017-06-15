@@ -18,7 +18,6 @@ items = {
 
 		draw = =>
 			love.graphics.setColor 255, 255, 255
-			love.graphics.circle "line", @x, @y, @radius
 			love.graphics.draw sprite, @x - 16, @y - 16
 		collection = (player) =>
 			player.score += 1000
@@ -32,23 +31,25 @@ items = {
 				for k,v in pairs arg
 					[k] = v
 	lifeFragment: do
+		sprite = love.graphics.newImage "data/art/item_test_life.png"
 		draw = =>
-			love.graphics.setColor 255, 127, 127
-			love.graphics.circle "fill", @x, @y, @radius
+			love.graphics.setColor 255, 255, 255
+			love.graphics.draw sprite, @x - 32, @y - 32
 		collection = (player) =>
 			player\addFragment "life"
 
 		(arg) -> Item with {
-				radius: 10
+				radius: 18
 				:draw
 				:collection
 			}
 				for k,v in pairs arg
 					[k] = v
 	bombFragment: do
+		sprite = love.graphics.newImage "data/art/item_test_bomb.png"
 		draw = =>
-			love.graphics.setColor 127, 255, 127
-			love.graphics.circle "fill", @x, @y, @radius
+			love.graphics.setColor 255, 255, 255
+			love.graphics.draw sprite, @x - 32, @y - 32
 		collection = (player) =>
 			player\addFragment "bomb"
 
@@ -130,9 +131,10 @@ stage1 = Stage {
 			update: =>
 				@angle += math.pi / 2400
 
-		@\addEntity items.point
-			x: @width / 2
-			y: @height / 9
+		for i = -9, 9, 1
+			@\addEntity items.point
+				x: @width / 2 + 25 * i
+				y: @height / 9 - 50
 
 		for i = 1, 9
 			@\addEntity items.lifeFragment
