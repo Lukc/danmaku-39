@@ -1,4 +1,6 @@
 
+{:Entity} = require "danmaku"
+
 clone = (t) ->
 	{key, value for key, value in pairs t}
 
@@ -108,10 +110,64 @@ sinusoid = (arg) ->
 					else
 						@direction = angle + a * math.cos @frame / b
 
+laser = do
+	update = (parent, duration, oldUpdate) ->
+		=>
+			print @, @damageable
+
+			if parent.readyForRemoval
+				@\die!
+
+				print "WARNING: Laser's parent died."
+
+				-- This sounds terribly bad.
+				return
+
+			if oldUpdate
+				oldUpdate self
+
+			radius = parent.radius
+
+			radius += @height / 2
+
+			@x = parent.x + radius * math.cos @angle
+			@y = parent.y + radius * math.sin @angle
+
+			if @frame - 1 >= duration
+				@\die!
+
+	(arg) ->
+		arg or= {}
+
+		entity     = arg.from
+		bulletData = arg.bullet or {}
+		duration   = arg.duration or math.huge
+
+		angle      = bulletData.angle or math.pi / 2
+		w          = bulletData.w or 5
+		h          = bulletData.h or 25
+		oldUpdate  = bulletData.update
+
+		radius     = entity.radius or 10
+
+		damageable = if bulletData.damageable != nil
+			bulletData.damageable
+		else
+			false
+
+		unless entity
+			return nil
+
+		with clone bulletData
+			.update = update(entity, duration, oldUpdate)
+			.hitbox = Entity.Rectangle
+			.damageable = damageable
+
 {
-	:clone,
-	:radial,
-	:circle,
+	:clone
+	:radial
+	:circle
 	:sinusoid
+	:laser
 }
 

@@ -50,8 +50,15 @@ class
 		@health = arg.health or 1
 		@maxHealth = @health
 
-		@touchable = true
-		@damageable = true
+		@touchable =if arg.touchable != nil
+			arg.touchable
+		else
+			true
+
+		@damageable =if arg.damageable != nil
+			arg.damageable
+		else
+			true
 
 		@frame = 0
 
@@ -94,10 +101,10 @@ class
 				d = math.sqrt((w/2)^2 + (h/2)^2)
 				a = @angle
 
-				a1 = a + math.atan2(-h/2, -w/2)
-				a2 = a + math.atan2(h/2, -w/2)
-				a3 = a + math.atan2(h/2, w/2)
-				a4 = a + math.atan2(-h/2, w/2)
+				a1 = a + math.atan2(-w/2, -h/2)
+				a2 = a + math.atan2(w/2, -h/2)
+				a3 = a + math.atan2(w/2, h/2)
+				a4 = a + math.atan2(-w/2, h/2)
 
 				love.graphics.polygon "line",
 					x + d * math.cos(a1), y + d * math.sin(a1),
@@ -185,6 +192,9 @@ class
 			dist <= (x.radius + @radius)
 		elseif @hitboxType == @@Rectangle and x.hitboxType == @@Circle
 			center = do
+				-- First step is projecting the circle’s center on the 
+				-- reference frame of the rectangle.
+
 				dx = x.x - @x
 				dy = x.y - @y
 
@@ -193,14 +203,11 @@ class
 
 				a -= @angle
 				{
-					x: math.cos(a) * d
-					y: math.sin(a) * d
+					x: math.sin(a) * d
+					y: math.cos(a) * d
 				}
 
 			pointInRectangle = do
-				-- First step is projecting the circle’s center on the 
-				-- reference frame of the rectangle.
-
 				if center.x < -@width/2
 					false
 				elseif center.x > @width/2

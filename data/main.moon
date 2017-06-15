@@ -13,6 +13,8 @@
 spellcards = require "data.spellcards"
 items = require "data.items"
 
+{:circle, :laser} = require "data.helpers"
+
 titleFont = love.graphics.newFont 42
 subtitleFont = love.graphics.newFont 24
 
@@ -102,7 +104,33 @@ stage1 = Stage {
 				x: @width / 2 - 25 * i
 				y: @height / 9 - 10 * i
 
-	[120]: =>
+	[30]: =>
+		lasers = {}
+
+		@\addEntity Enemy {
+			x: -30
+			y: @height / 8
+			angle: 0
+			speed: 1.6
+			radius: 20
+			update: =>
+				if @frame == 60
+					bullet = laser {
+						from: self,
+						bullet: {
+							w: 15
+							h: 80
+							update: =>
+								@angle += math.pi / 256
+						}
+						duration: 240
+					}
+
+					for bullet in circle {from: self, :bullet, bullets: 5}
+						table.insert lasers, @\fire bullet
+		}
+
+	[180]: =>
 		@\addEntity Boss {
 			radius: 32
 			x: @width / 2
