@@ -56,7 +56,7 @@ love.load = ->
 		death: =>
 			print "Lost a life, right about now."
 
-	for i = 2, 4
+	for i = 2, 2
 		danmaku\addEntity Player
 			name: "Player #{i} test"
 			x: 0
@@ -89,35 +89,80 @@ love.draw = ->
 	love.graphics.print "Highscore", x + w + 10, y + 40
 	love.graphics.print "HiScore here", x + w + 255, y + 40
 
-	drawPlayer = (player, x, y) ->
-		love.graphics.rectangle "line", x, y, 405, 160
+	livesBox =
+		height: 35
+		width: 395
+		draw: (player, x, y) =>
+			love.graphics.setColor 255, 125, 1955
+			for i = 0, 9
+				if (i + 1) <= player.lives
+					love.graphics.rectangle "line", x + 40 * i, y,
+						35, 35
 
-		love.graphics.print "#{player.name}", x + 5, y + 5
-		love.graphics.print "#{player.score}", x + 250, y + 5
+	bombsBox =
+		height: 35
+		width: 395
+		draw: (player, x, y) =>
+			love.graphics.setColor 127, 255, 127
+			for i = 0, 9
+				if (i + 1) <= player.bombs
+					love.graphics.rectangle "line", x + 40 * i, y,
+						35, 35
 
-		love.graphics.setColor 255, 125, 1955
-		for i = 0, 9
-			if (i + 1) <= player.lives
-				love.graphics.rectangle "line", 5 + x + 40 * i, 40 + y,
-					35, 35
+	normalPlayerBox =
+		height: 260
+		width: 405
+		draw: (player, x, y) =>
+			love.graphics.rectangle "line", x, y, @width, @height
 
-		love.graphics.setColor 127, 255, 127
-		for i = 0, 9
-			if (i + 1) <= player.bombs
-				love.graphics.rectangle "line", 5 + x + 40 * i, 80 + y,
-					35, 35
+			love.graphics.print "#{player.name}", x + 5, y + 5
 
-		love.graphics.setColor 255, 63, 63
-		love.graphics.rectangle "line", 5 + x, 120 + y, 245 * (player.power / player.maxPower), 35
-		love.graphics.print "#{player.power}/#{player.maxPower}", 5 + x, 125 + y
+			love.graphics.print "Score", x + 5, y + 45
+			love.graphics.print "#{player.score}", x + 250, y + 45
 
-		love.graphics.setColor 255, 255, 255
-		love.graphics.print "#{player.graze}", 250 + x, 125 + y
+			love.graphics.print "Points", x + 5, y + 75
+			love.graphics.print "#{player.points}", x + 250, y + 75
 
-		love.graphics.setColor 255, 255, 255
+			love.graphics.print "Graze", x + 5, y + 105
+			love.graphics.print "#{player.graze}", x + 250, y + 105
+
+			livesBox\draw player, x + 5, y + 140
+			bombsBox\draw player, x + 5, y + 180
+
+			love.graphics.setColor 255, 63, 63
+			love.graphics.rectangle "line", 5 + x, 220 + y, 395 * (player.power / player.maxPower), 35
+			love.graphics.print "#{player.power}/#{player.maxPower}", 5 + x, 225 + y
+
+			love.graphics.setColor 255, 255, 255
+
+	smallPlayerBox =
+		height: 160
+		width: 405
+		draw: (player, x, y) =>
+			love.graphics.rectangle "line", x, y, @width, @height
+
+			love.graphics.print "#{player.name}", x + 5, y + 5
+			love.graphics.print "#{player.score}", x + 250, y + 5
+
+			livesBox\draw player, x + 5, y + 40
+			bombsBox\draw player, x + 5, y + 80
+
+			love.graphics.setColor 255, 63, 63
+			love.graphics.rectangle "line", 5 + x, 120 + y, 245 * (player.power / player.maxPower), 35
+			love.graphics.print "#{player.power}/#{player.maxPower}", 5 + x, 125 + y
+
+			love.graphics.setColor 255, 255, 255
+			love.graphics.print "#{player.graze}", 250 + x, 125 + y
+
+			love.graphics.setColor 255, 255, 255
+
+	box = if #danmaku.players > 2
+		smallPlayerBox
+	else
+		normalPlayerBox
 
 	for k, player in ipairs danmaku.players
-		drawPlayer player, x + w + 5, y + 80 + (k - 1) * 165
+		box\draw player, x + w + 5, y + 80 + (k - 1) * (box.height + 5)
 
 love.update = (dt) ->
 	if danmaku.players[1]
