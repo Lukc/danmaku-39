@@ -49,10 +49,28 @@ class extends Enemy
 
 		@lives = arg.lives or 3
 		@bombs = arg.bombs or 2
+		@lifeFragments = 0
+		@bombFragments = 0
+		@fragmentsPerLife = arg.fragmentsPerLife or 5
+		@fragmentsPerBomb = arg.fragmentsPerBomb or 5
 		@bombsPerLife = @bombs
 
 		@onDeath = arg.death
 		@onBomb = arg.bomb
+
+	addFragment: (type) =>
+		if type == "life"
+			@lifeFragments += 1
+
+			if @lifeFragments >= @fragmentsPerLife
+				@lifeFragments = 0
+				@lives += 1
+		elseif type == "bomb"
+			@bombFragments += 1
+
+			if @bombFragments >= @fragmentsPerBomb
+				@bombFragments = 0
+				@bombs += 1
 
 	draw: =>
 		super\draw!

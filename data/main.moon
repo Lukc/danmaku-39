@@ -12,6 +12,55 @@
 {:BigBullet, :SmallBullet} = require "data.bullets"
 spellcards = require "data.spellcards"
 
+items = {
+	point: do
+		sprite = love.graphics.newImage "data/art/item_test_point.png"
+
+		draw = =>
+			love.graphics.setColor 255, 255, 255
+			love.graphics.circle "line", @x, @y, @radius
+			love.graphics.draw sprite, @x - 16, @y - 16
+		collection = (player) =>
+			player.score += 1000
+			@game.score += 1000
+
+		(arg) -> Item with {
+				radius: 10
+				:draw
+				:collection
+			}
+				for k,v in pairs arg
+					[k] = v
+	lifeFragment: do
+		draw = =>
+			love.graphics.setColor 255, 127, 127
+			love.graphics.circle "fill", @x, @y, @radius
+		collection = (player) =>
+			player\addFragment "life"
+
+		(arg) -> Item with {
+				radius: 10
+				:draw
+				:collection
+			}
+				for k,v in pairs arg
+					[k] = v
+	bombFragment: do
+		draw = =>
+			love.graphics.setColor 127, 255, 127
+			love.graphics.circle "fill", @x, @y, @radius
+		collection = (player) =>
+			player\addFragment "bomb"
+
+		(arg) -> Item with {
+				radius: 10
+				:draw
+				:collection
+			}
+				for k,v in pairs arg
+					[k] = v
+}
+
 local testBullet
 titleFont = love.graphics.newFont 42
 subtitleFont = love.graphics.newFont 24
@@ -81,19 +130,19 @@ stage1 = Stage {
 			update: =>
 				@angle += math.pi / 2400
 
-		sprite = love.graphics.newImage "data/art/item_test_point.png"
-		@\addEntity Item
-			radius: 4
+		@\addEntity items.point
 			x: @width / 2
 			y: @height / 9
-			update: =>
-				@y += 1
-			draw: =>
-				love.graphics.setColor 255, 255, 255
-				love.graphics.circle "line", @x, @y, @radius
-				love.graphics.draw sprite, @x - 16, @y - 16
-			collection: =>
-				print "Hey hey, item’s collected!"
+
+		for i = 1, 9
+			@\addEntity items.lifeFragment
+				x: @width / 2 + 25 * i
+				y: @height / 9 - 10 * i
+
+		for i = 1, 9
+			@\addEntity items.bombFragment
+				x: @width / 2 - 25 * i
+				y: @height / 9 - 10 * i
 
 	[120]: =>
 		@\addEntity Boss {
