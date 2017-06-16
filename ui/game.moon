@@ -227,6 +227,10 @@ state.update = (dt) =>
 		@menu\update dt
 		return
 
+	if @danmaku.endReached
+		print "We reached the end."
+		state.paused = 0
+
 	if @players[1]
 		for key in *{"left", "right", "up", "down"}
 			@players[1].movement[key] = love.keyboard.isDown key

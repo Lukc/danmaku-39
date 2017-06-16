@@ -54,6 +54,8 @@ class
 
 		@frame = 0
 
+		@endReached = false
+
 	---
 	-- Draws the game at the requested `x` and `y` coordinates.
 	draw: =>
@@ -187,6 +189,9 @@ class
 			for entity in *collection
 				if entity.__class != Boss
 					entity\die!
+
+	endOfStage: =>
+		@endReached = true
 
 	__tostring: => "<Danmaku: frame #{@frame}>"
 

@@ -82,6 +82,9 @@ state.enter = =>
 										newState = require "ui.game"
 										state.manager\setState newState,
 											Stage {
+												update: =>
+													if @frame > 60 and #@enemies == 0
+														@\endOfStage!
 												[1]: =>
 													@\addEntity with boss
 														.spellcards = {
