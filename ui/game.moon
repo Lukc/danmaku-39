@@ -8,6 +8,9 @@
 	:Stage
 } = require "danmaku"
 
+-- Needed for configuration thingies.
+data = require "data"
+
 Menu = require "ui.tools.menu"
 
 state = {
@@ -231,14 +234,13 @@ state.update = (dt) =>
 		print "We reached the end."
 		state.paused = 0
 
-	if @players[1]
+	for i = 1, #@players
 		for key in *{"left", "right", "up", "down"}
-			@players[1].movement[key] = love.keyboard.isDown key
-		@players[1].bombing = love.keyboard.isDown "x"
-		@players[1].firing = love.keyboard.isDown "y"
-		@players[1].focusing = love.keyboard.isDown "lshift"
-	else
-		false -- Game over, duh.
+			@players[i].movement[key] = love.keyboard.isDown data.config.inputs[i][key]
+		for key in *{"bombing", "firing", "focusing"}
+			@players[i][key] = love.keyboard.isDown data.config.inputs[i][key]
+
+	-- FIXME: Check game-over conditions.
 
 	@danmaku\update dt
 

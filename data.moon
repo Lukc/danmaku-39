@@ -10,6 +10,67 @@ local cache
 modsPath = =>
 	filesystem.getSaveDirectory! .. "/mods"
 
+importTable = (t) =>
+	for k, v in pairs t
+		unless @[k]
+			switch type(v)
+				when "table"
+					@[k] = {}
+
+					importTable @[k], v
+				else
+					@[k] = v
+
+defaultConfig =
+	inputs: {
+		{
+			firing:   "y"
+			bombing:  "x"
+			focusing: "lshift"
+			left:     "left"
+			right:    "right"
+			up:       "up"
+			down:     "down"
+		}
+		{ -- FIXME: Those values suck. Also, there’s no check on their validity.
+			firing:   "+"
+			bombing:  "+"
+			focusing: "+"
+			left:     "+"
+			right:    "+"
+			up:       "+"
+			down:     "+"
+		}
+		{
+			firing:   "+"
+			bombing:  "+"
+			focusing: "+"
+			left:     "+"
+			right:    "+"
+			up:       "+"
+			down:     "+"
+		}
+		{
+			firing:   "+"
+			bombing:  "+"
+			focusing: "+"
+			left:     "+"
+			right:    "+"
+			up:       "+"
+			down:     "+"
+		}
+	}
+
+loadConfig = ->
+	configFileName = filesystem.getSaveDirectory! .. "/config.moon"
+
+	print configFileName
+
+	if filesystem.isFile "config.moon"
+		cache.config = moon.loadfile(configFileName)!
+
+		importTable cache.config, defaultConfig
+
 loadMod = (path) ->
 	mainMoon = path .. "/main.moon"
 
@@ -52,6 +113,7 @@ loadMod = (path) ->
 setmetatable {
 	:modsPath
 	:loadMod
+	:loadConfig
 
 	load: ->
 		cache = {
@@ -59,7 +121,10 @@ setmetatable {
 			stages:      {}
 			bosses:      {}
 			spellcards:  {}
+			config:      {}
 		}
+
+		loadConfig!
 
 		loadMod "./data/"
 
