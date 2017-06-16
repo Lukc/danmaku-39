@@ -16,8 +16,9 @@ class
 			table.insert @items, item
 
 	setItemsList: (target) =>
-		unless target.parent
+		unless target.parent or target == @items.parent
 			target.parent = @items
+
 		@items = target
 		@drawTime = 0
 
@@ -68,7 +69,7 @@ class
 			love.graphics.print item.label, r.x + 10, r.y - 20 + 2
 
 			if i == @items.selection
-				if @selectionTime
+				if @selectionTime and @selectedItem == item
 					c = 63 * math.sin @selectionTime * 32
 					love.graphics.setColor 255, 195 + c, 195 + c, alpha
 				else
@@ -122,5 +123,12 @@ class
 			while not @items[@items.selection].onSelection
 				@items.selection = (@items.selection) % #@items + 1
 		elseif key == "tab" or key == "escape"
-			@items.selection = #@items
+			if @items.parent
+				@selectionTime = 0
+				@selectedItem = {
+					onSelection: =>
+						@\setItemsList @items.parent
+				}
+			else
+				@items.selection = #@items
 
