@@ -116,7 +116,7 @@ state.draw = =>
 		c = if @resuming
 			c = 127 + 127 * math.min 1, @menu.drawTime - @resuming
 		else
-			c = 255 - 127 * math.min 1, @menu.drawTime
+			c = 255 - 127 * math.min 1, @paused
 		love.graphics.setColor c, c, c
 	else
 		love.graphics.setColor 255, 255, 255
@@ -217,6 +217,8 @@ state.draw = =>
 
 state.update = (dt) =>
 	if state.paused
+		state.paused += dt
+
 		x = (love.graphics.getWidth! - 1024) / 2
 		y = (love.graphics.getHeight! - 800) / 2
 
@@ -245,7 +247,9 @@ state.keypressed = (key, ...) =>
 			@menu\keypressed key, ...
 	elseif key == "escape"
 		@menu.drawTime = 0
-		state.paused = not state.paused
+
+		unless state.paused
+			state.paused = 0
 
 state
 
