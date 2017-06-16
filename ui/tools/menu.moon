@@ -83,7 +83,6 @@ class
 
 	update: (dt) =>
 		@drawTime += dt
-		@drawTime += dt
 
 		if @selectedItem
 			@selectionTime += dt
