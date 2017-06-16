@@ -15,7 +15,7 @@ Manager = ->
 			if @currentState and @currentState[event]
 				@currentState[event] @currentState, ...
 
-	self.setState = (state) =>
+	self.setState = (state, ...) =>
 		if @currentState and @currentState.leave
 			@currentState.leave @currentState
 
@@ -23,7 +23,7 @@ Manager = ->
 		@currentState.manager = self
 
 		if @currentState and @currentState.enter
-			@currentState.enter @currentState
+			@currentState.enter @currentState, ...
 
 	self.bindEvents = (table) =>
 		for event in *events

@@ -1,6 +1,8 @@
 
 {Manager: StateManager} = require "ui.state"
 
+data = require "data"
+
 local stateManager
 
 love.load = ->
@@ -8,4 +10,6 @@ love.load = ->
 	stateManager\bindEvents love
 
 	stateManager\setState require "ui.menu"
+
+	data.load!
 

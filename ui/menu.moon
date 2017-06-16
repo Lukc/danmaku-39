@@ -1,7 +1,9 @@
 
+{:Stage} = require "danmaku"
+
 state = {}
 
-data = require "data.main"
+data = require "data"
 
 -- TODO: We need textures for the background, and possibly for the menu items.
 
@@ -11,6 +13,8 @@ local menu
 
 state.enter = =>
 	@drawTime  = 0
+
+	data.load!
 
 	menu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
@@ -23,7 +27,7 @@ state.enter = =>
 				charactersList = [{
 					label: "Character #{i}"
 					onSelection: =>
-						state.manager\setState require "ui.game"
+						state.manager\setState require("ui.game"), data.stages[1]
 				} for i = 1, 3]
 
 				table.insert charactersList, {
@@ -46,10 +50,10 @@ state.enter = =>
 					label: "Stages"
 					onSelection: =>
 						list = [{
-							label: "Stage #{n}, #{stage.title}"
+							label: "#{stage.title}"
 							onSelection: =>
 								print "Unimplemented."
-								--state.manager\setState require "ui.game"
+								state.manager\setState require("ui.game"), stage
 						} for n, stage in ipairs data.stages]
 
 						table.insert list, {
@@ -65,12 +69,26 @@ state.enter = =>
 				{
 					label: "Spellcards"
 					onSelection: =>
-						list = [{
-							label: "#{spellcard.name}"
-							onSelection: =>
-								print "Unimplemented."
-								--state.manager\setState require "ui.game"
-						} for spellcard in *data.spellcards when spellcard.name]
+						list = {}
+
+						for boss in *data.bosses
+							for spellcard in *boss.spellcards
+								unless spellcard.name
+									continue
+
+								table.insert list, {
+									label: "#{spellcard.name}"
+									onSelection: =>
+										newState = require "ui.game"
+										state.manager\setState newState,
+											Stage {
+												[1]: =>
+													@\addEntity with boss
+														.spellcards = {
+															spellcard
+														}
+											}
+								}
 
 						table.insert list, {
 							label: "Go back"

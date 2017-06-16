@@ -40,6 +40,9 @@ class
 		@onDraw = arg.draw
 
 		@drawTitle = arg.drawTitle or =>
+			unless @title
+				return
+
 			love.graphics.setColor 200, 200, 200
 			love.graphics.print @title, 40, 0
 			love.graphics.print @subtitle, 40,  20

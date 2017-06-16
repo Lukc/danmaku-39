@@ -10,17 +10,16 @@
 
 Menu = require "ui.tools.menu"
 
-data = require "data.main"
-
 state = {
-	players: {}
-	paused: false
-	resuming: false
-	font: nil
 }
 
-state.enter = =>
-	@font = love.graphics.newFont 24
+state.enter = (stage, players) =>
+	@players = players or {}
+	@paused = false
+	@resuming = false
+
+	unless @font
+		@font = love.graphics.newFont 24
 
 	@menu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
@@ -52,7 +51,7 @@ state.enter = =>
 		}
 	}
 	@danmaku = Danmaku
-		stage: data.stages[1]
+		:stage
 
 	table.insert @players, @danmaku\addEntity Player
 		name: "Meirusa"

@@ -18,6 +18,16 @@ items = require "data.items"
 titleFont = love.graphics.newFont 42
 subtitleFont = love.graphics.newFont 24
 
+boss = Boss {
+	radius: 32
+	x: 600 / 2
+	y: 800 / 5
+	name: "Mi~mi~midori"
+
+	spellcards[1]
+	spellcards[2]
+}
+
 stage1 = Stage {
 	title: "A Stage for Testers"
 	subtitle: "Developers’ playground"
@@ -131,18 +141,14 @@ stage1 = Stage {
 		}
 
 	[180]: =>
-		@\addEntity Boss {
-			radius: 32
-			x: @width / 2
-			y: @height / 5
-			name: "Mi~mi~midori"
-
-			spellcards[1]
-			spellcards[2]
-		}
+		@\addEntity boss
 }
 
 {
+	name: "Core Data"
+	bosses: {
+		boss
+	}
 	stages: {
 		stage1
 	}

@@ -12,15 +12,15 @@ class extends Enemy
 		@name = arg.name or "???"
 		@touchable = arg.touchable or false
 
-		-- Number of frames the boss should wait between two spells.
+		-- Number of frames the boss should wait between two spellcards.
 		@interSpellDelay = arg.interSpellDelay or 180
 
-		@spells = {}
+		@spellcards = {}
 		for i = 1, #arg
 			spell = arg[i]
 
 			if type(spell) == "table"
-				table.insert @spells, spell
+				table.insert @spellcards, spell
 
 		@currentSpell = false
 		@currentSpellIndex = 0
@@ -30,13 +30,13 @@ class extends Enemy
 
 		-- FIXME: Calculate this from spellcards count.
 		@lives = 0
-		for spell in *@spells
-			if spell.endOfLife or spell == @spells[#@spells]
+		for spell in *@spellcards
+			if spell.endOfLife or spell == @spellcards[#@spellcards]
 				@lives += 1
 
 	update: =>
 		@\doUpdate =>
-			currentSpell = @spells[@currentSpellIndex]
+			currentSpell = @spellcards[@currentSpellIndex]
 
 			if currentSpell
 				if @health <= @spellEndHealth
@@ -61,7 +61,7 @@ class extends Enemy
 					-- After last spell…
 					print "last spell done"
 
-				-- Used only when not dealing with spells.
+				-- Used only when not dealing with spellcards.
 				if @onUpdate
 					@\onUpdate!
 
@@ -76,12 +76,12 @@ class extends Enemy
 			@frame += difference
 			@game.frame += difference
 
-		oldSpell = @spells[@currentSpellIndex]
+		oldSpell = @spellcards[@currentSpellIndex]
 
 		@currentSpellIndex += 1
 		@touchable = true
 
-		spell = @spells[@currentSpellIndex]
+		spell = @spellcards[@currentSpellIndex]
 
 		if spell
 			if oldSpell and oldSpell.endOfLife
@@ -92,8 +92,8 @@ class extends Enemy
 			health = 0
 
 			index = @currentSpellIndex
-			while @spells[index] and not @spells[index].endOfLife
-				health += @spells[index].health
+			while @spellcards[index] and not @spellcards[index].endOfLife
+				health += @spellcards[index].health
 				index += 1
 
 			@health = health
@@ -106,13 +106,13 @@ class extends Enemy
 			@spellEndFrame = @frame + spell.timeout + @interSpellDelay
 
 			@damageable = false
-		else -- end of spells list
+		else -- end of spellcards list
 			@health = 1
 
 		@currentSpell = spell
 
 	die: =>
-		if @spells[@currentSpellIndex]
+		if @spellcards[@currentSpellIndex]
 			@\switchToNextSpell!
 		else
 			super\die!
