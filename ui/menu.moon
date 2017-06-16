@@ -7,7 +7,15 @@ state = {}
 --	- menu.selection change transitions.
 --	- Obviously, we need textures for the background and menu items.
 
-local menu
+local menu, menuFont
+
+switchToMenu = (target) ->
+	target.parent = menu
+	menu = target
+	menu.drawTime = 0
+
+	-- FIXME: It should actually be the first valid item, but…
+	menu.selection = 1
 
 state.enter = =>
 	while menu.parent
@@ -17,6 +25,8 @@ state.enter = =>
 	menu.drawTime = 0
 
 	@drawTime  = 0
+
+	menuFont = love.graphics.newFont "data/fonts/miamanueva.otf", 32
 
 menu = {
 	{
@@ -57,8 +67,7 @@ menu = {
 			{
 				label: "Go back"
 				onSelection: =>
-					-- FIXME: Do a proper transition, please.
-					menu = menu.parent
+					switchToMenu menu.parent
 			}
 		}
 	}
@@ -68,6 +77,14 @@ menu = {
 			love.event.quit!
 	}
 }
+
+getItemRectangle = (i, item) ->
+	{
+		x: 200
+		y: 200 + 60 * i
+		w: 24 + menuFont\getWidth(item.label) + 2
+		h: 45
+	}
 
 state.keypressed = (key, ...) =>
 	if menu.selectedItem
@@ -96,7 +113,7 @@ state.draw = =>
 	with c = math.min 255, @drawTime * 511
 		love.graphics.setColor c, c, c
 
-	love.graphics.print "Press “Enter” to select…", 200, 200
+	love.graphics.print "Press “Enter” to select…", 200, 160
 
 	alpha = if menu.selectionTime and menu.selectionTime >= 0.25
 		255 * (1 - (menu.selectionTime - 0.25) / 0.25)
@@ -105,8 +122,26 @@ state.draw = =>
 	else
 		255
 
+	love.graphics.setFont menuFont
+
 	for i = 1, #menu
 		item = menu[i]
+
+		r = getItemRectangle i, item
+
+		love.graphics.setColor 127, 127, 127, alpha
+		love.graphics.line r.x, r.y + r.h, r.x + r.w, r.y + r.h
+
+		love.graphics.setColor 0, 0, 0, alpha
+		love.graphics.print item.label, r.x + 14, r.y - 20 + 0
+		love.graphics.print item.label, r.x + 10, r.y - 20 + 0
+		love.graphics.print item.label, r.x + 12, r.y - 20 + 2
+		love.graphics.print item.label, r.x + 12, r.y - 20 - 2
+
+		love.graphics.print item.label, r.x + 14, r.y - 20 + 2
+		love.graphics.print item.label, r.x + 10, r.y - 20 - 2
+		love.graphics.print item.label, r.x + 14, r.y - 20 - 2
+		love.graphics.print item.label, r.x + 10, r.y - 20 + 2
 
 		if i == menu.selection
 			if menu.selectionTime
@@ -120,8 +155,7 @@ state.draw = =>
 		else
 			love.graphics.setColor 127, 127, 127, alpha
 
-		love.graphics.rectangle "line", 200,      200 + 50 * i, 200, 40
-		love.graphics.print item.label, 200 + 12, 200 + 50 * i + 12
+		love.graphics.print item.label, r.x + 12, r.y - 20
 
 state.update = (dt) =>
 	@drawTime += dt
@@ -140,12 +174,7 @@ state.update = (dt) =>
 		if type(item.onSelection) == "function"
 			item.onSelection item, self
 		else
-			item.onSelection.parent = menu
-			menu = item.onSelection
-			menu.drawTime = 0
-
-			-- FIXME: It should actually be the first valid item, but…
-			menu.selection = 1
+			switchToMenu item.onSelection
 
 state
 
