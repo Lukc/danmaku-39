@@ -1,38 +1,142 @@
 
 state = {}
 
--- TODO
---	- Resolution management.
---	- .enter and .leave transitions.
---	- menu.selection change transitions.
---	- Obviously, we need textures for the background and menu items.
+-- TODO: We need textures for the background, and possibly for the menu items.
 
-local menu, menuFont
+class Menu
+	new: (arg) =>
+		arg or= {}
 
-switchToMenu = (target) ->
-	target.parent = menu
-	menu = target
-	menu.drawTime = 0
+		@font = arg.font
+		@items = {
+			selection: 1
+		}
+		@drawTime = 0
 
-	-- FIXME: It should actually be the first valid item, but…
-	menu.selection = 1
+		for item in *arg
+			table.insert @items, item
 
-state.enter = =>
-	while menu.parent
-		menu = menu.parent
+	setItemsList: (target) =>
+		target.parent = @items
+		@items = target
+		@drawTime = 0
 
-	menu.selection = 1
-	menu.drawTime = 0
+		-- FIXME: It should actually be the first valid item, but…
+		@items.selection = 1
 
-	@drawTime  = 0
+	getItemRectangle: (i, item) =>
+		{
+			x: @x
+			y: @y + 60 * i
+			w: 24 + @font\getWidth(item.label) + 2
+			h: 45
+		}
 
-	menuFont = love.graphics.newFont "data/fonts/miamanueva.otf", 32
+	draw: =>
+		love.graphics.setFont @font
 
-menu = {
+		alpha = if @selectionTime and @selectionTime >= 0.25
+			255 * (1 - (@selectionTime - 0.25) / 0.25)
+		elseif @drawTime <= 0.25
+			255 * @drawTime * 4
+		else
+			255
+
+		for i = 1, #@items
+			item = @items[i]
+
+			r = @\getItemRectangle i, item
+
+			love.graphics.setColor 127, 127, 127, alpha
+			love.graphics.line r.x, r.y + r.h, r.x + r.w, r.y + r.h
+
+			love.graphics.setColor 0, 0, 0, alpha
+			love.graphics.print item.label, r.x + 14, r.y - 20 + 0
+			love.graphics.print item.label, r.x + 10, r.y - 20 + 0
+			love.graphics.print item.label, r.x + 12, r.y - 20 + 2
+			love.graphics.print item.label, r.x + 12, r.y - 20 - 2
+
+			love.graphics.print item.label, r.x + 14, r.y - 20 + 2
+			love.graphics.print item.label, r.x + 10, r.y - 20 - 2
+			love.graphics.print item.label, r.x + 14, r.y - 20 - 2
+			love.graphics.print item.label, r.x + 10, r.y - 20 + 2
+
+			if i == @items.selection
+				if @selectionTime
+					c = 63 * math.sin @selectionTime * 32
+					love.graphics.setColor 255, 195 + c, 195 + c, alpha
+				else
+					c = 32 * math.sin @drawTime * 5
+					love.graphics.setColor 255, 127 + 16 + c, 63 + 16 + c, alpha
+			elseif item.onSelection
+				love.graphics.setColor 255, 255, 255, alpha
+			else
+				love.graphics.setColor 127, 127, 127, alpha
+
+			love.graphics.print item.label, r.x + 12, r.y - 20
+
+	update: (dt) =>
+		@drawTime += dt
+		@drawTime += dt
+
+		if @selectedItem
+			@selectionTime += dt
+
+			if @selectionTime < 0.5
+				return
+
+			item = @selectedItem
+			@selectedItem = nil
+			@selectionTime = nil
+
+			if type(item.onSelection) == "function"
+				item.onSelection self, item
+			else
+				@\setItemsList item.onSelection
+
+	keypressed: (key, ...) =>
+		if @selectedItem
+			return
+
+		if key == "return"
+			item = @items[@items.selection]
+
+			if item.onSelection
+				@selectedItem = item
+				@selectionTime = 0
+		elseif key == "up"
+			@items.selection = (@items.selection - 2) % #@items + 1
+
+			while not @items[@items.selection].onSelection
+				@items.selection = (@items.selection - 2) % #@items + 1
+		elseif key == "down"
+			@items.selection = (@items.selection) % #@items + 1
+
+			while not @items[@items.selection].onSelection
+				@items.selection = (@items.selection) % #@items + 1
+		elseif key == "tab" or key == "escape"
+			@items.selection = #@items
+
+menu = Menu {
+	font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
+	x: 200
+	y: 200
+
 	{
 		label: "Adventure"
-		onSelection: (state) =>
-			state.manager\setState require "ui.game"
+		onSelection: =>
+			charactersList = [{
+				label: "Character #{i}"
+				onSelection: =>
+					state.manager\setState require "ui.game"
+			} for i = 1, 3]
+
+			table.insert charactersList, {
+				label: "Go back"
+				onSelection: => @\setItemsList @items.parent
+			}
+
+			@\setItemsList charactersList
 	}
 	{
 		label: "Extras"
@@ -67,7 +171,7 @@ menu = {
 			{
 				label: "Go back"
 				onSelection: =>
-					switchToMenu menu.parent
+					@\setItemsList @items.parent
 			}
 		}
 	}
@@ -78,36 +182,19 @@ menu = {
 	}
 }
 
-getItemRectangle = (i, item) ->
-	{
-		x: 200
-		y: 200 + 60 * i
-		w: 24 + menuFont\getWidth(item.label) + 2
-		h: 45
-	}
+state.enter = =>
+	while menu.parent
+		menu = menu.parent
 
-state.keypressed = (key, ...) =>
-	if menu.selectedItem
-		return
+	menu.selection = 1
+	menu.drawTime = 0
 
-	if key == "return"
-		item = menu[menu.selection]
+	@drawTime  = 0
 
-		if item.onSelection
-			menu.selectedItem = item
-			menu.selectionTime = 0
-	elseif key == "up"
-		menu.selection = (menu.selection - 2) % #menu + 1
+	menuFont = love.graphics.newFont "data/fonts/miamanueva.otf", 32
 
-		while not menu[menu.selection].onSelection
-			menu.selection = (menu.selection - 2) % #menu + 1
-	elseif key == "down"
-		menu.selection = (menu.selection) % #menu + 1
-
-		while not menu[menu.selection].onSelection
-			menu.selection = (menu.selection) % #menu + 1
-	elseif key == "tab" or key == "escape"
-		menu.selection = #menu
+state.keypressed = (...) =>
+	menu\keypressed ...
 
 state.draw = =>
 	with c = math.min 255, @drawTime * 511
@@ -115,66 +202,18 @@ state.draw = =>
 
 	love.graphics.print "Press “Enter” to select…", 200, 160
 
-	alpha = if menu.selectionTime and menu.selectionTime >= 0.25
-		255 * (1 - (menu.selectionTime - 0.25) / 0.25)
-	elseif menu.drawTime <= 0.25
-		255 * menu.drawTime * 4
-	else
-		255
-
-	love.graphics.setFont menuFont
-
-	for i = 1, #menu
-		item = menu[i]
-
-		r = getItemRectangle i, item
-
-		love.graphics.setColor 127, 127, 127, alpha
-		love.graphics.line r.x, r.y + r.h, r.x + r.w, r.y + r.h
-
-		love.graphics.setColor 0, 0, 0, alpha
-		love.graphics.print item.label, r.x + 14, r.y - 20 + 0
-		love.graphics.print item.label, r.x + 10, r.y - 20 + 0
-		love.graphics.print item.label, r.x + 12, r.y - 20 + 2
-		love.graphics.print item.label, r.x + 12, r.y - 20 - 2
-
-		love.graphics.print item.label, r.x + 14, r.y - 20 + 2
-		love.graphics.print item.label, r.x + 10, r.y - 20 - 2
-		love.graphics.print item.label, r.x + 14, r.y - 20 - 2
-		love.graphics.print item.label, r.x + 10, r.y - 20 + 2
-
-		if i == menu.selection
-			if menu.selectionTime
-				c = 63 * math.sin menu.selectionTime * 32
-				love.graphics.setColor 255, 195 + c, 195 + c, alpha
-			else
-				c = 32 * math.sin @drawTime * 6
-				love.graphics.setColor 255, 127 + 16 + c, 63 + 16 + c, alpha
-		elseif item.onSelection
-			love.graphics.setColor 255, 255, 255, alpha
-		else
-			love.graphics.setColor 127, 127, 127, alpha
-
-		love.graphics.print item.label, r.x + 12, r.y - 20
+	menu\draw!
 
 state.update = (dt) =>
-	@drawTime += dt
-	menu.drawTime += dt
+	w, h = love.graphics.getWidth!, love.graphics.getHeight!
 
-	if menu.selectedItem
-		menu.selectionTime += dt
+	x = (w - 1024) / 2
+	y = (h - 800) / 2
 
-		if menu.selectionTime < 0.5
-			return
+	menu.x = x + 200
+	menu.y = y + 200
 
-		item = menu.selectedItem
-		menu.selectedItem = nil
-		menu.selectionTime = nil
-
-		if type(item.onSelection) == "function"
-			item.onSelection item, self
-		else
-			switchToMenu item.onSelection
+	menu\update dt
 
 state
 
