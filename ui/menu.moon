@@ -1,6 +1,8 @@
 
 state = {}
 
+data = require "data.main"
+
 -- TODO: We need textures for the background, and possibly for the menu items.
 
 Menu = require "ui.tools.menu"
@@ -39,6 +41,50 @@ state.enter = =>
 		}
 		{
 			label: "Training"
+			onSelection: {
+				{
+					label: "Stages"
+					onSelection: =>
+						list = [{
+							label: "Stage #{n}, #{stage.title}"
+							onSelection: =>
+								print "Unimplemented."
+								--state.manager\setState require "ui.game"
+						} for n, stage in ipairs data.stages]
+
+						table.insert list, {
+							label: "Go back"
+							onSelection: => @\setItemsList @items.parent
+						}
+
+						@\setItemsList list
+				}
+				{
+					label: "Character"
+				}
+				{
+					label: "Spellcards"
+					onSelection: =>
+						list = [{
+							label: "#{spellcard.name}"
+							onSelection: =>
+								print "Unimplemented."
+								--state.manager\setState require "ui.game"
+						} for spellcard in *data.spellcards when spellcard.name]
+
+						table.insert list, {
+							label: "Go back"
+							onSelection: => @\setItemsList @items.parent
+						}
+
+						@\setItemsList list
+				}
+				{
+					label: "Go back"
+					onSelection: =>
+						@\setItemsList @items.parent
+				}
+			}
 		}
 		{
 			label: "Highscores"

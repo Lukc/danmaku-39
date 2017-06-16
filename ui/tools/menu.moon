@@ -16,7 +16,8 @@ class
 			table.insert @items, item
 
 	setItemsList: (target) =>
-		target.parent = @items
+		unless target.parent
+			target.parent = @items
 		@items = target
 		@drawTime = 0
 
