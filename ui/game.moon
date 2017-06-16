@@ -8,13 +8,49 @@
 	:Stage
 } = require "danmaku"
 
+Menu = require "ui.tools.menu"
+
 data = require "data.main"
 
 state = {
 	players: {}
+	paused: false
+	resuming: false
+	font: nil
 }
 
 state.enter = =>
+	@font = love.graphics.newFont 24
+
+	@menu = Menu {
+		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
+		{
+			label: "Continue"
+			onImmediateSelection: =>
+				state.resuming = @drawTime
+			onSelection: =>
+				state.resuming = false
+				state.paused = false
+		}
+		{
+			label: "Main menu"
+			onSelection: {
+				{
+					label: "Are you sure?"
+				}
+				{
+					label: "No"
+					onSelection: =>
+						@\setItemsList @items.parent
+				}
+				{
+					label: "Yes"
+					onSelection: =>
+						state.manager\setState require "ui.menu"
+				}
+			}
+		}
+	}
 	@danmaku = Danmaku
 		stage: data.stages[1]
 
@@ -76,9 +112,21 @@ state.draw = =>
 
 	@danmaku.x = x
 	@danmaku.y = y
+
+	if @paused
+		c = if @resuming
+			c = 127 + 127 * math.min 1, @menu.drawTime - @resuming
+		else
+			c = 255 - 127 * math.min 1, @menu.drawTime
+		love.graphics.setColor c, c, c
+	else
+		love.graphics.setColor 255, 255, 255
+
 	@danmaku\draw!
 
 	w = @danmaku.width
+
+	love.graphics.setFont @font
 
 	love.graphics.setColor 255, 255, 255
 	love.graphics.print "#{love.timer.getFPS!} FPS", x + w + 10, y + 745
@@ -165,7 +213,19 @@ state.draw = =>
 	for i, player in ipairs @players
 		box\draw player, x + w + 5, y + 80 + (i - 1) * (box.height + 5)
 
+	if state.paused
+		@menu\draw!
+
 state.update = (dt) =>
+	if state.paused
+		x = (love.graphics.getWidth! - 1024) / 2
+		y = (love.graphics.getHeight! - 800) / 2
+
+		@menu.x = x + 50
+		@menu.y = y + 300
+		@menu\update dt
+		return
+
 	if @players[1]
 		for key in *{"left", "right", "up", "down"}
 			@players[1].movement[key] = love.keyboard.isDown key
@@ -176,6 +236,17 @@ state.update = (dt) =>
 		false -- Game over, duh.
 
 	@danmaku\update dt
+
+state.keypressed = (key, ...) =>
+	if state.paused
+		-- Holy shit, this is the project’s hackiest hack. I think.
+		if key == "escape" and @menu.items.selection == 1 and @menu.items[1].label == "Continue"
+			@menu\keypressed "return"
+		else
+			@menu\keypressed key, ...
+	elseif key == "escape"
+		@menu.drawTime = 0
+		state.paused = not state.paused
 
 state
 

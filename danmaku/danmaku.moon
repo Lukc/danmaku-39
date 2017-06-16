@@ -57,6 +57,7 @@ class
 	---
 	-- Draws the game at the requested `x` and `y` coordinates.
 	draw: =>
+		oldColor = {love.graphics.getColor!}
 		oldCanvas = love.graphics.getCanvas!
 		canvas = love.graphics.newCanvas @width, @height
 		love.graphics.setCanvas canvas
@@ -77,7 +78,7 @@ class
 
 		love.graphics.setCanvas oldCanvas
 
-		love.graphics.setColor 255, 255, 255
+		love.graphics.setColor oldColor
 		love.graphics.draw canvas, @x, @y
 
 	---
