@@ -17,7 +17,7 @@ state = {
 }
 
 state.enter = (stage, players) =>
-	@players = players or {}
+	@players = {}
 	@paused = false
 	@resuming = false
 
@@ -56,53 +56,14 @@ state.enter = (stage, players) =>
 	@danmaku = Danmaku
 		:stage
 
-	table.insert @players, @danmaku\addEntity Player
-		name: "Meirusa"
-		radius: 3
-		x: @danmaku.width / 2
-		y: @danmaku.height * 4 / 5
-		itemAttractionRadius: 64
-		maxPower: 50
-		update: =>
-			if @firingFrame and @firingFrame % 8 == 0
-				for i = -1, 1, 2
-					@\fire
-						angle: -math.pi/2
-						speed: 6
-						x: @x + 8 * i
-						y: @y - 5
-						radius: 3
+	print #players, #@danmaku.players
+	-- FIXME: update their positions, based on players count
+	for player in *players
+		player.x = @danmaku.width / 2
+		player.y = @danmaku.height * 5 / 6
 
-				if @power > 10
-					for i = -1, 1, 2
-						@\fire
-							angle: -math.pi/2 + math.pi / 128 * i
-							speed: 4
-							x: @x + 12 * i
-							y: @y - 3
-							radius: 7
-
-				if @power > 20
-					for i = -1, 1, 2
-						@\fire
-							angle: -math.pi/2 + math.pi / 32 * i
-							speed: 4
-							x: @x + 12 * i
-							y: @y - 1
-							radius: 7
-		bomb: (game) =>
-			@game\clearScreen!
-		death: =>
-			print "Lost a life, right about now."
-
-	for i = 2, 2
-		table.insert @players, @danmaku\addEntity Player
-			name: "Player #{i} test"
-			x: 0
-			y: 0
-			lives: 999
-			bombs: 999
-			radius: 4
+		table.insert @players, @danmaku\addEntity player
+	print #players, #@danmaku.players
 
 	-- Mostly serves to print entity hitboxes.
 	@danmaku.debug = false

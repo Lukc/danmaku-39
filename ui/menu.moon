@@ -27,7 +27,7 @@ state.enter = =>
 				charactersList = [{
 					label: "Character #{i}"
 					onSelection: =>
-						state.manager\setState require("ui.game"), data.stages[1]
+						state.manager\setState require("ui.game"), data.stages[1], {data.players[1]}
 				} for i = 1, 3]
 
 				table.insert charactersList, {
@@ -80,17 +80,18 @@ state.enter = =>
 									label: "#{spellcard.name}"
 									onSelection: =>
 										newState = require "ui.game"
+										newStage = Stage{
+											update: =>
+												if @frame > 60 and #@enemies == 0
+													@\endOfStage!
+											[1]: =>
+												@\addEntity with boss
+													.spellcards = {
+														spellcard
+													}
+										}
 										state.manager\setState newState,
-											Stage {
-												update: =>
-													if @frame > 60 and #@enemies == 0
-														@\endOfStage!
-												[1]: =>
-													@\addEntity with boss
-														.spellcards = {
-															spellcard
-														}
-											}
+											newStage, {data.players[1]}
 								}
 
 						table.insert list, {

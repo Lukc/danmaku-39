@@ -105,6 +105,8 @@ loadMod = (path) ->
 			table.insert cache.bosses, boss
 		for stage in *result.stages or {}
 			table.insert cache.stages, stage
+		for player in *result.players or {}
+			table.insert cache.players, player
 	else
 		print "ERROR LOADING #{path}):", result
 
@@ -121,6 +123,7 @@ setmetatable {
 			stages:      {}
 			bosses:      {}
 			spellcards:  {}
+			players:     {}
 			config:      {}
 		}
 
