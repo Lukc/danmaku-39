@@ -111,6 +111,7 @@ state.enter = =>
 									onSelection: =>
 										newState = require "ui.game"
 										newStage = Stage{
+											drawBossData: data.stages[1].drawBossData
 											update: =>
 												if @frame > 60 and #@enemies == 0
 													@\endOfStage!
