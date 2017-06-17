@@ -39,12 +39,12 @@ playerInputsMenu = (id) ->
 				table.insert list, {
 					label: input
 					rlabel: data.config.inputs[id][input]
-					onInputCatch: (key) =>
+					onInputCatch: (key, scanCode) =>
 						for _, item in ipairs self.items
 							if item.label == input
-								item.rlabel = key
+								item.rlabel = scanCode
 
-						data.config.inputs[id][input] = key
+						data.config.inputs[id][input] = scanCode
 						data.saveConfig!
 				}
 

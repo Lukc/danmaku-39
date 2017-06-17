@@ -197,9 +197,9 @@ state.update = (dt) =>
 
 	for i = 1, #@players
 		for key in *{"left", "right", "up", "down"}
-			@players[i].movement[key] = love.keyboard.isDown data.config.inputs[i][key]
+			@players[i].movement[key] = love.keyboard.isScancodeDown data.config.inputs[i][key]
 		for key in *{"bombing", "firing", "focusing"}
-			@players[i][key] = love.keyboard.isDown data.config.inputs[i][key]
+			@players[i][key] = love.keyboard.isScancodeDown data.config.inputs[i][key]
 
 	-- FIXME: Check game-over conditions.
 

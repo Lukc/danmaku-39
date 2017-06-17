@@ -24,7 +24,7 @@ importTable = (t) =>
 defaultConfig =
 	inputs: {
 		{
-			firing:   "y"
+			firing:   "z"
 			bombing:  "x"
 			focusing: "lshift"
 			left:     "left"
