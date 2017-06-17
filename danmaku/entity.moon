@@ -288,7 +288,10 @@ class
 				shortestDistance = distance
 				nearest = player
 
-		return math.atan2 nearest.y - @y, nearest.x - @x
+		@\angleToCoordinates nearest
+
+	angleToCoordinates: (target) =>
+		return math.atan2 target.y - @y, target.x - @x
 
 	__tostring: => "<Entity: frame #{@frame}>"
 
