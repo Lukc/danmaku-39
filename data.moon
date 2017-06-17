@@ -87,12 +87,14 @@ dump = (t, n = 0) ->
 	return r .. "\n"
 
 loadConfig = ->
+	local ok
+
 	configFileName = filesystem.getSaveDirectory! .. "/config.moon"
 
 	if filesystem.isFile "config.moon"
 		ok, cache.config = pcall -> moon.loadfile(configFileName)!
 
-	unless cache.config
+	unless ok or cache.config
 		print "warning: could not load configuration"
 
 		cache.config = {}
