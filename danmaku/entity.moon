@@ -13,6 +13,9 @@ class
 	@Circle = 1     --- @field Entity.Circle
 	@Rectangle = 2  --- @field Entity.Rectangle
 
+	@distance = (a, b) ->
+		math.sqrt (b.x - a.x)^2 + (b.y - a.y)^2
+
 	---
 	-- All parameters are optional and have sane default values.
 	--
@@ -267,6 +270,25 @@ class
 
 		@dying = true
 		@touchable = false
+
+	angleToPlayer: =>
+		players = @game.players
+
+		unless #players > 0
+			return math.pi/2, "no player"
+
+		nearest = players[1]
+		shortestDistance = @@.distance self, players[1]
+
+		for i = 2, #players
+			player = players[i]
+			distance = @@.distance self, player
+
+			if distance < shortestDistance
+				shortestDistance = distance
+				nearest = player
+
+		return math.atan2 nearest.y - @y, nearest.x - @x
 
 	__tostring: => "<Entity: frame #{@frame}>"
 
