@@ -110,6 +110,7 @@ saveConfig = ->
 
 loadMod = (path) ->
 	mainMoon = path .. "/main.moon"
+	oldMoonpath = package.moonpath
 
 	ok, result = pcall ->
 		oldEnv = getfenv!
@@ -120,16 +121,22 @@ loadMod = (path) ->
 			error "could not load the file"
 
 		mod = (->
+			package.moonpath = "#{path}/?.moon;" .. "#{filesystem.getSaveDirectory!}/mods/?.moon;" .. oldMoonpath
+
 			-- FIXME: We should add require, but ONLY after having cleaned
 			--        package.path and package.cpath.
 			setfenv 1,
 				:moon
 				:math
+				:package
+				:require
+				:tostring
 
 			chunk!
 		)!
 
 		setfenv 1, oldEnv
+		package.moonpath = oldMoonpath
 
 		mod
 
