@@ -39,6 +39,21 @@ class
 			h: 45
 		}
 
+	print: (text, x, y, color) =>
+		love.graphics.setColor 0, 0, 0, color[4]
+		love.graphics.print text, x + 2, y + 0
+		love.graphics.print text, x - 2, y + 0
+		love.graphics.print text, x + 0, y + 2
+		love.graphics.print text, x + 0, y - 2
+
+		love.graphics.print text, x + 2, y + 2
+		love.graphics.print text, x - 2, y - 2
+		love.graphics.print text, x + 2, y - 2
+		love.graphics.print text, x - 2, y + 2
+
+		love.graphics.setColor color
+		love.graphics.print text, x, y
+
 	draw: =>
 		if @items.draw
 			return @items.draw self
@@ -60,30 +75,25 @@ class
 			love.graphics.setColor 127, 127, 127, alpha
 			love.graphics.line r.x, r.y + r.h, r.x + r.w, r.y + r.h
 
-			love.graphics.setColor 0, 0, 0, alpha
-			love.graphics.print item.label, r.x + 14, r.y - 20 + 0
-			love.graphics.print item.label, r.x + 10, r.y - 20 + 0
-			love.graphics.print item.label, r.x + 12, r.y - 20 + 2
-			love.graphics.print item.label, r.x + 12, r.y - 20 - 2
-
-			love.graphics.print item.label, r.x + 14, r.y - 20 + 2
-			love.graphics.print item.label, r.x + 10, r.y - 20 - 2
-			love.graphics.print item.label, r.x + 14, r.y - 20 - 2
-			love.graphics.print item.label, r.x + 10, r.y - 20 + 2
-
-			if i == @items.selection
+			color = if i == @items.selection
 				if @selectionTime and @selectedItem == item
 					c = 63 * math.sin @selectionTime * 32
-					love.graphics.setColor 255, 195 + c, 195 + c, alpha
+					{255, 195 + c, 195 + c, alpha}
 				else
 					c = 32 * math.sin @drawTime * 5
-					love.graphics.setColor 255, 127 + 16 + c, 63 + 16 + c, alpha
+					{255, 127 + 16 + c, 63 + 16 + c, alpha}
 			elseif item.onSelection
-				love.graphics.setColor 255, 255, 255, alpha
+				{255, 255, 255, alpha}
 			else
-				love.graphics.setColor 127, 127, 127, alpha
+				{127, 127, 127, alpha}
 
-			love.graphics.print item.label, r.x + 12, r.y - 20
+			@\print item.label, r.x + 12, r.y - 20, color
+
+			if item.rlabel
+				@\print item.rlabel,
+					r.x - 12 + 600 - @font\getWidth(item.rlabel),
+					r.y - 20,
+					color
 
 	drawCharactersList: =>
 		alpha = if @selectionTime and @selectionTime >= 0.25

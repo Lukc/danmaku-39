@@ -127,6 +127,19 @@ state.enter = =>
 			onSelection: {
 				{
 					label: "Player 1 controls"
+					onSelection: =>
+						list = {}
+
+						for input in *{"up", "down", "left", "right", "firing", "bombing", "focusing"}
+							table.insert list, {
+								label: input
+								rlabel: data.config.inputs[1][input]
+								onSelection: =>
+									@drawTime = 0
+									print "not implemented…"
+							}
+
+						@\setItemsList list
 				}
 				{
 					label: "Player 2 controls"
@@ -174,4 +187,5 @@ state.update = (dt) =>
 	menu\update dt
 
 state
+
 
