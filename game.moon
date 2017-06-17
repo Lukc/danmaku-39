@@ -9,7 +9,7 @@ love.load = ->
 	stateManager = StateManager!
 	stateManager\bindEvents love
 
-	stateManager\setState require "ui.menu"
+	stateManager\setState require "ui.splash"
 
 	data.load!
 
