@@ -83,7 +83,7 @@ state.enter = =>
 							label: "#{stage.title}"
 							onSelection: =>
 								print "Unimplemented."
-								state.manager\setState require("ui.game"), stage
+								state.manager\setState require("ui.game"), stage, {data.players[1]}
 						} for n, stage in ipairs data.stages]
 
 						list.maxDisplayedItems = 8
