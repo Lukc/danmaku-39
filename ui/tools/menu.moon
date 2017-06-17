@@ -145,13 +145,14 @@ class
 					return
 
 			item = @selectedItem
-			@selectedItem = nil
-			@selectionTime = nil
 
 			if type(item.onSelection) == "function"
 				item.onSelection self, item
 			else
 				@\setItemsList item.onSelection
+
+			@selectedItem = nil
+			@selectionTime = nil
 
 	keypressed: (key, ...) =>
 		if @inputCatchMode
@@ -174,6 +175,9 @@ class
 					item.onImmediateSelection self
 				@selectedItem = item
 				@selectionTime = 0
+
+				if item.noTransition
+					@selectionTime = math.huge
 			elseif item.onInputCatch
 				@inputCatchMode = true
 				@selectedItem = item

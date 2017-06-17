@@ -152,6 +152,37 @@ state.enter = =>
 				playerInputsMenu 3
 				playerInputsMenu 4
 				{
+					label: "Mods"
+					onSelection: =>
+						list = {}
+
+						onSelection = =>
+							modName = @selectedItem.label
+							blockedMods = data.config.blockedMods
+
+							@selectedItem.rlabel = switch @selectedItem.rlabel
+								when "v"
+									blockedMods[modName] = true
+									"x"
+								when "x"
+									blockedMods[modName] = nil
+									"v"
+
+							data.saveConfig!
+							data.load!
+
+						for mod in *data.mods
+							table.insert list, {
+								label: "#{mod.name or mod}"
+								rlabel: data.config.blockedMods[mod.name] and
+									"x" or "v"
+								noTransition: true
+								:onSelection
+							}
+
+						@\setItemsList list
+				}
+				{
 					label: "Go back"
 					onSelection: =>
 						@\setItemsList @items.parent

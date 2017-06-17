@@ -21,7 +21,8 @@ importTable = (t) =>
 				else
 					@[k] = v
 
-defaultConfig =
+defaultConfig = {
+	blockedMods: {}
 	inputs: {
 		{
 			firing:   "z"
@@ -60,6 +61,7 @@ defaultConfig =
 			down:     "+"
 		}
 	}
+}
 
 dumpKey = (key) ->
 	switch type(key)
@@ -77,7 +79,7 @@ dump = (t, n = 0) ->
 		when "table"
 			content = ["\t" .. indent .. dumpKey(key) .. ": " .. dump value, n+1 for key, value in pairs t]
 			"{\n" .. table.concat(content) .. indent .. "}"
-		when "number"
+		when "number", "boolean"
 			tostring t
 		when "string"
 			"\"" .. t .. "\""
@@ -90,7 +92,12 @@ loadConfig = ->
 	if filesystem.isFile "config.moon"
 		cache.config = moon.loadfile(configFileName)!
 
-		importTable cache.config, defaultConfig
+	unless cache.config
+		print "warning: could not load configuration"
+
+		cache.config = {}
+
+	importTable cache.config, defaultConfig
 
 saveConfig = ->
 	configFileName = "config.moon"
@@ -128,6 +135,14 @@ loadMod = (path) ->
 
 	if ok
 		print "Loading #{path}"
+
+		table.insert cache.mods, result
+
+		unless result.name
+			return nil, "mod is invalid (no name: field)"
+
+		if cache.config.blockedMods[result.name]
+			return nil, "mod is user-blocked"
 
 		for spellcard in *result.spellcards or {}
 			table.insert cache.spellcards, spellcard
