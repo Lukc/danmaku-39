@@ -27,7 +27,10 @@ class
 		@items = target
 		@drawTime = 0
 
-		-- FIXME: It should actually be the first valid item, but…
+		if @items.maxItemsDisplayed
+			if #@items > @items.maxDisplayedItems
+				@items.startDisplayIndex or= 1
+
 		@items.selection = 1
 
 		while @items.selection <= #@items and not @\isSelectable @items[@items.selection]
@@ -35,6 +38,8 @@ class
 
 		if @items.selection > #@items
 			@items.selection = 1
+
+		@\checkOverflows!
 
 	getItemRectangle: (i, item) =>
 		{
@@ -72,10 +77,14 @@ class
 		else
 			255
 
-		for i = 1, #@items
+		start = @items.startDisplayIndex or 1
+		for i = start, start + (@items.maxDisplayedItems or math.huge) - 1
 			item = @items[i]
 
-			r = @\getItemRectangle i, item
+			unless item
+				break
+
+			r = @\getItemRectangle i - start + 1, item
 
 			love.graphics.setColor 127, 127, 127, alpha
 			love.graphics.line r.x, r.y + r.h, r.x + r.w, r.y + r.h
@@ -187,11 +196,15 @@ class
 
 			while not @\isSelectable @items[@items.selection]
 				@items.selection = (@items.selection - 2) % #@items + 1
+
+			@\checkOverflows!
 		elseif key == "down" or key == "kp2"
 			@items.selection = (@items.selection) % #@items + 1
 
 			while not @\isSelectable @items[@items.selection]
 				@items.selection = (@items.selection) % #@items + 1
+
+			@\checkOverflows!
 		elseif key == "tab" or key == "escape" or key == "kp4"
 			if @items.parent
 				@selectionTime = 0
@@ -201,4 +214,13 @@ class
 				}
 			else
 				@items.selection = #@items
+
+	checkOverflows: =>
+		start = @items.startDisplayIndex or 1
+		maxItems = @items.maxDisplayedItems or math.huge
+
+		if start < @items.selection - maxItems + 1
+			@items.startDisplayIndex = @items.selection - maxItems + 1
+		elseif start > @items.selection
+			@items.startDisplayIndex = @items.selection
 

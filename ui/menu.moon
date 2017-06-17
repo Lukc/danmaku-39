@@ -86,6 +86,8 @@ state.enter = =>
 								state.manager\setState require("ui.game"), stage
 						} for n, stage in ipairs data.stages]
 
+						list.maxDisplayedItems = 8
+
 						table.insert list, {
 							label: "Go back"
 							onSelection: => @\setItemsList @items.parent
@@ -96,7 +98,9 @@ state.enter = =>
 				{
 					label: "Boss"
 					onSelection: =>
-						list = {}
+						list = {
+							maxDisplayedItems: 8
+						}
 
 						for boss in *data.bosses
 							table.insert list, {
@@ -125,7 +129,9 @@ state.enter = =>
 				{
 					label: "Spellcards"
 					onSelection: =>
-						list = {}
+						list = {
+							maxDisplayedItems: 8
+						}
 
 						for boss in *data.bosses
 							for spellcard in *boss.spellcards
@@ -181,7 +187,9 @@ state.enter = =>
 				{
 					label: "Mods"
 					onSelection: =>
-						list = {}
+						list = {
+							maxDisplayedItems: 8
+						}
 
 						onSelection = =>
 							modName = @selectedItem.label
