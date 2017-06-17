@@ -9,6 +9,26 @@ data = require "data"
 
 Menu = require "ui.tools.menu"
 
+gameMenu = (stage) ->
+	=>
+		charactersList = [{
+			label: "#{player.name}"
+			player: player
+			onSelection: =>
+				@\setItemsList with [{
+					label: difficulty
+					onSelection: =>
+						-- FIXME: How about actually passing the difficulty?
+						state.manager\setState require("ui.game"),
+							stage, {player}
+				} for difficulty in *{"Normal", "Hard", "Lunatic"}]
+					.draw = Menu.drawCharactersList
+		} for player in *data.players]
+
+		charactersList.draw = Menu.drawCharactersList
+
+		@\setItemsList charactersList
+
 local menu
 
 state.enter = =>
@@ -23,19 +43,7 @@ state.enter = =>
 
 		{
 			label: "Adventure"
-			onSelection: =>
-				charactersList = [{
-					label: "Character #{i}"
-					onSelection: =>
-						state.manager\setState require("ui.game"), data.stages[1], {data.players[1]}
-				} for i = 1, 3]
-
-				table.insert charactersList, {
-					label: "Go back"
-					onSelection: => @\setItemsList @items.parent
-				}
-
-				@\setItemsList charactersList
+			onSelection: gameMenu(data.stages[1])
 		}
 		{
 			label: "Extras"

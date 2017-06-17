@@ -146,6 +146,9 @@ stage1 = Stage {
 
 playerA = Player
 	name: "Player A"
+	title: "Ordinary explorator"
+	mainAttackName: "Quick bullets"
+	secondaryAttackName: "Big, slow bullets"
 	radius: 3
 	itemAttractionRadius: 64
 	maxPower: 50

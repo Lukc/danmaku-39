@@ -17,7 +17,11 @@ class extends Enemy
 
 		super.__init self, arg
 
+		-- metadata for UIs
 		@name = arg.name or "???"
+		@title = arg.title or "???"
+		@mainAttackName = arg.mainAttackName or "???"
+		@secondaryAttackName = arg.secondaryAttackName or "???"
 
 		@grazeRadius = arg.grazeRadius or 16
 		@speed = arg.speed or 4
