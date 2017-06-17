@@ -90,7 +90,7 @@ loadConfig = ->
 	configFileName = filesystem.getSaveDirectory! .. "/config.moon"
 
 	if filesystem.isFile "config.moon"
-		cache.config = moon.loadfile(configFileName)!
+		ok, cache.config = pcall -> moon.loadfile(configFileName)!
 
 	unless cache.config
 		print "warning: could not load configuration"
