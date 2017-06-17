@@ -29,6 +29,28 @@ gameMenu = (stage) ->
 
 		@\setItemsList charactersList
 
+playerInputsMenu = (id) ->
+	{
+		label: "Player #{id} controls"
+		onSelection: =>
+			list = {}
+
+			for input in *{"up", "down", "left", "right", "firing", "bombing", "focusing"}
+				table.insert list, {
+					label: input
+					rlabel: data.config.inputs[id][input]
+					onInputCatch: (key) =>
+						for _, item in ipairs self.items
+							if item.label == input
+								item.rlabel = key
+
+						data.config.inputs[id][input] = key
+						data.saveConfig!
+				}
+
+			@\setItemsList list
+	}
+
 local menu
 
 state.enter = =>
@@ -125,31 +147,10 @@ state.enter = =>
 		{
 			label: "Options"
 			onSelection: {
-				{
-					label: "Player 1 controls"
-					onSelection: =>
-						list = {}
-
-						for input in *{"up", "down", "left", "right", "firing", "bombing", "focusing"}
-							table.insert list, {
-								label: input
-								rlabel: data.config.inputs[1][input]
-								onSelection: =>
-									@drawTime = 0
-									print "not implemented…"
-							}
-
-						@\setItemsList list
-				}
-				{
-					label: "Player 2 controls"
-				}
-				{
-					label: "Player 3 controls"
-				}
-				{
-					label: "Player 4 controls"
-				}
+				playerInputsMenu 1
+				playerInputsMenu 2
+				playerInputsMenu 3
+				playerInputsMenu 4
 				{
 					label: "Go back"
 					onSelection: =>

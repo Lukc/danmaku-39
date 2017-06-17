@@ -12,8 +12,13 @@ class
 		@y = arg.y or 0
 		@x = arg.x or 0
 
+		@inputCatchMode = false
+
 		for item in *arg
 			table.insert @items, item
+
+	isSelectable: (item) =>
+		return item.onSelection or item.onInputCatch
 
 	setItemsList: (target) =>
 		unless target.parent or target == @items.parent
@@ -25,7 +30,7 @@ class
 		-- FIXME: It should actually be the first valid item, but…
 		@items.selection = 1
 
-		while @items.selection <= #@items and not @items[@items.selection].onSelection
+		while @items.selection <= #@items and not @\isSelectable @items[@items.selection]
 			@items.selection += 1
 
 		if @items.selection > #@items
@@ -76,13 +81,16 @@ class
 			love.graphics.line r.x, r.y + r.h, r.x + r.w, r.y + r.h
 
 			color = if i == @items.selection
-				if @selectionTime and @selectedItem == item
-					c = 63 * math.sin @selectionTime * 32
-					{255, 195 + c, 195 + c, alpha}
+				if @inputCatchMode
+					c = 32 * math.sin @drawTime * 5
+					{127 + 16 + c, 191 + 16 + c, 255}
+				elseif @selectionTime and @selectedItem == item
+					c = 64 * math.sin @selectionTime * 32
+					{255, 191 + c, 191 + c, alpha}
 				else
 					c = 32 * math.sin @drawTime * 5
 					{255, 127 + 16 + c, 63 + 16 + c, alpha}
-			elseif item.onSelection
+			elseif @\isSelectable item
 				{255, 255, 255, alpha}
 			else
 				{127, 127, 127, alpha}
@@ -126,11 +134,15 @@ class
 	update: (dt) =>
 		@drawTime += dt
 
-		if @selectedItem
-			@selectionTime += dt
+		if @inputCatchMode
+			return
 
-			if @selectionTime < 0.5
-				return
+		if @selectedItem
+			if @selectionTime
+				@selectionTime += dt
+
+				if @selectionTime < 0.5
+					return
 
 			item = @selectedItem
 			@selectedItem = nil
@@ -142,6 +154,15 @@ class
 				@\setItemsList item.onSelection
 
 	keypressed: (key, ...) =>
+		if @inputCatchMode
+			@inputCatchMode = false
+
+			@selectedItem.onInputCatch self, key, ...
+
+			@selectedItem = nil
+
+			return
+
 		if @selectedItem
 			return
 
@@ -153,15 +174,19 @@ class
 					item.onImmediateSelection self
 				@selectedItem = item
 				@selectionTime = 0
+			elseif item.onInputCatch
+				@inputCatchMode = true
+				@selectedItem = item
+				print "Entering input-catch state. Sort-of."
 		elseif key == "up"
 			@items.selection = (@items.selection - 2) % #@items + 1
 
-			while not @items[@items.selection].onSelection
+			while not @\isSelectable @items[@items.selection]
 				@items.selection = (@items.selection - 2) % #@items + 1
 		elseif key == "down"
 			@items.selection = (@items.selection) % #@items + 1
 
-			while not @items[@items.selection].onSelection
+			while not @\isSelectable @items[@items.selection]
 				@items.selection = (@items.selection) % #@items + 1
 		elseif key == "tab" or key == "escape"
 			if @items.parent

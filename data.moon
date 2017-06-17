@@ -61,15 +61,45 @@ defaultConfig =
 		}
 	}
 
+dumpKey = (key) ->
+	switch type(key)
+		when "string"
+			"[\"" .. key .. "\"]"
+		when "number"
+			"[#{key}]"
+		else
+			tostring key
+
+dump = (t, n = 0) ->
+	indent = table.concat ["	" for i = 1, n]
+
+	r = switch type(t)
+		when "table"
+			content = ["\t" .. indent .. dumpKey(key) .. ": " .. dump value, n+1 for key, value in pairs t]
+			"{\n" .. table.concat(content) .. indent .. "}"
+		when "number"
+			tostring t
+		when "string"
+			"\"" .. t .. "\""
+
+	return r .. "\n"
+
 loadConfig = ->
 	configFileName = filesystem.getSaveDirectory! .. "/config.moon"
-
-	print configFileName
 
 	if filesystem.isFile "config.moon"
 		cache.config = moon.loadfile(configFileName)!
 
 		importTable cache.config, defaultConfig
+
+saveConfig = ->
+	configFileName = "config.moon"
+
+	with filesystem.newFile configFileName
+		\open "w"
+		data = dump cache.config
+		\write data, #data
+		\close!
 
 loadMod = (path) ->
 	mainMoon = path .. "/main.moon"
@@ -116,6 +146,7 @@ setmetatable {
 	:modsPath
 	:loadMod
 	:loadConfig
+	:saveConfig
 
 	load: ->
 		cache = {
