@@ -94,7 +94,33 @@ state.enter = =>
 						@\setItemsList list
 				}
 				{
-					label: "Character"
+					label: "Boss"
+					onSelection: =>
+						list = {}
+
+						for boss in *data.bosses
+							table.insert list, {
+								label: "#{boss.name}"
+								onSelection: =>
+									newState = require "ui.game"
+									newStage = Stage{
+										drawBossData: data.stages[1].drawBossData
+										update: =>
+											if @frame > 60 and #@enemies == 0
+												@\endOfStage!
+										[1]: =>
+											@\addEntity boss
+									}
+									state.manager\setState newState,
+										newStage, {data.players[1]}
+							}
+
+						table.insert list, {
+							label: "Go back"
+							onSelection: => @\setItemsList @items.parent
+						}
+
+						@\setItemsList list
 				}
 				{
 					label: "Spellcards"
