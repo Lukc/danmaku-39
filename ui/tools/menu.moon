@@ -166,7 +166,7 @@ class
 		if @selectedItem
 			return
 
-		if key == "return"
+		if key == "return" or key == "kpenter" or key == "kp6"
 			item = @items[@items.selection]
 
 			if item.onSelection
@@ -178,17 +178,17 @@ class
 				@inputCatchMode = true
 				@selectedItem = item
 				print "Entering input-catch state. Sort-of."
-		elseif key == "up"
+		elseif key == "up" or key == "kp8"
 			@items.selection = (@items.selection - 2) % #@items + 1
 
 			while not @\isSelectable @items[@items.selection]
 				@items.selection = (@items.selection - 2) % #@items + 1
-		elseif key == "down"
+		elseif key == "down" or key == "kp2"
 			@items.selection = (@items.selection) % #@items + 1
 
 			while not @\isSelectable @items[@items.selection]
 				@items.selection = (@items.selection) % #@items + 1
-		elseif key == "tab" or key == "escape"
+		elseif key == "tab" or key == "escape" or key == "kp4"
 			if @items.parent
 				@selectionTime = 0
 				@selectedItem = {
