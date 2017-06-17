@@ -94,7 +94,7 @@ loadConfig = ->
 	if filesystem.isFile "config.moon"
 		ok, cache.config = pcall -> moon.loadfile(configFileName)!
 
-	unless ok or cache.config
+	unless ok and cache.config
 		print "warning: could not load configuration"
 
 		cache.config = {}
