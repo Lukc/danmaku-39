@@ -2,6 +2,7 @@
 state = {
 	-- Will get loaded only once.
 	time: 0
+	endTime: 6
 	particles: {}
 	sprite: love.graphics.newImage "data/art/splash_bullet.png"
 	font: love.graphics.newFont "data/fonts/miamanueva.otf", 192
@@ -77,7 +78,7 @@ state.draw = =>
 	y = (love.graphics.getHeight! - 800) / 2
 
 	alpha = math.min 255, 255 * @time
-	alpha = math.min alpha, 255 * (6 - @time)
+	alpha = math.min alpha, 255 * (@endTime - @time)
 
 	love.graphics.setLineWidth 400
 	love.graphics.setColor 16, 9, 9, alpha
@@ -86,7 +87,7 @@ state.draw = =>
 
 	for particle in *@particles
 		if @time >= particle.start
-			endTime = particle.start + particle.duration or 0
+			endTime = math.min @endTime, particle.start + particle.duration or 0
 
 			r, g, b = unpack particle.color or {255, 255, 255}
 
@@ -150,9 +151,15 @@ state.update = (dt) =>
 
 				break
 
-	if @time >= 6
+	if @time >= @endTime
 		love.graphics.setLineWidth 1
 		@manager\setState require "ui.menu"
+
+state.keypressed = (key, scanCode, ...) =>
+	print key, scanCode
+	for e in *{"escape", "space", "return", "z"}
+		if scanCode == e
+			@endTime = @time + 1
 
 state
 
