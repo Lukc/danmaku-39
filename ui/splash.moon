@@ -118,6 +118,8 @@ state.draw = =>
 state.update = (dt) =>
 	@time += dt
 
+	removables = {}
+
 	for particle in *@particles
 		if @time >= particle.start
 			if particle.type == "growing"
@@ -126,12 +128,27 @@ state.update = (dt) =>
 				particle.radius -= dt * 4
 
 				if particle.radius <= 0
+					table.insert removables, particle
 					particle.radius = 0
 
 			if particle.dx
 				particle.x += particle.dx
 			if particle.dy
 				particle.y += particle.dy
+
+			if @time >= particle.start + particle.duration
+				table.insert removables, particle
+
+	for j = 1, #removables
+		item = removables[j]
+
+		for i = 1, #@particles
+			if @particles[i] == item
+				table.remove @particles, i
+
+				j -= 1
+
+				break
 
 	if @time >= 6
 		love.graphics.setLineWidth 1
