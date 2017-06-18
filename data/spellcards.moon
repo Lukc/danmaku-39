@@ -9,29 +9,44 @@
 {:radial, :circle, :sinusoid} = require "data.helpers"
 
 s1 = Spellcard {
-	name: "Test Karakayn - Named Spellcards test"
-	health: 140
+	health: 60
 	timeout: 60 * 60
 	update: =>
-		if @frame % 10 == 0
-			bullet =
-				speed: 8
-				direction: math.sin((@frame - 60) / 180) * math.pi / 6 + @\angleToPlayer!
-				color: { 255, 0, 127 }
-			for bullet in radial {from: self, bullets: 8, :bullet}
-				@\fire MiniBullet bullet
-		if @frame % 12 == 0
+		if @frame % 6 == 0
+			directionCoeur1 = math.pow(@frame, 2)*(math.pow(@x, 2) + math.pow(@y, 2))
+			directionCoeur2 = math.pow((math.pow(@x, 2)+math.pow(@y, 2) - @frame * @x),2)
 
-			bullet =
-				speed: 5
-				direction: math.sqrt(math.cos(@x)) * math.cos(30/@x) - 1 + math.sqrt(math.abs(@x))
-				color: { 255, 0, 127 }
-			for bullet in radial {from: self, bullets: 8, :bullet}
-				@\fire BigBullet bullet
-				print "deuxieme type bullet"
-
+			for bullet in radial {from: self, bullets: 5, :bullet}
+				@\fire BigBullet with bullet
+					.color = {204, 0, 0}
+					.speed = 4
+					.direction = directionCoeur1
+			for bullet in radial {from: self, bullets: 5, :bullet}
+				@\fire BigBullet with bullet
+					.color = {0, 255, 0}
+					.speed = 4
+					.direction = directionCoeur2
 }
 s2 = Spellcard {
+	health: 60
+	timeout: 60 * 60
+	update: =>
+		if @frame % 5 == 0
+			bullet =
+				speed: 4
+				direction:  @frame / 2 * math.pi / 8
+				color: { 0,255,127 }
+			for bullet in radial {from: self, bullets: 8, :bullet}
+				@\fire BigBullet bullet
+		if @frame % 3 == 0
+			bullet =
+				speed: 2
+				direction:  @frame / 2 * math.pi / 10
+			for bullet in radial {from: self, bullets: 10, :bullet}
+				@\fire SmallBullet bullet
+}
+
+s3 = Spellcard {
 	health: 60
 	timeout: 30 * 60
 	update: =>
@@ -56,7 +71,7 @@ s2 = Spellcard {
 			for bullet in radial {from: self, bullets: 8, :bullet}
 				@\fire SmallBullet bullet
 }
-s3 = Spellcard {
+s4 = Spellcard {
 	name: "Test sign - Named Spellcards test"
 	health: 60
 	timeout: 30 * 60
@@ -90,6 +105,6 @@ s3 = Spellcard {
 }
 
 {
-	s1, s2, s3
+	s1, s2, s3, s4
 }
 

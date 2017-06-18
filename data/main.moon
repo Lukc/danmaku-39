@@ -27,6 +27,7 @@ boss = Boss {
 	spellcards[1]
 	spellcards[2]
 	spellcards[3]
+	spellcards[4]
 }
 
 stage1 = Stage {
@@ -185,6 +186,45 @@ playerA = Player
 	death: =>
 		print "Lost a life, right about now."
 
+playerB = Player
+	name: "Player B with mirror"
+	title: "Advanced Explorator"
+	mainAttackName: "Mirror"
+	secondaryAttackName: "Big, slow bullets"
+	radius: 3
+	itemAttractionRadius: 64
+	maxPower: 50
+	update: =>
+		if @firingFrame and @firingFrame % 8 == 0
+			for i = -1, 1, 2
+				@\fire
+					angle: -math.pi/2
+					speed: 6
+					x: @x + 8 * i
+					y: @y - 5
+					radius: 3
+
+			if @power > 10
+				for i = -1, 1, 2
+					@\fire
+						angle: -math.pi/2 + math.pi / 128 * i
+						speed: 4
+						x: @x + 12 * i
+						y: @y - 3
+						radius: 7
+
+			if @power > 20
+				for i = -1, 1, 2
+					@\fire
+						angle: -math.pi/2 + math.pi / 32 * i
+						speed: 4
+						x: @x + 12 * i
+						y: @y - 1
+						radius: 7
+	bomb: (game) =>
+		@game\clearScreen!
+	death: =>
+		print "Lost a life, right about now."
 {
 	name: "Core Data"
 	bosses: {
@@ -194,6 +234,6 @@ playerA = Player
 		stage1
 	}
 	spellcards: spellcards
-	players: {playerA}
+	players: {playerA, playerB}
 }
 
