@@ -8,43 +8,65 @@
 
 {:radial, :circle, :sinusoid} = require "data.helpers"
 
-s1 = Spellcard {
-	health: 60
-	timeout: 60 * 60
-	update: =>
-		if @frame % 6 == 0
-			directionCoeur1 = math.pow(@frame, 2)*(math.pow(@x, 2) + math.pow(@y, 2))
-			directionCoeur2 = math.pow((math.pow(@x, 2)+math.pow(@y, 2) - @frame * @x),2)
-
-			for bullet in radial {from: self, bullets: 5, :bullet}
-				@\fire BigBullet with bullet
-					.color = {204, 0, 0}
-					.speed = 4
-					.direction = directionCoeur1
-			for bullet in radial {from: self, bullets: 5, :bullet}
-				@\fire BigBullet with bullet
-					.color = {0, 255, 0}
-					.speed = 4
-					.direction = directionCoeur2
-}
 s2 = Spellcard {
+	name: "Unnamed spellcard"
 	health: 60
-	timeout: 60 * 60
+	timeout: 30 * 60
 	update: =>
 		if @frame % 5 == 0
 			bullet =
-				speed: 4
+				speed: 5
 				direction:  @frame / 2 * math.pi / 8
+				--green
 				color: { 0,255,127 }
 			for bullet in radial {from: self, bullets: 8, :bullet}
 				@\fire BigBullet bullet
 		if @frame % 3 == 0
 			bullet =
-				speed: 2
+				speed: 1.5
 				direction:  @frame / 2 * math.pi / 10
-			for bullet in radial {from: self, bullets: 10, :bullet}
+				--white
+			for bullet in radial {from: self, bullets: 5, :bullet}
 				@\fire SmallBullet bullet
 }
+s1 = Spellcard {
+	name: "Flower spellcard"
+	health: 60
+	timeout: 30 * 60
+	update: =>
+		-- Flower spell card
+		if @frame % 6 == 0
+			direction1 = math.pow(@frame, 2)*(math.pow(@x, 2) + math.pow(@y, 2))
+			direction2 = math.pow((math.pow(@x, 2)+math.pow(@y, 2) - @frame * @x),2)
+			direction3 = -(math.pow(@frame, 2)*(math.pow(@x, 2) + math.pow(@y, 2)))
+			direction4 = -(math.pow(@frame, 2)*(math.pow(@x, 2) + math.pow(@y, 2)))*2
+
+			--green
+			for bullet in radial {from: self, bullets: 5, :bullet}
+				@\fire BigBullet with bullet
+					.color = {204, 0, 0}
+					.speed = 8
+					.direction = direction1
+			-- red
+			for bullet in radial {from: self, bullets: 5, :bullet}
+				@\fire BigBullet with bullet
+					.color = {0, 255, 0}
+					.speed = 6
+					.direction = direction2
+			-- blue
+			for bullet in radial {from: self, bullets: 5, :bullet}
+				@\fire BigBullet with bullet
+					.color = {51, 255, 255}
+					.speed = 6
+					.direction = direction3
+			-- purple
+			for bullet in radial {from: self, bullets: 5, :bullet}
+				@\fire BigBullet with bullet
+					.color = {102, 0, 102}
+					.speed = 7
+					.direction = direction4
+}
+
 
 s3 = Spellcard {
 	health: 60
