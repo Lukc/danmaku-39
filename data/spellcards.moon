@@ -4,12 +4,35 @@
 	:Spellcard
 } = require "danmaku"
 
-{:BigBullet, :SmallBullet} = require "data.bullets"
+{:BigBullet, :SmallBullet, :MiniBullet} = require "data.bullets"
 
 {:radial, :circle, :sinusoid} = require "data.helpers"
 
 s1 = Spellcard {
-	health: 40
+	name: "Test Karakayn - Named Spellcards test"
+	health: 140
+	timeout: 60 * 60
+	update: =>
+		if @frame % 10 == 0
+			bullet =
+				speed: 8
+				direction: math.sin((@frame - 60) / 180) * math.pi / 6 + @\angleToPlayer!
+				color: { 255, 0, 127 }
+			for bullet in radial {from: self, bullets: 8, :bullet}
+				@\fire MiniBullet bullet
+		if @frame % 12 == 0
+
+			bullet =
+				speed: 5
+				direction: math.sqrt(math.cos(@x)) * math.cos(30/@x) - 1 + math.sqrt(math.abs(@x))
+				color: { 255, 0, 127 }
+			for bullet in radial {from: self, bullets: 8, :bullet}
+				@\fire BigBullet bullet
+				print "deuxieme type bullet"
+
+}
+s2 = Spellcard {
+	health: 60
 	timeout: 30 * 60
 	update: =>
 		if @frame % 40 == 0
@@ -33,7 +56,7 @@ s1 = Spellcard {
 			for bullet in radial {from: self, bullets: 8, :bullet}
 				@\fire SmallBullet bullet
 }
-s2 = Spellcard {
+s3 = Spellcard {
 	name: "Test sign - Named Spellcards test"
 	health: 60
 	timeout: 30 * 60
@@ -67,6 +90,6 @@ s2 = Spellcard {
 }
 
 {
-	s1, s2
+	s1, s2, s3
 }
 

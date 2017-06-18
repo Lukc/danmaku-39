@@ -26,6 +26,7 @@ boss = Boss {
 
 	spellcards[1]
 	spellcards[2]
+	spellcards[3]
 }
 
 stage1 = Stage {

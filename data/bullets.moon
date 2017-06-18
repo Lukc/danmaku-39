@@ -65,9 +65,21 @@ SmallBullet = do
 			arg.radius = 5
 
 		newBullet arg
+MiniBullet = do
+	sprite = love.graphics.newImage "data/art/bullet_test3.png"
 
+	(arg) ->
+		arg or= {}
+
+		unless arg.sprite
+			arg.sprite = sprite
+		unless arg.radius
+			arg.radius = 2
+
+		newBullet arg
 {
 	:BigBullet,
-	:SmallBullet
+	:SmallBullet,
+	:MiniBullet
 }
 
