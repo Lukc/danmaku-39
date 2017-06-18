@@ -6,6 +6,7 @@ state = {
 	particles: {}
 	sprite: love.graphics.newImage "data/art/splash_bullet.png"
 	font: love.graphics.newFont "data/fonts/miamanueva.otf", 192
+	smallFont: love.graphics.newFont "data/fonts/miamanueva.otf", 36
 }
 
 state.enter = =>
@@ -70,8 +71,6 @@ state.enter = =>
 			}
 
 state.draw = =>
-	love.graphics.setFont @font
-
 	sw, sh = @sprite\getWidth!, @sprite\getHeight!
 
 	x = (love.graphics.getWidth! - 1024) / 2
@@ -104,10 +103,27 @@ state.draw = =>
 	do
 		text = "Splash~"
 
+		love.graphics.setFont @font
 		love.graphics.setColor 255, 255, 255, alpha
 
 		with x = x + (1024 - @font\getWidth text) / 2
 			with y = y + 100
+				love.graphics.setColor 0, 0, 0, alpha
+				love.graphics.print text, x + 4, y + 2
+				love.graphics.print text, x + 2, y + 4
+				love.graphics.print text, x + 4, y + 4
+
+				love.graphics.setColor 255, 255, 255, alpha
+				love.graphics.print text, x, y
+
+	do
+		text = "Development Build - Week 1"
+
+		love.graphics.setFont @smallFont
+		love.graphics.setColor 127, 127, 127, alpha
+
+		with x = x + 1024 - @smallFont\getWidth(text) - 150
+			with y = y + 800 - @smallFont\getHeight(text) - 125
 				love.graphics.setColor 0, 0, 0, alpha
 				love.graphics.print text, x + 4, y + 2
 				love.graphics.print text, x + 2, y + 4
