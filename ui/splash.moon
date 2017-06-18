@@ -2,9 +2,11 @@
 state = {
 	-- Will get loaded only once.
 	time: 0
+	endTime: 6
 	particles: {}
 	sprite: love.graphics.newImage "data/art/splash_bullet.png"
 	font: love.graphics.newFont "data/fonts/miamanueva.otf", 192
+	smallFont: love.graphics.newFont "data/fonts/miamanueva.otf", 36
 }
 
 state.enter = =>
@@ -69,15 +71,13 @@ state.enter = =>
 			}
 
 state.draw = =>
-	love.graphics.setFont @font
-
 	sw, sh = @sprite\getWidth!, @sprite\getHeight!
 
 	x = (love.graphics.getWidth! - 1024) / 2
 	y = (love.graphics.getHeight! - 800) / 2
 
 	alpha = math.min 255, 255 * @time
-	alpha = math.min alpha, 255 * (6 - @time)
+	alpha = math.min alpha, 255 * (@endTime - @time)
 
 	love.graphics.setLineWidth 400
 	love.graphics.setColor 16, 9, 9, alpha
@@ -86,7 +86,7 @@ state.draw = =>
 
 	for particle in *@particles
 		if @time >= particle.start
-			endTime = particle.start + particle.duration or 0
+			endTime = math.min @endTime, particle.start + particle.duration or 0
 
 			r, g, b = unpack particle.color or {255, 255, 255}
 
@@ -103,6 +103,7 @@ state.draw = =>
 	do
 		text = "Splash~"
 
+		love.graphics.setFont @font
 		love.graphics.setColor 255, 255, 255, alpha
 
 		with x = x + (1024 - @font\getWidth text) / 2
@@ -115,8 +116,26 @@ state.draw = =>
 				love.graphics.setColor 255, 255, 255, alpha
 				love.graphics.print text, x, y
 
+	do
+		text = "Development Build - Week 1"
+
+		love.graphics.setFont @smallFont
+		love.graphics.setColor 127, 127, 127, alpha
+
+		with x = x + 1024 - @smallFont\getWidth(text) - 150
+			with y = y + 800 - @smallFont\getHeight(text) - 125
+				love.graphics.setColor 0, 0, 0, alpha
+				love.graphics.print text, x + 4, y + 2
+				love.graphics.print text, x + 2, y + 4
+				love.graphics.print text, x + 4, y + 4
+
+				love.graphics.setColor 255, 255, 255, alpha
+				love.graphics.print text, x, y
+
 state.update = (dt) =>
 	@time += dt
+
+	removables = {}
 
 	for particle in *@particles
 		if @time >= particle.start
@@ -126,6 +145,7 @@ state.update = (dt) =>
 				particle.radius -= dt * 4
 
 				if particle.radius <= 0
+					table.insert removables, particle
 					particle.radius = 0
 
 			if particle.dx
@@ -133,9 +153,29 @@ state.update = (dt) =>
 			if particle.dy
 				particle.y += particle.dy
 
-	if @time >= 6
+			if @time >= particle.start + particle.duration
+				table.insert removables, particle
+
+	for j = 1, #removables
+		item = removables[j]
+
+		for i = 1, #@particles
+			if @particles[i] == item
+				table.remove @particles, i
+
+				j -= 1
+
+				break
+
+	if @time >= @endTime
 		love.graphics.setLineWidth 1
 		@manager\setState require "ui.menu"
+
+state.keypressed = (key, scanCode, ...) =>
+	print key, scanCode
+	for e in *{"escape", "space", "return", "z"}
+		if scanCode == e
+			@endTime = @time + 1
 
 state
 
