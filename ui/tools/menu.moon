@@ -112,34 +112,6 @@ class
 					r.y - 20,
 					color
 
-	drawCharactersList: =>
-		alpha = if @selectionTime and @selectionTime >= 0.25
-			255 * (1 - (@selectionTime - 0.25) / 0.25)
-		elseif @drawTime <= 0.25
-			255 * @drawTime * 4
-		else
-			255
-
-		for i = 1, #@items
-			item = @items[i]
-			{:player} = item
-
-			if i == @items.selection
-				love.graphics.setColor 255, 255, 255, alpha
-
-				if player
-					love.graphics.print player.name,
-						@x + 12, @y - 20
-					love.graphics.print player.title,
-						@x + 42, @y + 30
-					love.graphics.print player.mainAttackName,
-						@x + 12, @y + 100
-					love.graphics.print player.secondaryAttackName,
-						@x + 12, @y + 150
-				else
-					love.graphics.print item.label,
-						@x + 12, @y - 20
-
 	update: (dt) =>
 		@drawTime += dt
 

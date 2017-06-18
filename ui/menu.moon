@@ -9,26 +9,6 @@ data = require "data"
 
 Menu = require "ui.tools.menu"
 
-gameMenu = (stage) ->
-	=>
-		charactersList = [{
-			label: "#{player.name}"
-			player: player
-			onSelection: =>
-				@\setItemsList with [{
-					label: difficulty
-					onSelection: =>
-						-- FIXME: How about actually passing the difficulty?
-						state.manager\setState require("ui.game"),
-							stage, {player}
-				} for difficulty in *{"Normal", "Hard", "Lunatic"}]
-					.draw = Menu.drawCharactersList
-		} for player in *data.players]
-
-		charactersList.draw = Menu.drawCharactersList
-
-		@\setItemsList charactersList
-
 playerInputsMenu = (id) ->
 	{
 		label: "Player #{id} controls"
@@ -65,7 +45,8 @@ state.enter = =>
 
 		{
 			label: "Adventure"
-			onSelection: gameMenu(data.stages[1])
+			onSelection: =>
+				state.manager\setState require("ui.character"), data.stages[1]
 		}
 		{
 			label: "Extras"
@@ -82,8 +63,7 @@ state.enter = =>
 						list = [{
 							label: "#{stage.title}"
 							onSelection: =>
-								print "Unimplemented."
-								state.manager\setState require("ui.game"), stage, {data.players[1]}
+								state.manager\setState require("ui.character"), stage
 						} for n, stage in ipairs data.stages]
 
 						list.maxDisplayedItems = 8
@@ -106,7 +86,7 @@ state.enter = =>
 							table.insert list, {
 								label: "#{boss.name}"
 								onSelection: =>
-									newState = require "ui.game"
+									newState = require "ui.character"
 									newStage = Stage{
 										drawBossData: data.stages[1].drawBossData
 										update: =>
@@ -116,7 +96,7 @@ state.enter = =>
 											@\addEntity boss
 									}
 									state.manager\setState newState,
-										newStage, {data.players[1]}
+										newStage
 							}
 
 						table.insert list, {
@@ -141,7 +121,7 @@ state.enter = =>
 								table.insert list, {
 									label: "#{spellcard.name}"
 									onSelection: =>
-										newState = require "ui.game"
+										newState = require "ui.character"
 										newStage = Stage{
 											drawBossData: data.stages[1].drawBossData
 											update: =>
@@ -154,7 +134,7 @@ state.enter = =>
 													}
 										}
 										state.manager\setState newState,
-											newStage, {data.players[1]}
+											newStage
 								}
 
 						table.insert list, {
