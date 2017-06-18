@@ -8,6 +8,26 @@
 
 {:radial, :circle, :sinusoid} = require "data.helpers"
 
+s5 = Spellcard {
+	name: "Rosace multiple"
+	health: 60
+	timeout: 30 * 60
+	update: =>
+		if @frame % 40 == 0
+			nbPetal = 10
+			angle =  math.cos(nbPetal*@frame) + math.cos(nbPetal*@frame)--math.pi / 2 + math.pi / 6 * @frame / 10
+			for bullet in radial {from: self, bullets: 8}
+				for bullet in sinusoid {from: self, bullets: 1, :bullet}
+					for bullet in circle {from: self, :angle, :bullet}
+						@\fire BigBullet with bullet
+							.direction = 1
+							.speed = 5
+							.color = {
+								192 + 63 * math.sin(@frame / 60 + math.pi),
+								96 + 31 * math.sin(@frame / 60),
+								192 + 63 * math.sin(@frame / 60),
+							}
+}
 s2 = Spellcard {
 	name: "Unnamed spellcard"
 	health: 60
@@ -127,6 +147,6 @@ s4 = Spellcard {
 }
 
 {
-	s1, s2, s3, s4
+	s1, s2, s3, s4, s5
 }
 
