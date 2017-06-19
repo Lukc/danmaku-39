@@ -175,7 +175,8 @@ state.keypressed = (key, scanCode, ...) =>
 	print key, scanCode
 	for e in *{"escape", "space", "return", "z"}
 		if scanCode == e
-			@endTime = @time + 1
+			if @endTime - @time > 1
+				@endTime = @time + 1
 
 state
 
