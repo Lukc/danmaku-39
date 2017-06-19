@@ -3,19 +3,31 @@ data = require "data"
 
 state = {
 	font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
+	gridWidth: 1
+	gridHeight: 3
 }
 
+-- FIXME: Resize that grid dynamically.
 getCharacterRectangle = (i) ->
+	w = 300 / state.gridWidth
+	h = 780 / state.gridHeight
 	{
-		x: 10
-		y: 10 + (i - 1) * 110
-		w: 320
-		h: 110
+		x: 10 + ((i - 1) % state.gridWidth) * w
+		y: 10 + (math.ceil(i / state.gridWidth) - 1) * h
+		:w
+		:h
 	}
 
 state.enter = (stage) =>
 	@selection = 1
 	@stage = stage
+
+	@gridWidth = 1
+	@gridHeight = #data.players
+
+	while #data.players / @gridWidth > 4
+		@gridHeight = math.ceil(@gridHeight / 2)
+		@gridWidth *= 2
 
 state.draw = =>
 	love.graphics.setFont @font
@@ -25,8 +37,7 @@ state.draw = =>
 
 	@selectedCharacter = nil
 
-	for i = 1, 7
-		--index = i + (j - 1) * 6
+	for i = 1, (@gridWidth * @gridHeight)
 		index = i
 		character = data.players[index]
 
@@ -34,11 +45,12 @@ state.draw = =>
 			.x += x
 			.y += y
 
+		unless character
+			love.graphics.setColor 127, 127, 127, 63
+			love.graphics.rectangle "fill", r.x, r.y, r.w, r.h
+
 		love.graphics.setColor 255, 255, 255
 		love.graphics.rectangle "line", r.x, r.y, r.w, r.h
-
-		if character
-			love.graphics.print "#{character.name}", r.x + 10, r.y + 40
 
 		if @selection == index
 			if character
@@ -66,13 +78,38 @@ state.draw = =>
 			x + 1024 - 320, y + 160
 
 state.keypressed = (key, scancode, ...) =>
-	if key == "return"
+	x = (@selection - 1) % @gridWidth + 1
+	y = math.floor((@selection - 1) / @gridWidth) + 1
+
+	getWidth = (y) ->
+		if y <= math.floor(#data.players / @gridWidth)
+			@gridWidth
+		else
+			(#data.players - 1) % @gridWidth + 1
+
+	getHeight = (x) ->
+		h = math.floor(#data.players / @gridWidth)
+		if #data.players % @gridWidth >= x
+			h += 1
+		h
+
+	if key == "escape"
+		@manager\setState require("ui.menu"), true
+	elseif key == "return"
 		if @selectedCharacter
 			@manager\setState require("ui.game"), @stage, {@selectedCharacter}
 	elseif key == "down"
-		@selection = (@selection - 0) % #data.players + 1
+		y = (y - 0) % getHeight(x) + 1
 	elseif key == "up"
-		@selection = (@selection - 2) % #data.players + 1
+		y = (y - 2) % getHeight(x) + 1
+	elseif key == "left"
+		x = (x - 2) % getWidth(y) + 1
+	elseif key == "right"
+		x = (x - 0) % getWidth(y) + 1
+
+	print x,  y
+
+	@selection = (y - 1) * @gridWidth + (x - 1) + 1
 
 state
 

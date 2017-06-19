@@ -33,8 +33,11 @@ playerInputsMenu = (id) ->
 
 local menu
 
-state.enter = =>
+state.enter = (noReset) =>
 	@drawTime  = 0
+
+	if noReset
+		return
 
 	data.load!
 
