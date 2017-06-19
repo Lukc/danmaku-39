@@ -1,27 +1,32 @@
 
 MenuItem = class
-	getRectangle: (i) =>
+	getRectangle: (x = 0, y = 0) =>
+		if @x or @y
+			print @x, @y
 		{
-			x: @menu.x
-			y: @menu.y + 60 * i
-			w: 24 + @menu.font\getWidth(self.label) + 2
-			h: 45
+			x: @x or x
+			y: @y or y
+			w: @width or @menu.width
+			h: @height or 65
 		}
 
-	draw: (i) =>
-		r = @\getRectangle i
+	hovered: =>
+		itemsList = @menu.items
 
-		alpha = if @menu.selectionTime and @menu.selectionTime >= 0.25
+		itemsList[itemsList.selection] == self
+
+	getDefaultAlpha: =>
+		if @menu.selectionTime and @menu.selectionTime >= 0.25
 			255 * (1 - (@menu.selectionTime - 0.25) / 0.25)
 		elseif @menu.drawTime <= 0.25
 			255 * @menu.drawTime * 4
 		else
 			255
 
-		love.graphics.setColor 127, 127, 127, alpha
-		love.graphics.line r.x, r.y + r.h, r.x + r.w, r.y + r.h
+	getDefaultColor: =>
+		alpha = @\getDefaultAlpha!
 
-		color = if i == @menu.items.selection
+		if @\hovered!
 			if @menu.inputCatchMode
 				c = 32 * math.sin @menu.drawTime * 5
 				{127 + 16 + c, 191 + 16 + c, 255}
@@ -36,6 +41,14 @@ MenuItem = class
 		else
 			{127, 127, 127, alpha}
 
+	draw: (x, y) =>
+		unless @label
+			return
+
+		r = @\getRectangle x, y
+
+		color = @\getDefaultColor!
+
 		if @type == "check"
 			love.graphics.rectangle "line",
 				r.x + 7, r.y + 5,
@@ -45,13 +58,20 @@ MenuItem = class
 
 			@menu\print @label, r.x + 47, r.y - 20, color
 		else
-			@menu\print @label, r.x + 12, r.y - 20, color
+			if @align == "center"
+				@menu\print @label,
+					r.x + (r.w - @menu.font\getWidth @label) / 2,
+					r.y - 20, color
+			else
+				@menu\print @label, r.x + 12, r.y - 20, color
 
 		if @rlabel
 			@menu\print @rlabel,
 				r.x - 12 + 600 - @menu.font\getWidth(@rlabel),
 				r.y - 20,
 				color
+
+	__tostring: => "<MenuItem: \"#{@label}\">"
 
 class
 	new: (arg) =>
@@ -65,6 +85,9 @@ class
 
 		@y = arg.y or 0
 		@x = arg.x or 0
+
+		@width = arg.width or (1024 - 2 * @x)
+		@height = arg.height or (800 - @y)
 
 		@inputCatchMode = false
 
@@ -106,7 +129,10 @@ class
 
 		@\checkOverflows!
 
-	print: (text, x, y, color) =>
+	print: (text, x, y, color, font = nil) =>
+		if font
+			love.graphics.setFont font
+
 		love.graphics.setColor 0, 0, 0, color[4]
 		love.graphics.print text, x + 2, y + 0
 		love.graphics.print text, x - 2, y + 0
@@ -121,8 +147,13 @@ class
 		love.graphics.setColor color
 		love.graphics.print text, x, y
 
+		if font
+			love.graphics.setFont @font
+
 	draw: =>
 		love.graphics.setFont @font
+
+		x, y = @x, @y
 
 		start = @items.startDisplayIndex or 1
 		for i = start, start + (@items.maxDisplayedItems or math.huge) - 1
@@ -131,7 +162,11 @@ class
 			unless item
 				break
 
-			item\draw i
+			r = item\getRectangle!
+
+			item\draw x, y
+
+			y += r.h
 
 	update: (dt) =>
 		@drawTime += dt
@@ -172,9 +207,6 @@ class
 		if key == "return" or key == "kpenter" or key == "kp5"
 			item = @items[@items.selection]
 
-			if item.type == "check"
-				item.value = not item.value
-
 			if item.onSelection
 				if item.onImmediateSelection
 					item.onImmediateSelection self
@@ -186,6 +218,9 @@ class
 			elseif item.onInputCatch
 				@inputCatchMode = true
 				@selectedItem = item
+			elseif item.type == "check"
+				item.value = not item.value
+
 		elseif key == "up" or key == "kp8"
 			@items.selection = (@items.selection - 2) % #@items + 1
 
@@ -203,7 +238,9 @@ class
 		elseif key == "right" or key == "kp6"
 			item = @items[@items.selection]
 
-			if item.type == "selector"
+			if item.type == "check"
+				item.value = not item.value
+			elseif item.type == "selector"
 				currentIndex = 0
 				for i = 1, #item.values
 					if item.values[i] == item.label
@@ -215,7 +252,9 @@ class
 		elseif key == "left" or key == "kp4"
 			item = @items[@items.selection]
 
-			if item.type == "selector"
+			if item.type == "check"
+				item.value = not item.value
+			elseif item.type == "selector"
 				currentIndex = 0
 				for i = 1, #item.values
 					if item.values[i] == item.label
@@ -242,4 +281,7 @@ class
 			@items.startDisplayIndex = @items.selection - maxItems + 1
 		elseif start > @items.selection
 			@items.startDisplayIndex = @items.selection
+
+	__tostring: =>
+		"<Menu: #{#@items} items>"
 
