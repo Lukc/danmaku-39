@@ -65,6 +65,7 @@ SmallBullet = do
 			arg.radius = 5
 
 		newBullet arg
+
 MiniBullet = do
 	sprite = love.graphics.newImage "data/art/bullet_test3.png"
 
@@ -74,12 +75,48 @@ MiniBullet = do
 		unless arg.sprite
 			arg.sprite = sprite
 		unless arg.radius
-			arg.radius = 2
+			arg.radius = 3
 
 		newBullet arg
+
+--------------------------------------
+-- FIXME: SPRITELESS BULLETS FOLLOW --
+--------------------------------------
+
+HugeBullet = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 26
+
+		arg
+
+ArrowHead = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 7
+
+		arg
+
+BurningBullet = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 12
+
+		arg
+
 {
-	:BigBullet,
-	:SmallBullet,
+	:HugeBullet
+	:BigBullet
+	:SmallBullet
 	:MiniBullet
+
+	:ArrowHead
+	:BurningBullet
 }
 
