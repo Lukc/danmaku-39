@@ -1,4 +1,6 @@
 
+Grid = require "ui.tools.grid"
+
 data = require "data"
 
 state = {
@@ -7,7 +9,6 @@ state = {
 	gridHeight: 3
 }
 
--- FIXME: Resize that grid dynamically.
 getCharacterRectangle = (i) ->
 	w = 300 / state.gridWidth
 	h = 780 / state.gridHeight
@@ -25,12 +26,20 @@ state.enter = (stage, noReset) =>
 	@stage = stage
 	@selection = 1
 
-	@gridWidth = 1
-	@gridHeight = #data.players
+	@grid = Grid
+		cells: data.players
+		columns: 1
+		rows: #data.players
+		onSelection: =>
+			if @selectedCell
+				state.manager\setState require("ui.difficulty"),
+					state.stage, {@selectedCell}
+		onEscape: =>
+			state.manager\setState require("ui.menu"), true
 
-	while #data.players / @gridWidth > 4
-		@gridHeight = math.ceil(@gridHeight / 2)
-		@gridWidth *= 2
+	while #data.players / @grid.columns > 4
+		@grid.rows = math.ceil(@grid.rows / 2)
+		@grid.columns *= 2
 
 state.draw = =>
 	love.graphics.setFont @font
@@ -40,35 +49,16 @@ state.draw = =>
 
 	@selectedCharacter = nil
 
-	for i = 1, (@gridWidth * @gridHeight)
-		index = i
-		character = data.players[index]
+	@grid\draw!
 
-		r = with getCharacterRectangle i
-			.x += x
-			.y += y
+	-- The character that has focus within the grid.
+	character = @grid.selectedCell
 
-		unless character
-			love.graphics.setColor 127, 127, 127, 63
-			love.graphics.rectangle "fill", r.x, r.y, r.w, r.h
-
+	if character
 		love.graphics.setColor 255, 255, 255
-		love.graphics.rectangle "line", r.x, r.y, r.w, r.h
 
-		if @selection == index
-			if character
-				@selectedCharacter = character
-
-			love.graphics.setColor 255, 191, 127
-			for j = 1.5, 4.5
-				love.graphics.rectangle "line",
-					r.x + j, r.y + j, r.w - 2*j, r.h - 2*j
-
-	if @selectedCharacter
 		love.graphics.rectangle "line",
 			x + 1024 - 320 - 10, y + 10, 320, 780
-
-		character = @selectedCharacter
 
 		love.graphics.print "#{character.name}",
 			x + 1024 - 320 + (320 - @font\getWidth character.name) / 2, y + 10
@@ -81,38 +71,7 @@ state.draw = =>
 			x + 1024 - 320, y + 160
 
 state.keypressed = (key, scancode, ...) =>
-	x = (@selection - 1) % @gridWidth + 1
-	y = math.floor((@selection - 1) / @gridWidth) + 1
-
-	getWidth = (y) ->
-		if y <= math.floor(#data.players / @gridWidth)
-			@gridWidth
-		else
-			(#data.players - 1) % @gridWidth + 1
-
-	getHeight = (x) ->
-		h = math.floor(#data.players / @gridWidth)
-		if #data.players % @gridWidth >= x
-			h += 1
-		h
-
-	if key == "escape"
-		@manager\setState require("ui.menu"), true
-	elseif key == "return"
-		if @selectedCharacter
-			@manager\setState require("ui.difficulty"), @stage, {@selectedCharacter}
-	elseif key == "down"
-		y = (y - 0) % getHeight(x) + 1
-	elseif key == "up"
-		y = (y - 2) % getHeight(x) + 1
-	elseif key == "left"
-		x = (x - 2) % getWidth(y) + 1
-	elseif key == "right"
-		x = (x - 0) % getWidth(y) + 1
-
-	print x,  y
-
-	@selection = (y - 1) * @gridWidth + (x - 1) + 1
+	@grid\keypressed key, scancode, ...
 
 state
 
