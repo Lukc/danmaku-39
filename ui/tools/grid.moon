@@ -9,8 +9,20 @@ class
 			print "CAUTION: Grid created without cell: argument."
 			{}
 
+		for variable in *{"x", "y", "width", "height"}
+			@[variable] = arg[variable] or 1
+
 		@selectedCell = nil
 		@selection = 1
+
+		arg.inputs or= {}
+
+		@inputs =
+			left:   arg.inputs.left   or "left"
+			right:  arg.inputs.right  or "right"
+			down:   arg.inputs.down   or "down"
+			up:     arg.inputs.up     or "up"
+			select: arg.inputs.select or "return"
 
 		@drawCell = arg.drawCell or       ->
 
@@ -18,11 +30,11 @@ class
 		@onEscape = arg.onEscape or       ->
 
 	getCellRectangle: (index) =>
-		w = 300 / @columns
-		h = 780 / @rows
+		w = @width / @columns
+		h = @height / @rows
 		{
-			x: 10 + ((index - 1) % @columns) * w
-			y: 10 + (math.ceil(index / @columns) - 1) * h
+			x: @x + ((index - 1) % @columns) * w
+			y: @y + (math.ceil(index / @columns) - 1) * h
 			:w
 			:h
 		}
@@ -59,7 +71,7 @@ class
 					love.graphics.rectangle "line",
 						r.x + j, r.y + j, r.w - 2*j, r.h - 2*j
 
-	keypressed: (key, scancode, ...) =>
+	keypressed: (key, scanCode, ...) =>
 		x = (@selection - 1) % @columns + 1
 		y = math.floor((@selection - 1) / @columns) + 1
 
@@ -73,20 +85,19 @@ class
 			h = math.floor(#@cells / @columns)
 			if #@cells % @columns >= x
 				h += 1
-			print "h = #{h}"
 			h
 
-		if key == "escape"
+		if scanCode == "escape"
 			@\onEscape!
-		elseif key == "return"
+		elseif scanCode == @inputs.select
 			@\onSelection @selectedCell
-		elseif key == "down"
+		elseif scanCode == @inputs.down
 			y = (y - 0) % getHeight(x) + 1
-		elseif key == "up"
+		elseif scanCode == @inputs.up
 			y = (y - 2) % getHeight(x) + 1
-		elseif key == "left"
+		elseif scanCode == @inputs.left
 			x = (x - 2) % getWidth(y) + 1
-		elseif key == "right"
+		elseif scanCode == @inputs.right
 			x = (x - 0) % getWidth(y) + 1
 
 		@selection = (y - 1) * @columns + (x - 1) + 1

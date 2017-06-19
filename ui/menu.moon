@@ -49,13 +49,15 @@ state.enter = (noReset) =>
 		{
 			label: "Adventure"
 			onSelection: =>
-				state.manager\setState require("ui.character"), data.stages[1]
+				state.manager\setState require("ui.character"), data.stages[1], 1
 		}
 		{
 			label: "Extras"
 		}
 		{
 			label: "Multiplayer"
+--			onSelection: =>
+--				state.manager\setState require("ui.character"), data.stages[1], 4
 		}
 		{
 			label: "Training"

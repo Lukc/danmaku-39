@@ -9,37 +9,66 @@ state = {
 	gridHeight: 3
 }
 
-getCharacterRectangle = (i) ->
-	w = 300 / state.gridWidth
-	h = 780 / state.gridHeight
-	{
-		x: 10 + ((i - 1) % state.gridWidth) * w
-		y: 10 + (math.ceil(i / state.gridWidth) - 1) * h
-		:w
-		:h
-	}
-
-state.enter = (stage, noReset) =>
+state.enter = (stage, wantedPlayers, noReset) =>
 	if noReset
 		return
+
+	-- This defines whether we’re doing single- or multiplayer.
+	@wantedPlayers = wantedPlayers
 
 	@stage = stage
 	@selection = 1
 
-	@grid = Grid
-		cells: data.players
-		columns: 1
-		rows: #data.players
-		onSelection: =>
-			if @selectedCell
-				state.manager\setState require("ui.difficulty"),
-					state.stage, {@selectedCell}
-		onEscape: =>
-			state.manager\setState require("ui.menu"), true
+	@grids = {}
+	for i = 1, wantedPlayers
+		local inputs
+		width  = 300
+		height = 780
+		x      = 10
+		y      = 10
 
-	while #data.players / @grid.columns > 4
-		@grid.rows = math.ceil(@grid.rows / 2)
-		@grid.columns *= 2
+		if wantedPlayers > 1
+			width = (1024 - 40) / 2
+			height = (800 - 40) / 2
+
+			x, y = switch i
+				when 1
+					10, 10
+				when 2
+					width + 20, 10
+				when 3
+					10, height + 20
+				when 4
+					width + 20, height + 20
+
+			inputs = {
+				left:   data.config.inputs[i].left
+				right:  data.config.inputs[i].right
+				up:     data.config.inputs[i].up
+				down:   data.config.inputs[i].down
+				select: data.config.inputs[i].firing
+			}
+
+		@grids[i] = Grid
+			:x, :y, :width, :height, :inputs
+			cells: data.players
+			columns: 1
+			rows: #data.players
+			onSelection: =>
+				if @selectedCell
+					nextState = require "ui.difficulty"
+					state.manager\setState nextState,
+						state.stage, {@selectedCell}
+			onEscape: =>
+				state.manager\setState require("ui.menu"), true
+
+	while #data.players / @grids[1].columns > 4
+		@grids[1].rows = math.ceil(@grids[1].rows / 2)
+		@grids[1].columns *= 2
+
+	for i = 2, #@grids
+		@grids[i].rows    = @grids[1].rows
+		@grids[i].columns = @grids[1].columns
 
 state.draw = =>
 	love.graphics.setFont @font
@@ -49,29 +78,32 @@ state.draw = =>
 
 	@selectedCharacter = nil
 
-	@grid\draw!
+	for i = 1, #@grids
+		@grids[i]\draw!
 
-	-- The character that has focus within the grid.
-	character = @grid.selectedCell
+	if @wantedPlayers == 1
+		-- The character that has focus within the grid.
+		character = @grids[1].selectedCell
 
-	if character
-		love.graphics.setColor 255, 255, 255
+		if character
+			love.graphics.setColor 255, 255, 255
 
-		love.graphics.rectangle "line",
-			x + 1024 - 320 - 10, y + 10, 320, 780
+			love.graphics.rectangle "line",
+				x + 1024 - 320 - 10, y + 10, 320, 780
 
-		love.graphics.print "#{character.name}",
-			x + 1024 - 320 + (320 - @font\getWidth character.name) / 2, y + 10
-		love.graphics.print "#{character.title}",
-			x + 1024 - 320 + (320 - @font\getWidth character.title) / 2, y + 50
+			love.graphics.print "#{character.name}",
+				x + 1024 - 320 + (320 - @font\getWidth character.name) / 2, y + 10
+			love.graphics.print "#{character.title}",
+				x + 1024 - 320 + (320 - @font\getWidth character.title) / 2, y + 50
 
-		love.graphics.print "#{character.mainAttackName}",
-			x + 1024 - 320, y + 120
-		love.graphics.print "#{character.secondaryAttackName}",
-			x + 1024 - 320, y + 160
+			love.graphics.print "#{character.mainAttackName}",
+				x + 1024 - 320, y + 120
+			love.graphics.print "#{character.secondaryAttackName}",
+				x + 1024 - 320, y + 160
 
 state.keypressed = (key, scancode, ...) =>
-	@grid\keypressed key, scancode, ...
+	for grid in *@grids
+		grid\keypressed key, scancode, ...
 
 state
 

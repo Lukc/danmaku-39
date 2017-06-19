@@ -109,7 +109,7 @@ state.enter = (stage, players) =>
 
 state.keypressed = (key, scanCode, ...) =>
 	if key == "escape" or key == "tab"
-		return @manager\setState require("ui.character"), nil, true
+		return @manager\setState require("ui.character"), nil, nil, true
 
 	@menu\keypressed key, scanCode, ...
 
