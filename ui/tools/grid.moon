@@ -29,6 +29,8 @@ class
 		@onSelection = arg.onSelection or ->
 		@onEscape = arg.onEscape or       ->
 
+		@selectionColor = arg.selectionColor or {255, 191, 127}
+
 	getCellRectangle: (index) =>
 		w = @width / @columns
 		h = @height / @rows
@@ -66,7 +68,7 @@ class
 				if cell
 					@selectedCell = cell
 
-				love.graphics.setColor 255, 191, 127
+				love.graphics.setColor @selectionColor
 				for j = 1.5, 4.5
 					love.graphics.rectangle "line",
 						r.x + j, r.y + j, r.w - 2*j, r.h - 2*j

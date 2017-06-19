@@ -56,8 +56,8 @@ state.enter = (noReset) =>
 		}
 		{
 			label: "Multiplayer"
---			onSelection: =>
---				state.manager\setState require("ui.character"), data.stages[1], 4
+			onSelection: =>
+				state.manager\setState require("ui.character"), data.stages[1], 4
 		}
 		{
 			label: "Training"
