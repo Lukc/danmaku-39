@@ -9,7 +9,7 @@ state = {
 	gridHeight: 3
 }
 
-state.enter = (stage, wantedPlayers, noReset) =>
+state.enter = (stage, wantedPlayers = 1, noReset) =>
 	if noReset
 		return
 
