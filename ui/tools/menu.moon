@@ -18,7 +18,9 @@ class
 			table.insert @items, item
 
 	isSelectable: (item) =>
-		return item.onSelection or item.onInputCatch
+		return item.onSelection or item.onInputCatch or
+			item.type == "check" or
+			item.type == "selector"
 
 	setItemsList: (target) =>
 		unless target.parent or target == @items.parent
@@ -104,7 +106,16 @@ class
 			else
 				{127, 127, 127, alpha}
 
-			@\print item.label, r.x + 12, r.y - 20, color
+			if item.type == "check"
+				love.graphics.rectangle "line",
+					r.x + 7, r.y + 5,
+					24, 24
+				if item.value
+					@\print "x", r.x + 12, r.y - 20, color
+
+				@\print item.label, r.x + 47, r.y - 20, color
+			else
+				@\print item.label, r.x + 12, r.y - 20, color
 
 			if item.rlabel
 				@\print item.rlabel,
@@ -148,8 +159,11 @@ class
 		if @selectedItem
 			return
 
-		if key == "return" or key == "kpenter" or key == "kp6"
+		if key == "return" or key == "kpenter" or key == "kp5"
 			item = @items[@items.selection]
+
+			if item.type == "check"
+				item.value = not item.value
 
 			if item.onSelection
 				if item.onImmediateSelection
@@ -162,7 +176,6 @@ class
 			elseif item.onInputCatch
 				@inputCatchMode = true
 				@selectedItem = item
-				print "Entering input-catch state. Sort-of."
 		elseif key == "up" or key == "kp8"
 			@items.selection = (@items.selection - 2) % #@items + 1
 
@@ -177,7 +190,31 @@ class
 				@items.selection = (@items.selection) % #@items + 1
 
 			@\checkOverflows!
-		elseif key == "tab" or key == "escape" or key == "kp4"
+		elseif key == "right" or key == "kp6"
+			item = @items[@items.selection]
+
+			if item.type == "selector"
+				currentIndex = 0
+				for i = 1, #item.values
+					if item.values[i] == item.label
+						currentIndex = i
+
+						break
+
+				item.label = item.values[currentIndex % #item.values + 1]
+		elseif key == "left" or key == "kp4"
+			item = @items[@items.selection]
+
+			if item.type == "selector"
+				currentIndex = 0
+				for i = 1, #item.values
+					if item.values[i] == item.label
+						currentIndex = i
+
+						break
+
+				item.label = item.values[(currentIndex - 2) % #item.values + 1]
+		elseif key == "tab" or key == "escape"
 			if @items.parent
 				@selectionTime = 0
 				@selectedItem = {

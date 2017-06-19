@@ -18,9 +18,12 @@ getCharacterRectangle = (i) ->
 		:h
 	}
 
-state.enter = (stage) =>
-	@selection = 1
+state.enter = (stage, noReset) =>
+	if noReset
+		return
+
 	@stage = stage
+	@selection = 1
 
 	@gridWidth = 1
 	@gridHeight = #data.players
@@ -97,7 +100,7 @@ state.keypressed = (key, scancode, ...) =>
 		@manager\setState require("ui.menu"), true
 	elseif key == "return"
 		if @selectedCharacter
-			@manager\setState require("ui.game"), @stage, {@selectedCharacter}
+			@manager\setState require("ui.difficulty"), @stage, {@selectedCharacter}
 	elseif key == "down"
 		y = (y - 0) % getHeight(x) + 1
 	elseif key == "up"
