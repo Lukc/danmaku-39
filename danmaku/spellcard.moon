@@ -13,3 +13,5 @@ class
 		-- Only named spellcards are true spellcards.
 		@name = arg.name or nil
 
+		@position = arg.position
+
