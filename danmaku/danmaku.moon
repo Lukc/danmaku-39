@@ -56,6 +56,30 @@ class
 
 		@endReached = false
 
+		@difficulty = arg.difficulty or 2
+
+		@noBombs = arg.noBombs or false
+		@pacific = arg.pacific or false
+
+	@Difficulties: {
+		Tutoriel: 0
+		Easy:     1
+		Normal:   2
+		Hard:     3
+		Lunatic:  4
+		"Ultra Lunatic":  5
+		Extra:    10
+		"Ultra Extra":    11
+	}
+
+	difficultyString: (difficulty = @difficulty) =>
+		for key, value in @@Difficulties
+			if value = difficulty
+				return key
+
+		-- Well, we DID need a default value, right?
+		return "Undiscovered Country"
+
 	---
 	-- Draws the game at the requested `x` and `y` coordinates.
 	draw: =>
