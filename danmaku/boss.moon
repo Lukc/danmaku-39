@@ -1,4 +1,5 @@
 
+Entity = require "danmaku.entity"
 Enemy = require "danmaku.enemy"
 
 class extends Enemy
@@ -43,6 +44,12 @@ class extends Enemy
 				elseif @frame == @spellStartFrame
 					@damageable = true
 					currentSpell.update self
+					@speed = 0
+
+					if currentSpell.position
+						-- Fixes rounding errors.
+						{:x, :y} = currentSpell.position self
+						@x, @y = x, y
 				elseif @frame >= @spellStartFrame
 					currentSpell.update self
 			else
@@ -69,7 +76,6 @@ class extends Enemy
 
 		if @currentSpellIndex > 0
 			difference = @spellEndFrame - @frame
-			print difference
 
 			-- Jumping into the future~
 			@frame += difference
@@ -103,6 +109,16 @@ class extends Enemy
 
 			@spellStartFrame = @frame + @interSpellDelay
 			@spellEndFrame = @frame + spell.timeout + @interSpellDelay
+
+			if spell.position
+				position = spell.position self
+
+				distance = Entity.distance self, position
+				angle = math.atan2 position.y - @y,
+					position.x - @x
+
+				@speed = distance / @interSpellDelay
+				@angle = angle
 
 			@damageable = false
 		else -- end of spellcards list
