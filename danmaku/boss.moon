@@ -28,7 +28,6 @@ class extends Enemy
 		@spellEndFrame = 0
 		@spellEndHealth = 0
 
-		-- FIXME: Calculate this from spellcards count.
 		@lives = 0
 		for spell in *@spellcards
 			if spell.endOfLife or spell == @spellcards[#@spellcards]
