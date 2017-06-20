@@ -139,7 +139,7 @@ class extends Enemy
 			dx *= hsr2
 			dy *= hsr2
 
-		bombsAllowed = not game.noBombs and not game.pacific
+		bombsAllowed = not @game.noBombs and not @game.pacific
 		if @bombing and @bombs >= 1 and bombsAllowed
 			if @bombingFrame == false
 				-- FIXME: The player should be invulnerable during bombs.
