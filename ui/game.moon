@@ -16,6 +16,44 @@ Menu = require "ui.tools.menu"
 state = {
 }
 
+mainMenuItem = ->
+	{
+		label: "Main menu"
+		onSelection: {
+			{
+				label: "Are you sure?"
+			}
+			{
+				label: "No"
+				onSelection: =>
+					@\setItemsList @items.parent
+			}
+			{
+				label: "Yes"
+				onSelection: =>
+					state.manager\setState require "ui.menu"
+			}
+		}
+	}
+
+gameOverMenu = ->
+	Menu {
+		font: state.menu.font
+		{
+			label: "Game over…"
+		}
+		mainMenuItem!
+	}
+
+victoryMenu = ->
+	Menu {
+		font: state.menu.font
+		{
+			label: "Victory!"
+		}
+		mainMenuItem!
+	}
+
 state.enter = (stage, players) =>
 	@players = {}
 	@paused = false
@@ -27,31 +65,17 @@ state.enter = (stage, players) =>
 	@menu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
 		{
-			label: "Continue"
+			label: "Pause"
+		}
+		{
+			label: "Resume"
 			onImmediateSelection: =>
 				state.resuming = @drawTime
 			onSelection: =>
 				state.resuming = false
 				state.paused = false
 		}
-		{
-			label: "Main menu"
-			onSelection: {
-				{
-					label: "Are you sure?"
-				}
-				{
-					label: "No"
-					onSelection: =>
-						@\setItemsList @items.parent
-				}
-				{
-					label: "Yes"
-					onSelection: =>
-						state.manager\setState require "ui.menu"
-				}
-			}
-		}
+		mainMenuItem!
 	}
 	@danmaku = Danmaku
 		:stage
@@ -195,20 +219,31 @@ state.update = (dt) =>
 		print "We reached the end."
 		state.paused = 0
 
+		@menu = victoryMenu!
+
 	for i = 1, #@players
 		for key in *{"left", "right", "up", "down"}
 			@players[i].movement[key] = love.keyboard.isScancodeDown data.config.inputs[i][key]
 		for key in *{"bombing", "firing", "focusing"}
 			@players[i][key] = love.keyboard.isScancodeDown data.config.inputs[i][key]
 
-	-- FIXME: Check game-over conditions.
+	playersLeft = false
+	for i, player in ipairs @players
+		if not player.readyForRemoval
+			playersLeft = true
+			break
+
+	unless playersLeft
+		state.paused = 0
+
+		@menu = gameOverMenu!
 
 	@danmaku\update dt
 
 state.keypressed = (key, ...) =>
 	if state.paused
 		-- Holy shit, this is the project’s hackiest hack. I think.
-		if key == "escape" and @menu.items.selection == 1 and @menu.items[1].label == "Continue"
+		if key == "escape" and @menu.items.selection == 1 and @menu.items[1].label == "Resume"
 			@menu\keypressed "return"
 		else
 			@menu\keypressed key, ...
