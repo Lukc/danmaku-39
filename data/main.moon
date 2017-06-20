@@ -12,6 +12,7 @@
 {:BigBullet, :SmallBullet} = require "data.bullets"
 spellcards = require "data.spellcards"
 items = require "data.items"
+players = require "data.players"
 
 {:circle, :laser} = require "data.helpers"
 
@@ -147,85 +148,20 @@ stage1 = Stage {
 		@\addEntity boss
 }
 
-playerA = Player
-	name: "Player A"
-	title: "Ordinary explorator"
-	mainAttackName: "Quick bullets"
-	secondaryAttackName: "Big, slow bullets"
-	radius: 3
-	itemAttractionRadius: 64
-	maxPower: 50
-	update: =>
-		if @firingFrame and @firingFrame % 8 == 0
-			for i = -1, 1, 2
-				@\fire
-					angle: -math.pi/2
-					speed: 6
-					x: @x + 8 * i
-					y: @y - 5
-					radius: 3
+missileUpdate = =>
+	speedingSequence = 60 * 2
 
-			if @power > 10
-				for i = -1, 1, 2
-					@\fire
-						angle: -math.pi/2 + math.pi / 128 * i
-						speed: 4
-						x: @x + 12 * i
-						y: @y - 3
-						radius: 7
+	if @frame <= speedingSequence
+		@speed += 8/speedingSequence
 
-			if @power > 20
-				for i = -1, 1, 2
-					@\fire
-						angle: -math.pi/2 + math.pi / 32 * i
-						speed: 4
-						x: @x + 12 * i
-						y: @y - 1
-						radius: 7
-	bomb: (game) =>
-		@game\clearScreen!
-	death: =>
-		print "Lost a life, right about now."
+		dx = @x - @player.x
 
-playerB = Player
-	name: "Player B with mirror"
-	title: "Advanced Explorator"
-	mainAttackName: "Mirror"
-	secondaryAttackName: "Big, slow bullets"
-	radius: 3
-	itemAttractionRadius: 64
-	maxPower: 50
-	update: =>
-		if @firingFrame and @firingFrame % 8 == 0
-			for i = -1, 1, 2
-				@\fire
-					angle: -math.pi/2
-					speed: 6
-					x: @x + 8 * i
-					y: @y - 5
-					radius: 3
+		sign = dx / math.abs(dx)
 
-			if @power > 10
-				for i = -1, 1, 2
-					@\fire
-						angle: -math.pi/2 + math.pi / 128 * i
-						speed: 4
-						x: @x + 12 * i
-						y: @y - 3
-						radius: 7
+		if @frame <= 60
+			dx = sign * (60 - @frame) / 60 / 3
+			@x += dx
 
-			if @power > 20
-				for i = -1, 1, 2
-					@\fire
-						angle: -math.pi/2 + math.pi / 32 * i
-						speed: 4
-						x: @x + 12 * i
-						y: @y - 1
-						radius: 7
-	bomb: (game) =>
-		@game\clearScreen!
-	death: =>
-		print "Lost a life, right about now."
 {
 	name: "Core Data"
 	bosses: {
@@ -235,6 +171,6 @@ playerB = Player
 		stage1
 	}
 	spellcards: spellcards
-	players: {playerA, playerB}
+	:players
 }
 
