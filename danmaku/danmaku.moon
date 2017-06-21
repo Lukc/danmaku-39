@@ -54,6 +54,9 @@ class
 
 		@frame = 0
 
+		-- For reference. Will be a reference to a Boss.
+		@boss = nil
+
 		@endReached = false
 
 		@difficulty = arg.difficulty or 2
@@ -221,6 +224,14 @@ class
 
 	endOfStage: =>
 		@endReached = true
+
+	-- Ain’t this a bit TOO stupid? Will we really have operations to add there?
+	setBoss: (boss) =>
+		@boss = boss
+
+	failSpellcard: =>
+		if @boss
+			@boss.spellSuccess = false
 
 	__tostring: => "<Danmaku: frame #{@frame}>"
 

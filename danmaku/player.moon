@@ -157,6 +157,8 @@ class extends Enemy
 				@bombs -= 1
 
 				if @onBomb
+					@game\failSpellcard!
+
 					@\onBomb!
 			else
 				@bombingFrame += 1
@@ -215,6 +217,11 @@ class extends Enemy
 			return false
 
 		super\collides entity
+
+	die: =>
+		@game\failSpellcard!
+
+		super\die!
 
 	__tostring: => "<Player: frame #{@frame}, [#{@x}:#{@y}]>"
 

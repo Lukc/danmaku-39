@@ -18,11 +18,40 @@ players = require "data.players"
 titleFont = love.graphics.newFont 42
 subtitleFont = love.graphics.newFont 24
 
+circularDrop = (entity, count, radius, constructor) ->
+	for i = 1, count
+		a = math.pi * 2 / count * i
+
+		x = entity.x + radius * math.cos a
+		y = entity.y + radius * math.sin a
+
+		entity.game\addEntity constructor
+			:x, :y
+
 boss = {
 	radius: 32
 	x: 600 / 2
 	y: 800 / 5
 	name: "Mi~mi~midori"
+
+	endOfSpell: (spell) =>
+		local pointItems, powerItems
+
+		if @spellSuccess
+			@game\addEntity items.lifeFragment
+				x: @x
+				y: @y
+			pointItems = 12
+			powerItems = 8
+		else
+			@game\addEntity items.bombFragment
+				x: @x
+				y: @y
+			pointItems = 8
+			powerItems = 6
+
+		circularDrop self, pointItems, 48, items.point
+		circularDrop self, powerItems, 30, items.power
 
 	spellcards[1]
 	spellcards[2]
@@ -36,6 +65,8 @@ stage1 = {
 	subtitle: "Developers’ playground"
 
 	drawTitle: =>
+		{:title, :subtitle} = @currentStage
+
 		if @frame <= 30
 			c = 255 * (@frame - 30) / 30
 			love.graphics.setColor 200, 200, 200, c
@@ -47,20 +78,20 @@ stage1 = {
 
 		love.graphics.setFont titleFont
 
-		w = titleFont\getWidth @title
-		h = titleFont\getHeight @title
+		w = titleFont\getWidth title
+		h = titleFont\getHeight title
 
-		love.graphics.print @title,
-			(@game.width - w) / 2,
-			(@game.height - h) / 2
+		love.graphics.print title,
+			(@width - w) / 2,
+			(@height - h) / 2
 
 		love.graphics.setFont subtitleFont
 
-		w2 = subtitleFont\getWidth @subtitle
+		w2 = subtitleFont\getWidth subtitle
 
-		love.graphics.print @subtitle,
-			(@game.width - w2) / 2,
-			(@game.height + h) / 2
+		love.graphics.print subtitle,
+			(@width - w2) / 2,
+			(@height + h) / 2
 
 	drawBackground: =>
 			-- No background for now.
@@ -72,6 +103,15 @@ stage1 = {
 		spell = @boss.currentSpell
 		if spell and spell.name
 			love.graphics.print "#{spell.name}", 40,60
+
+			timeout = math.floor (@boss.spellEndFrame - @boss.frame) / 60
+			print timeout
+			timeout = tostring timeout
+			print timeout
+
+			font = love.graphics.getFont!
+
+			love.graphics.print timeout, @width - font\getWidth(timeout) - 20, 20
 
 	update: =>
 		if @frame % 4 == 0
