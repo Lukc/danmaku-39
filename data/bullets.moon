@@ -10,7 +10,7 @@ newBullet = (arg) ->
 	oldDraw = arg.draw
 
 	arg.draw = =>
-		-- Setting custom properties, duh~
+		-- FIXME: Setting custom properties, duh~
 		unless @color
 			@color = color
 		unless @sprite
@@ -19,11 +19,15 @@ newBullet = (arg) ->
 		x = @x - sprite\getWidth! / 2
 		y = @y - sprite\getWidth! / 2
 
+		currentColor = [c for c in *@color]
+		currentColor[4] or= 255
+
 		if @dying
-			color[4] = 255 - 255 * (@dyingFrame / @dyingTime)
-		elseif @frame <= 30
-			color[4] = 255 * @frame / 30
-		love.graphics.setColor @color
+			currentColor[4] = math.min(currentColor[4], 255 - 255 * (@dyingFrame / @dyingTime))
+		if @frame <= 20
+			currentColor[4] = math.min(currentColor[4], 255 * @frame / 20)
+
+		love.graphics.setColor currentColor
 		love.graphics.draw @sprite,
 			x, y
 
