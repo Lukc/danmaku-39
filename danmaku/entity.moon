@@ -84,6 +84,9 @@ class
 		@outOfScreenTime = 0
 		@disableTimeoutRemoval = false
 
+		-- Generic storage area to be used by scripts.
+		@customData = {}
+
 	---
 	-- Draws the entity.
 	-- 

@@ -167,7 +167,7 @@ state.draw = =>
 			love.graphics.print "#{player.score}", x + 250, y + 45
 
 			love.graphics.print "Points", x + 5, y + 75
-			love.graphics.print "#{player.points}", x + 250, y + 75
+			love.graphics.print "#{player.customData.points or 0}", x + 250, y + 75
 
 			love.graphics.print "Graze", x + 5, y + 105
 			love.graphics.print "#{player.graze}", x + 250, y + 105

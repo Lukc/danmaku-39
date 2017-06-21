@@ -12,6 +12,9 @@
 			player.score += 1000
 			@game.score += 1000
 
+			player.customData.points or= 0
+			player.customData.points += 1
+
 		(arg) -> Item with {
 				radius: 10
 				:draw
