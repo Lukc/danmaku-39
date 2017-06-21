@@ -1,11 +1,24 @@
 
 {
 	:Entity,
-	:Player,
 } = require "danmaku"
 
+missileUpdate = =>
+	speedingSequence = 60 * 2
+
+	if @frame <= speedingSequence
+		@speed += 8/speedingSequence
+
+		dx = @x - @player.x
+
+		sign = dx / math.abs(dx)
+
+		if @frame <= 60
+			dx = sign * (60 - @frame) / 60 / 3
+			@x += dx
+
 {
-	Player
+	{
 		name: "Missiles"
 		title: "Ordinary explorer"
 		mainAttackName: "Quick bullets"
@@ -82,8 +95,8 @@
 			@game\clearScreen!
 		death: =>
 			print "Lost a life, right about now."
-
-	Player
+	}
+	{
 		name: "Mirrors"
 		title: "Ordinary explorer"
 		mainAttackName: "Quick bullets"
@@ -122,8 +135,8 @@
 			@game\clearScreen!
 		death: =>
 			print "Lost a life, right about now."
-
-	Player
+	}
+	{
 		name: "Bullets++"
 		title: "Ordinary explorer"
 		mainAttackName: "Quick bullets"
@@ -162,5 +175,6 @@
 			@game\clearScreen!
 		death: =>
 			print "Lost a life, right about now."
+	}
 }
 

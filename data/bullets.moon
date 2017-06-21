@@ -1,12 +1,4 @@
 
-{
-	:Entity,
-	:Enemy,
-	:Bullet,
-	:Player,
-	:Stage
-} = require "danmaku"
-
 newBullet = (arg) ->
 	arg or= {}
 

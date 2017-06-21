@@ -11,5 +11,3 @@ love.load = ->
 
 	stateManager\setState require "ui.splash"
 
-	data.load!
-

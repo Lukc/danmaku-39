@@ -1,9 +1,8 @@
-
+ 
 {
 	:Entity,
 	:Enemy,
 	:Bullet,
-	:Player,
 	:Item,
 	:Stage,
 	:Boss,
@@ -19,7 +18,7 @@ players = require "data.players"
 titleFont = love.graphics.newFont 42
 subtitleFont = love.graphics.newFont 24
 
-boss = Boss {
+boss = {
 	radius: 32
 	x: 600 / 2
 	y: 800 / 5
@@ -32,7 +31,7 @@ boss = Boss {
 	spellcards[5]
 }
 
-stage1 = Stage {
+stage1 = {
 	title: "A Stage for Testers"
 	subtitle: "Developers’ playground"
 
@@ -145,22 +144,8 @@ stage1 = Stage {
 		}
 
 	[180]: =>
-		@\addEntity boss
+		@\addEntity Boss boss
 }
-
-missileUpdate = =>
-	speedingSequence = 60 * 2
-
-	if @frame <= speedingSequence
-		@speed += 8/speedingSequence
-
-		dx = @x - @player.x
-
-		sign = dx / math.abs(dx)
-
-		if @frame <= 60
-			dx = sign * (60 - @frame) / 60 / 3
-			@x += dx
 
 {
 	name: "Core Data"

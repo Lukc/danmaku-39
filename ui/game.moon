@@ -78,16 +78,14 @@ state.enter = (stage, players) =>
 		mainMenuItem!
 	}
 	@danmaku = Danmaku
-		:stage
+		stage: Stage stage
 
-	print #players, #@danmaku.players
 	-- FIXME: update their positions, based on players count
 	for player in *players
 		player.x = @danmaku.width / 2
 		player.y = @danmaku.height * 5 / 6
 
-		table.insert @players, @danmaku\addEntity player
-	print #players, #@danmaku.players
+		table.insert @players, @danmaku\addEntity Player player
 
 	-- Mostly serves to print entity hitboxes.
 	@danmaku.debug = false
