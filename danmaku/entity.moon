@@ -64,6 +64,7 @@ class
 			true
 
 		@frame = 0
+		@spawnTime = arg.spawnTime or 20
 
 		@frameEvents = {}
 		for key, value in pairs arg
@@ -187,6 +188,9 @@ class
 		unless @touchable
 			return false
 		unless x.touchable
+			return false
+
+		if @frame < @spawnTime or x.frame < x.spawnTime
 			return false
 
 		if @hitboxType == @@Circle and x.hitboxType == @@Circle
