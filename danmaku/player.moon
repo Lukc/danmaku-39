@@ -154,7 +154,9 @@ class extends Enemy
 				-- FIXME: The player should be invulnerable during bombs.
 				--        … or should it?
 				@bombingFrame = 0
-				@bombs -= 1
+
+				unless @game.training
+					@bombs -= 1
 
 				if @onBomb
 					@game\failSpellcard!
@@ -180,8 +182,9 @@ class extends Enemy
 			@dyingFrame += 1
 
 			if @dyingFrame >= @dyingTime
-				@lives -= 1
-				@bombs = @bombsPerLife
+				unless @game.training
+					@lives -= 1
+					@bombs = @bombsPerLife
 
 				if @lives <= 0
 					-- FIXME: We may want to trigger.

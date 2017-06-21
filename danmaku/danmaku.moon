@@ -63,6 +63,7 @@ class
 
 		@noBombs = arg.noBombs or false
 		@pacific = arg.pacific or false
+		@training = arg.training or false
 
 	@Difficulties: {
 		Tutoriel: 0
