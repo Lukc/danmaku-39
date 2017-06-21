@@ -1,4 +1,6 @@
 
+data = require "data"
+
 class
 	new: (arg) =>
 		arg or= {}
@@ -15,14 +17,13 @@ class
 		@selectedCell = nil
 		@selection = 1
 
-		arg.inputs or= {}
-
-		@inputs =
-			left:   arg.inputs.left   or "left"
-			right:  arg.inputs.right  or "right"
-			down:   arg.inputs.down   or "down"
-			up:     arg.inputs.up     or "up"
-			select: arg.inputs.select or "return"
+		if arg.inputs
+			@inputs =
+				left:   arg.inputs.left   or "left"
+				right:  arg.inputs.right  or "right"
+				down:   arg.inputs.down   or "down"
+				up:     arg.inputs.up     or "up"
+				select: arg.inputs.select or "return"
 
 		@drawCell = arg.drawCell or       ->
 
@@ -89,18 +90,32 @@ class
 				h += 1
 			h
 
-		if scanCode == "escape"
-			@\onEscape!
-		elseif scanCode == @inputs.select
-			@\onSelection @selectedCell
-		elseif scanCode == @inputs.down
-			y = (y - 0) % getHeight(x) + 1
-		elseif scanCode == @inputs.up
-			y = (y - 2) % getHeight(x) + 1
-		elseif scanCode == @inputs.left
-			x = (x - 2) % getWidth(y) + 1
-		elseif scanCode == @inputs.right
-			x = (x - 0) % getWidth(y) + 1
+		if @inputs
+			if scanCode == "escape"
+				@\onEscape!
+			elseif scanCode == @inputs.select
+				@\onSelection @selectedCell
+			elseif scanCode == @inputs.down
+				y = (y - 0) % getHeight(x) + 1
+			elseif scanCode == @inputs.up
+				y = (y - 2) % getHeight(x) + 1
+			elseif scanCode == @inputs.left
+				x = (x - 2) % getWidth(y) + 1
+			elseif scanCode == @inputs.right
+				x = (x - 0) % getWidth(y) + 1
+		else
+			if data.isMenuInput key, "back"
+				@\onEscape!
+			elseif data.isMenuInput key, "select"
+				@\onSelection @selectedCell
+			elseif data.isMenuInput key, "down"
+				y = (y - 0) % getHeight(x) + 1
+			elseif data.isMenuInput key, "up"
+				y = (y - 2) % getHeight(x) + 1
+			elseif data.isMenuInput key, "left"
+				x = (x - 2) % getWidth(y) + 1
+			elseif data.isMenuInput key, "right"
+				x = (x - 0) % getWidth(y) + 1
 
 		@selection = (y - 1) * @columns + (x - 1) + 1
 

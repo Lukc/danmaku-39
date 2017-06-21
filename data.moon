@@ -23,6 +23,14 @@ importTable = (t) =>
 
 defaultConfig = {
 	blockedMods: {}
+	menuInputs: {
+		down:   {"down",   "kp2"}
+		up:     {"up",     "kp8"}
+		left:   {"left",   "kp4"}
+		right:  {"right",  "kp6"}
+		select: {"return", "kp3"}
+		back:   {"escape", "kp9", "tab"}
+	}
 	inputs: {
 		{
 			firing:   "z"
@@ -193,6 +201,13 @@ setmetatable {
 
 		for modPath in *filesystem.getDirectoryItems path
 			loadMod modsPath! .. "/" .. modPath
+
+	isMenuInput: (key, input) ->
+		list = cache.config.menuInputs[input]
+		for i = 1, #list
+			if list[i] == key
+				return true
+		false
 }, {
 	__index: (key) =>
 		return cache[key]

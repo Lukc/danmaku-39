@@ -1,4 +1,6 @@
 
+data = require "data"
+
 MenuItem = class
 	getRectangle: (x = 0, y = 0) =>
 		if @x or @y
@@ -204,7 +206,7 @@ class
 		if @selectedItem
 			return
 
-		if key == "return" or key == "kpenter" or key == "kp5"
+		if data.isMenuInput key, "select"
 			item = @items[@items.selection]
 
 			if item.onSelection
@@ -220,22 +222,21 @@ class
 				@selectedItem = item
 			elseif item.type == "check"
 				item.value = not item.value
-
-		elseif key == "up" or key == "kp8"
+		elseif data.isMenuInput key, "up"
 			@items.selection = (@items.selection - 2) % #@items + 1
 
 			while not @\isSelectable @items[@items.selection]
 				@items.selection = (@items.selection - 2) % #@items + 1
 
 			@\checkOverflows!
-		elseif key == "down" or key == "kp2"
+		elseif data.isMenuInput key, "down"
 			@items.selection = (@items.selection) % #@items + 1
 
 			while not @\isSelectable @items[@items.selection]
 				@items.selection = (@items.selection) % #@items + 1
 
 			@\checkOverflows!
-		elseif key == "right" or key == "kp6"
+		elseif data.isMenuInput key, "right"
 			item = @items[@items.selection]
 
 			if item.type == "check"
@@ -249,7 +250,7 @@ class
 						break
 
 				item.label = item.values[currentIndex % #item.values + 1]
-		elseif key == "left" or key == "kp4"
+		elseif data.isMenuInput key, "left"
 			item = @items[@items.selection]
 
 			if item.type == "check"
@@ -263,7 +264,7 @@ class
 						break
 
 				item.label = item.values[(currentIndex - 2) % #item.values + 1]
-		elseif key == "tab" or key == "escape"
+		elseif data.isMenuInput key, "back"
 			if @items.parent
 				@selectionTime = 0
 				@selectedItem = {
