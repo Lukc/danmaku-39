@@ -49,15 +49,10 @@ state.enter = (noReset) =>
 		{
 			label: "Adventure"
 			onSelection: =>
-				state.manager\setState require("ui.character"), data.stages[1], 1
+				state.manager\setState require("ui.difficulty"), data.stages[1]
 		}
 		{
 			label: "Extras"
-		}
-		{
-			label: "Multiplayer"
-			onSelection: =>
-				state.manager\setState require("ui.character"), data.stages[1], 4
 		}
 		{
 			label: "Training"
@@ -68,7 +63,7 @@ state.enter = (noReset) =>
 						list = [{
 							label: "#{stage.title}"
 							onSelection: =>
-								state.manager\setState require("ui.character"), stage
+								state.manager\setState require("ui.difficulty"), stage
 						} for n, stage in ipairs data.stages]
 
 						list.maxDisplayedItems = 8
@@ -91,7 +86,7 @@ state.enter = (noReset) =>
 							table.insert list, {
 								label: "#{boss.name}"
 								onSelection: =>
-									newState = require "ui.character"
+									newState = require "ui.difficulty"
 									newStage = {
 										drawBossData: data.stages[1].drawBossData
 										update: =>
@@ -126,7 +121,7 @@ state.enter = (noReset) =>
 								table.insert list, {
 									label: "#{spellcard.name}"
 									onSelection: =>
-										newState = require "ui.character"
+										newState = require "ui.difficulty"
 										newStage = {
 											drawBossData: data.stages[1].drawBossData
 											update: =>

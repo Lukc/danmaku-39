@@ -64,11 +64,14 @@ drawCheck = (x, y) =>
 play = ->
 	=>
 		print "FIXME: Options and difficulty are not passed!"
-		state.manager\setState require("ui.game"), state.stage, state.players
+		state.manager\setState require("ui.character"), state.stage, state.multiplayer
 
-state.enter = (stage, players) =>
+state.enter = (stage, noReset) =>
+	if noReset
+		return
+
 	@stage = stage
-	@players = players
+	@multiplayer = false
 
 	@menu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
@@ -88,7 +91,7 @@ state.enter = (stage, players) =>
 		{height: 32}
 		{
 			type: "check"
-			label: "training"
+			label: "Training"
 			noTransition: true
 			height: 96
 			draw: drawCheck
@@ -96,17 +99,28 @@ state.enter = (stage, players) =>
 		}
 		{
 			type: "check"
-			label: "pacific"
+			label: "Pacific"
 			noTransition: true
 			height: 96
 			draw: drawCheck
 			onSelection: play!
 		}
+		{
+			type: "check"
+			label: "Multiplayer"
+			noTransition: true
+			height: 96
+			draw: drawCheck
+			onSelection: play!
+			onValueChange: (item) =>
+				print self, item, item.value
+				state.multiplayer = item.value
+		}
 	}
 
 state.keypressed = (key, scanCode, ...) =>
 	if key == "escape" or key == "tab"
-		return @manager\setState require("ui.character"), nil, nil, true
+		return @manager\setState require("ui.menu"), nil, nil, true
 
 	@menu\keypressed key, scanCode, ...
 

@@ -7,27 +7,26 @@ state = {
 	font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
 }
 
-state.enter = (stage, wantedPlayers = 1, noReset) =>
+state.enter = (stage, multiplayer, noReset) =>
 	if noReset
 		return
 
-	-- This defines whether we’re doing single- or multiplayer.
-	@wantedPlayers = wantedPlayers
+	@multiplayer = multiplayer
 
 	@stage = stage
 	@selection = 1
 
-	@selectedPlayers = [false for i = 1, wantedPlayers]
+	@selectedPlayers = [false for i = 1, multiplayer and 4 or 1]
 
 	@grids = {}
-	for i = 1, wantedPlayers
+	for i = 1, multiplayer and 4 or 1
 		local inputs, color
 		width  = 1024
 		height = 800
 		x      = 0
 		y      = 0
 
-		if wantedPlayers > 1
+		if multiplayer
 			width = (1024 - 40) / 2
 			height = (800 - 40 - 120) / 2
 
@@ -66,15 +65,15 @@ state.enter = (stage, wantedPlayers = 1, noReset) =>
 			rows: 1
 			selectionColor: color
 			onSelection: =>
-				if state.wantedPlayers == 1
-					nextState = require "ui.difficulty"
+				unless state.multiplayer
+					nextState = require "ui.game"
 					state.manager\setState nextState,
 						state.stage, {@selectedCell}
 					return
 
 				state.selectedPlayers[i] = @selectedCell
 			onEscape: =>
-				state.manager\setState require("ui.menu"), true
+				state.manager\setState require("ui.difficulty"), nil, true
 
 	while #data.players / @grids[1].rows > 4
 		@grids[1].column = math.ceil(@grids[1].columns / 2)
@@ -85,7 +84,7 @@ state.enter = (stage, wantedPlayers = 1, noReset) =>
 		@grids[i].columns = @grids[1].columns
 
 state.update = (dt) =>
-	if @wantedPlayers == 1
+	unless @multiplayer
 		character = @grids[1].selectedCell
 		index = @grids[1].selection
 
@@ -111,7 +110,7 @@ state.draw = =>
 		else
 			@grids[i]\draw!
 
-	if @wantedPlayers == 1
+	unless @multiplayer
 		-- The character that has focus within the grid.
 		character = @grids[1].selectedCell
 
@@ -168,7 +167,7 @@ state.keypressed = (key, scanCode, ...) =>
 				if @selectedPlayers[i]
 					table.insert players, @selectedPlayers[i]
 
-			nextState = require "ui.difficulty"
+			nextState = require "ui.game"
 			state.manager\setState nextState,
 				state.stage, players
 

@@ -255,6 +255,9 @@ class
 
 			if item.type == "check"
 				item.value = not item.value
+
+				if item.onValueChange
+					item.onValueChange self, item
 			elseif item.type == "selector"
 				currentIndex = 1
 				for i = 1, #item.values
@@ -264,11 +267,17 @@ class
 						break
 
 				item.value = item.values[currentIndex % #item.values + 1]
+
+				if item.onValueChange
+					item.onValueChange self, item
 		elseif data.isMenuInput key, "left"
 			item = @items[@items.selection]
 
 			if item.type == "check"
 				item.value = not item.value
+
+				if item.onValueChange
+					item.onValueChange self, item
 			elseif item.type == "selector"
 				currentIndex = 1
 				for i = 1, #item.values
@@ -278,6 +287,9 @@ class
 						break
 
 				item.value = item.values[(currentIndex - 2) % #item.values + 1]
+
+				if item.onValueChange
+					item.onValueChange self, item
 		elseif data.isMenuInput key, "back"
 			if @items.parent
 				@selectionTime = 0
