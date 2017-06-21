@@ -34,6 +34,9 @@ class extends Enemy
 		@grazeDelay = arg.grazeDelay or 60
 		@graze = 0
 
+		@interCollisionDuration = arg.interCollisionDuration or 60
+		@entitiesCollidedWith = {}
+
 		@score = 0
 
 		@power = arg.power or 0
@@ -113,6 +116,12 @@ class extends Enemy
 				@grazedBullets[bullet] -= 1
 			else
 				@grazedBullets[bullet] = nil
+
+		for enemy, delay in pairs @entitiesCollidedWith
+			if delay > 1
+				@entitiesCollidedWith[enemy] -= 1
+			else
+				@entitiesCollidedWith[enemy] = nil
 
 		speed = if @focusing
 			@focusSpeed
@@ -200,6 +209,12 @@ class extends Enemy
 		else
 			@grazedBullets[bullet] = @grazeDelay
 			@graze += 1
+
+	collides: (entity) =>
+		if @entitiesCollidedWith[entity]
+			return false
+
+		super\collides entity
 
 	__tostring: => "<Player: frame #{@frame}, [#{@x}:#{@y}]>"
 

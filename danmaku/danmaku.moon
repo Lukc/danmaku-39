@@ -125,11 +125,14 @@ class
 		for entity in *@entities
 			entity\update!
 
+		-- FIXME: This section is too procedural and not OO.
 		for player in *@players
 			for enemy in *@enemies
 				if player\collides enemy
 					player\inflictDamage 1, "collision"
 					enemy\inflictDamage 1, "collision"
+
+					player.entitiesCollidedWith[enemy] = player.interCollisionDuration
 
 			for item in *@items
 				if item\collides player
@@ -149,6 +152,8 @@ class
 					if player\collides bullet
 						player\inflictDamage 1, bullet.damageType
 						bullet\inflictDamage 1, "collision"
+
+						player.entitiesCollidedWith[bullet] = player.interCollisionDuration
 					else
 						player\grazeBullet bullet
 
