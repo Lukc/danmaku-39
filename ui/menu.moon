@@ -134,9 +134,8 @@ state.enter = (noReset) =>
 													@\endOfStage!
 											[1]: =>
 												@\addEntity Boss with boss
-													.spellcards = {
-														spellcard
-													}
+													[1] = spellcard
+													[2] = nil
 										}
 										state.manager\setState newState,
 											newStage
