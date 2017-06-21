@@ -77,8 +77,20 @@ state.enter = (stage, players) =>
 		}
 		mainMenuItem!
 	}
+
+	width, height = switch stage.screenRatio
+		when "wide"
+			974, 585
+		when "narrow"
+			375, 750
+		else
+			600, 750
+
 	@danmaku = Danmaku
+		x: 25
+		y: 25
 		stage: Stage stage
+		:width, :height
 
 	-- FIXME: update their positions, based on players count
 	for player in *players
@@ -95,8 +107,8 @@ state.draw = =>
 	x = (love.graphics.getWidth! - 1024) / 2
 	y = (love.graphics.getHeight! - 800) / 2
 
-	@danmaku.x = x
-	@danmaku.y = y
+	@danmaku.x = x + 25
+	@danmaku.y = y + 25
 
 	if @paused
 		c = if @resuming
@@ -109,7 +121,7 @@ state.draw = =>
 
 	@danmaku\draw!
 
-	w = @danmaku.width
+	w = @danmaku.width + @danmaku.x * 2
 
 	love.graphics.setFont @font
 

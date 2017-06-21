@@ -35,7 +35,7 @@ class
 		@y = arg.y or 0
 
 		@width = arg.width or 600
-		@height = arg.height or 800
+		@height = arg.height or 750
 
 		@players = {}
 		@enemies = {}
