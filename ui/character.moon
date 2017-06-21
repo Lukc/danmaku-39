@@ -5,8 +5,6 @@ data = require "data"
 
 state = {
 	font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
-	gridWidth: 1
-	gridHeight: 3
 }
 
 state.enter = (stage, wantedPlayers = 1, noReset) =>
@@ -24,10 +22,10 @@ state.enter = (stage, wantedPlayers = 1, noReset) =>
 	@grids = {}
 	for i = 1, wantedPlayers
 		local inputs, color
-		width  = 300
-		height = 780
-		x      = 10
-		y      = 10
+		width  = 1024
+		height = 800
+		x      = 0
+		y      = 0
 
 		if wantedPlayers > 1
 			width = (1024 - 40) / 2
@@ -64,27 +62,40 @@ state.enter = (stage, wantedPlayers = 1, noReset) =>
 		@grids[i] = Grid
 			:x, :y, :width, :height, :inputs
 			cells: data.players
-			columns: 1
-			rows: #data.players
+			columns: #data.players
+			rows: 1
 			selectionColor: color
 			onSelection: =>
-				if @selectedCell
-					if wantedPlayers == 1
-						nextState = require "ui.difficulty"
-						state.manager\setState nextState,
-							state.stage, {@selectedCell}
+				if state.wantedPlayers == 1
+					nextState = require "ui.difficulty"
+					state.manager\setState nextState,
+						state.stage, {@selectedCell}
+					return
 
-					state.selectedPlayers[i] = @selectedCell
+				state.selectedPlayers[i] = @selectedCell
 			onEscape: =>
 				state.manager\setState require("ui.menu"), true
 
-	while #data.players / @grids[1].columns > 4
-		@grids[1].rows = math.ceil(@grids[1].rows / 2)
-		@grids[1].columns *= 2
+	while #data.players / @grids[1].rows > 4
+		@grids[1].column = math.ceil(@grids[1].columns / 2)
+		@grids[1].rows *= 2
 
 	for i = 2, #@grids
 		@grids[i].rows    = @grids[1].rows
 		@grids[i].columns = @grids[1].columns
+
+state.update = (dt) =>
+	if @wantedPlayers == 1
+		character = @grids[1].selectedCell
+		index = @grids[1].selection
+
+		@grids[1].selectionColor = switch index
+			when 1
+				{255, 63, 63}
+			when 2
+				{63, 255, 63}
+			when 3
+				{63, 191, 255}
 
 state.draw = =>
 	love.graphics.setFont @font
@@ -105,20 +116,23 @@ state.draw = =>
 		character = @grids[1].selectedCell
 
 		if character
-			love.graphics.setColor 255, 255, 255
+			r = @grids[1]\getCellRectangle @grids[1].selection
+			with x = x + r.x + 10
+				with y = y + r.y + r.h - 10 - 320
+					love.graphics.setColor 255, 255, 255
 
-			love.graphics.rectangle "line",
-				x + 1024 - 320 - 10, y + 10, 320, 780
+					love.graphics.rectangle "line",
+						x, y + 10, 320, 320
 
-			love.graphics.print "#{character.name}",
-				x + 1024 - 320 + (320 - @font\getWidth character.name) / 2, y + 10
-			love.graphics.print "#{character.title}",
-				x + 1024 - 320 + (320 - @font\getWidth character.title) / 2, y + 50
+					love.graphics.print "#{character.name}",
+						x + (320 - @font\getWidth character.name) / 2, y + 10
+					love.graphics.print "#{character.title}",
+						x + (320 - @font\getWidth character.title) / 2, y + 50
 
-			love.graphics.print "#{character.mainAttackName}",
-				x + 1024 - 320, y + 120
-			love.graphics.print "#{character.secondaryAttackName}",
-				x + 1024 - 320, y + 160
+					love.graphics.print "#{character.mainAttackName}",
+						x, y + 120
+					love.graphics.print "#{character.secondaryAttackName}",
+						x, y + 160
 	else
 		with y = y + @grids[1].height + 10
 			hasPlayer = false
