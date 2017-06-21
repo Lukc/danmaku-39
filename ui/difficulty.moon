@@ -7,7 +7,7 @@ bigFont = love.graphics.newFont "data/fonts/miamanueva.otf", 72
 
 drawSelector = (x, y) =>
 	r = @\getRectangle x, y
-	color =switch @label
+	color = switch @value
 		when "Normal"
 			{127, 255, 127}
 		when "Hard"
@@ -25,10 +25,10 @@ drawSelector = (x, y) =>
 	love.graphics.setColor color
 	love.graphics.rectangle "fill", r.x, r.y, r.w, r.h
 
-	w = bigFont\getWidth @label
-	h = bigFont\getHeight @label
+	w = bigFont\getWidth @value
+	h = bigFont\getHeight @value
 
-	@menu\print @label, r.x + (r.w - w) / 2, r.y + (r.h - h - 10) / 2 - 6,
+	@menu\print @value, r.x + (r.w - w) / 2, r.y + (r.h - h - 10) / 2 - 6,
 		{255, 255, 255}, bigFont
 
 	love.graphics.print "<", r.x - 32,   r.y + (r.h - h - 10) / 2
@@ -89,8 +89,6 @@ state.enter = (stage, players) =>
 		{
 			type: "check"
 			label: "training"
-			onSelection: =>
-				print @selectedItem.value
 			noTransition: true
 			height: 96
 			draw: drawCheck
@@ -99,7 +97,6 @@ state.enter = (stage, players) =>
 		{
 			type: "check"
 			label: "pacific"
-			onSelection: =>
 			noTransition: true
 			height: 96
 			draw: drawCheck

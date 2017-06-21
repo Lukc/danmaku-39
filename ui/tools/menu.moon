@@ -12,6 +12,13 @@ MenuItem = class
 			h: @height or 65
 		}
 
+	init: (menu) =>
+		@menu = menu
+
+		if @type == "selector"
+			unless @value
+				@value = @values[1]
+
 	hovered: =>
 		itemsList = @menu.items
 
@@ -67,6 +74,12 @@ MenuItem = class
 			else
 				@menu\print @label, r.x + 12, r.y - 20, color
 
+			if @type == "selector"
+				label = tostring(@value)
+				@menu\print label, r.x - 12 + 600 - @menu.font\getWidth(label),
+					r.y - 20,
+					color
+
 		if @rlabel
 			@menu\print @rlabel,
 				r.x - 12 + 600 - @menu.font\getWidth(@rlabel),
@@ -112,7 +125,8 @@ class
 
 		for item in *target
 			setmetatable item, MenuItem.__base
-			item.menu = self
+
+			item\init self
 
 		@items = target
 		@drawTime = 0
@@ -242,28 +256,28 @@ class
 			if item.type == "check"
 				item.value = not item.value
 			elseif item.type == "selector"
-				currentIndex = 0
+				currentIndex = 1
 				for i = 1, #item.values
-					if item.values[i] == item.label
+					if item.values[i] == item.value
 						currentIndex = i
 
 						break
 
-				item.label = item.values[currentIndex % #item.values + 1]
+				item.value = item.values[currentIndex % #item.values + 1]
 		elseif data.isMenuInput key, "left"
 			item = @items[@items.selection]
 
 			if item.type == "check"
 				item.value = not item.value
 			elseif item.type == "selector"
-				currentIndex = 0
+				currentIndex = 1
 				for i = 1, #item.values
-					if item.values[i] == item.label
+					if item.values[i] == item.value
 						currentIndex = i
 
 						break
 
-				item.label = item.values[(currentIndex - 2) % #item.values + 1]
+				item.value = item.values[(currentIndex - 2) % #item.values + 1]
 		elseif data.isMenuInput key, "back"
 			if @items.parent
 				@selectionTime = 0
