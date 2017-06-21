@@ -1,5 +1,5 @@
 
-{:Stage} = require "danmaku"
+{:Stage, :Boss} = require "danmaku"
 
 state = {}
 
@@ -92,13 +92,13 @@ state.enter = (noReset) =>
 								label: "#{boss.name}"
 								onSelection: =>
 									newState = require "ui.character"
-									newStage = Stage{
+									newStage = {
 										drawBossData: data.stages[1].drawBossData
 										update: =>
 											if @frame > 60 and #@enemies == 0
 												@\endOfStage!
 										[1]: =>
-											@\addEntity boss
+											@\addEntity Boss boss
 									}
 									state.manager\setState newState,
 										newStage
@@ -119,7 +119,7 @@ state.enter = (noReset) =>
 						}
 
 						for boss in *data.bosses
-							for spellcard in *boss.spellcards
+							for spellcard in *boss
 								unless spellcard.name
 									continue
 
@@ -127,13 +127,13 @@ state.enter = (noReset) =>
 									label: "#{spellcard.name}"
 									onSelection: =>
 										newState = require "ui.character"
-										newStage = Stage{
+										newStage = {
 											drawBossData: data.stages[1].drawBossData
 											update: =>
 												if @frame > 60 and #@enemies == 0
 													@\endOfStage!
 											[1]: =>
-												@\addEntity with boss
+												@\addEntity Boss with boss
 													.spellcards = {
 														spellcard
 													}
