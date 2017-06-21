@@ -63,8 +63,14 @@ drawCheck = (x, y) =>
 
 play = ->
 	=>
+		options = {
+			stage: state.stage
+			noBombs: state.noBombs
+			pacific: state.pacific
+			training: state.training
+		}
 		print "FIXME: Options and difficulty are not passed!"
-		state.manager\setState require("ui.character"), state.stage, state.multiplayer
+		state.manager\setState require("ui.character"), options, state.multiplayer
 
 state.enter = (stage, noReset) =>
 	if noReset
@@ -96,6 +102,8 @@ state.enter = (stage, noReset) =>
 			height: 96
 			draw: drawCheck
 			onSelection: play!
+			onValueChange: (item) =>
+				state.training = item.value
 		}
 		{
 			type: "check"
@@ -104,6 +112,9 @@ state.enter = (stage, noReset) =>
 			height: 96
 			draw: drawCheck
 			onSelection: play!
+			onValueChange: (item) =>
+				state.pacific = item.value
+				state.noBombs = item.value
 		}
 		{
 			type: "check"

@@ -7,13 +7,13 @@ state = {
 	font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
 }
 
-state.enter = (stage, multiplayer, noReset) =>
+state.enter = (options, multiplayer, noReset) =>
 	if noReset
 		return
 
 	@multiplayer = multiplayer
 
-	@stage = stage
+	@options = options
 	@selection = 1
 
 	@selectedPlayers = [false for i = 1, multiplayer and 4 or 1]
@@ -68,7 +68,7 @@ state.enter = (stage, multiplayer, noReset) =>
 				unless state.multiplayer
 					nextState = require "ui.game"
 					state.manager\setState nextState,
-						state.stage, {@selectedCell}
+						state.options, {@selectedCell}
 					return
 
 				state.selectedPlayers[i] = @selectedCell
@@ -169,7 +169,7 @@ state.keypressed = (key, scanCode, ...) =>
 
 			nextState = require "ui.game"
 			state.manager\setState nextState,
-				state.stage, players
+				state.options, players
 
 state
 

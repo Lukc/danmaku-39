@@ -54,10 +54,16 @@ victoryMenu = ->
 		mainMenuItem!
 	}
 
-state.enter = (stage, players) =>
+state.enter = (options, players) =>
 	@players = {}
 	@paused = false
 	@resuming = false
+
+	options or= {}
+	{
+		:noBombs, :pacific
+		:stage
+	} = options
 
 	unless @font
 		@font = love.graphics.newFont 24
@@ -91,6 +97,7 @@ state.enter = (stage, players) =>
 		y: 25
 		stage: Stage stage
 		:width, :height
+		:noBombs, :pacific
 
 	-- FIXME: update their positions, based on players count
 	for player in *players
