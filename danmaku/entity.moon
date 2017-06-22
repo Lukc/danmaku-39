@@ -73,6 +73,7 @@ class
 
 		@onUpdate = arg.update
 		@onDraw = arg.draw
+		@onDeath = arg.death
 
 		@dx, @dy = 0, 0
 
@@ -98,6 +99,8 @@ class
 		if @game.debug or not @onDraw
 			if @dying
 				love.graphics.setColor 255, 0, 0
+			elseif @spawning
+				love.graphics.setColor 255, 0, 255
 			else
 				love.graphics.setColor 255, 255, 255
 
@@ -139,6 +142,8 @@ class
 	-- Its purpose is to be used by children classes.
 	doUpdate: (onUpdate) =>
 		-- That time should be greated for bosses, maybe even disabled completely.
+		@spawning = @frame < @spawnTime
+
 		unless @disableTimeoutRemoval
 			if @frame >= 60 * 60 * 5 and not @isPlayer
 				@readyForRemoval = true
@@ -193,7 +198,7 @@ class
 		unless x.touchable
 			return false
 
-		if @frame < @spawnTime or x.frame < x.spawnTime
+		if @spawning or x.spawning
 			return false
 
 		if @hitboxType == @@Circle and x.hitboxType == @@Circle
@@ -274,6 +279,10 @@ class
 	-- Makes the entity untouchable and marks it as dying.
 	die: =>
 		@health = 0
+
+		if not @dying
+			if @onDeath
+				@.onDeath self
 
 		@dying = true
 		@touchable = false
