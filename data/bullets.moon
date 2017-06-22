@@ -16,8 +16,7 @@ newBullet = (arg) ->
 		unless @sprite
 			@sprite = sprite
 
-		x = @x - sprite\getWidth! / 2
-		y = @y - sprite\getWidth! / 2
+		sw, sh = sprite\getWidth!, sprite\getHeight!
 
 		currentColor = [c for c in *@color]
 		currentColor[4] or= 255
@@ -29,7 +28,7 @@ newBullet = (arg) ->
 
 		love.graphics.setColor currentColor
 		love.graphics.draw @sprite,
-			x, y
+			@x, @y, @angle, nil, nil, sw/2, sh/2
 
 		if oldDraw
 			oldDraw self
@@ -89,13 +88,18 @@ HugeBullet = do
 		arg
 
 ArrowHead = do
+	sprite = love.graphics.newImage "data/art/bullet_arrowhead.png"
+
 	(arg) ->
 		arg or= {}
+
+		unless arg.sprite
+			arg.sprite = sprite
 
 		unless arg.radius
 			arg.radius = 7
 
-		arg
+		newBullet arg
 
 BurningBullet = do
 	(arg) ->
