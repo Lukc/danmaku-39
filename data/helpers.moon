@@ -125,7 +125,7 @@ column = (arg) ->
 	->
 		i += 1
 
-		if i >= bullets
+		if i > bullets
 			return
 
 		with clone bulletData
@@ -145,11 +145,13 @@ row = (arg) ->
 	->
 		i += 1
 
-		if i >= bullets
+		if i > bullets
 			return
 
+		a = (endAngle - startAngle) / (bullets - 1)
+
 		with clone bulletData
-			.angle = (.angle or math.pi/2) + startAngle + (endAngle - startAngle) * (i - 1) / bullets
+			.angle = (.angle or math.pi/2) - (bullets / 2 - i + 1/2) * a
 
 attachedLaser = do
 	update = (parent, duration, oldUpdate) ->
