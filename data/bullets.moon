@@ -78,6 +78,15 @@ MiniBullet = do
 -- FIXME: SPRITELESS BULLETS FOLLOW --
 --------------------------------------
 
+SimpleBullet = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 12
+
+		arg
+
 HugeBullet = do
 	(arg) ->
 		arg or= {}
@@ -158,6 +167,7 @@ BigStarBullet = do
 {
 	:HugeBullet
 	:BigBullet
+	:SimpleBullet
 	:SmallBullet
 	:MiniBullet
 
