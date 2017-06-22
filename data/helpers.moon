@@ -110,6 +110,47 @@ sinusoid = (arg) ->
 					else
 						@direction = angle + a * math.cos @frame / b
 
+column = (arg) ->
+	-- FIXME: Alternatively use bullet.speed as startSpeed..
+	arg or= {}
+
+	bullets    = arg.bullets or 3
+	startSpeed = arg.startSpeed or 2
+	endSpeed   = arg.endSpeed   or 3
+
+	bulletData = arg.bullet or {}
+
+	i = 0
+
+	->
+		i += 1
+
+		if i >= bullets
+			return
+
+		with clone bulletData
+			.speed = startSpeed + (endSpeed - startSpeed) * (i - 1) / bullets
+
+row = (arg) ->
+	arg or= {}
+
+	bullets    = arg.bullets or 3
+	startAngle = arg.startAngle or -math.pi / 8
+	endAngle   = arg.endAngle   or  math.pi / 8
+
+	bulletData = arg.bullet or {}
+
+	i = 0
+
+	->
+		i += 1
+
+		if i >= bullets
+			return
+
+		with clone bulletData
+			.angle = (.angle or math.pi/2) + startAngle + (endAngle - startAngle) * (i - 1) / bullets
+
 attachedLaser = do
 	update = (parent, duration, oldUpdate) ->
 		=>
@@ -210,6 +251,9 @@ laser = do
 	:radial
 	:circle
 	:sinusoid
+
+	:column
+	:row
 
 	-- Move to data.bullets?
 	:laser
