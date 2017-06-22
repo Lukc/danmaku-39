@@ -155,7 +155,34 @@ missileUpdate = =>
 						radius: 3
 						damage: 1
 		bomb: (game) =>
-			@game\clearScreen!
+			for i = 1, 9
+				radius = if i % 3 == 2
+					48
+				else
+					32
+				angle = math.pi / 2 + math.pi * 2 / 9 * (i - 0.5)
+				timeout = if i % 3 == 2
+					60 * 3
+				else
+					60 * 2.5
+
+				@\fire
+					damageable: false
+					:radius, :angle
+					speed: 4
+					update: =>
+						@speed -= 1 / 19
+						print @speed
+						@speed = math.max 0, @speed
+
+						@y -= @speed
+
+						for bullet in *@game.bullets
+							if bullet\collides self
+								bullet\die!
+
+						if @frame >= timeout
+							@\die!
 		death: =>
 			print "Lost a life, right about now."
 	}
