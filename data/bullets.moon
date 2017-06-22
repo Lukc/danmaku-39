@@ -106,6 +106,51 @@ BurningBullet = do
 
 		arg
 
+Diamond = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 8
+
+		arg
+
+DarkBullet = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 12
+
+		arg
+
+MiniDarkBullet = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 3
+
+		arg
+
+StarBullet = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 12
+
+		arg
+
+BigStarBullet = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 21
+
+		arg
+
 {
 	:HugeBullet
 	:BigBullet
@@ -113,6 +158,14 @@ BurningBullet = do
 	:MiniBullet
 
 	:ArrowHead
+	:Diamond
+
 	:BurningBullet
+
+	:DarkBullet
+	:MiniDarkBullet
+
+	:StarBullet
+	:BigStarBullet
 }
 
