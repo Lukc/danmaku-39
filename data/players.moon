@@ -11,6 +11,9 @@ missileUpdate = =>
 
 		dx = @x - @player.x
 
+		if dx == 0
+			return
+
 		sign = dx / math.abs(dx)
 
 		if @frame <= 60
@@ -38,59 +41,18 @@ missileUpdate = =>
 						radius: 3
 						damage: 10
 
-				if @firingFrame % 48 == 0
-					for i = -1, 1, 2
-						if @power >= 40
-							@\fire
-								angle: -math.pi/2 + math.pi / 128 * i
-								speed: 1.5
-								x: @x + 12 * i
-								y: @y - 3
-								radius: 12
-								damage: 12
-								update: missileUpdate
-						elseif @power >= 10
-							@\fire
-								angle: -math.pi/2 + math.pi / 128 * i
-								speed: 1.5
-								x: @x + 12 * i
-								y: @y - 3
-								radius: 7
-								damage: 6
-								update: missileUpdate
+			if @firingFrame and @firingFrame % 48 == 0
+				powerLevel = math.floor(@power / 10)
 
-				if @firingFrame % 48 == 16
-					for i = -1, 1, 2
-						if @power >= 50
-							@\fire
-								angle: -math.pi/2 + math.pi / 48 * i
-								speed: 1.5
-								x: @x + 12 * i
-								y: @y - 1
-								radius: 12
-								damage: 12
-								update: missileUpdate
-						elseif @power >= 20
-							@\fire
-								angle: -math.pi/2 + math.pi / 48 * i
-								speed: 1.5
-								x: @x + 12 * i
-								y: @y - 1
-								radius: 7
-								damage: 6
-								update: missileUpdate
-
-				if @firingFrame % 48 == 32
-					if @power >= 30
-						for i = -1, 1, 2
-							@\fire
-								angle: -math.pi/2 + math.pi / 32 * i
-								speed: 1.5
-								x: @x + 12 * i
-								y: @y + 1
-								radius: 7
-								damage: 6
-								update: missileUpdate
+				for i = 1, powerLevel
+					@\fire
+						angle: -math.pi / 2
+						speed: 1.5
+						x: @x + (i - 1/2 - powerLevel/2) * 18
+						y: @y + 24
+						radius: 7
+						damage: 6
+						update: missileUpdate
 		bomb: (game) =>
 			@game\clearScreen!
 		death: =>
@@ -160,12 +122,13 @@ missileUpdate = =>
 				powerLevel = math.floor(@power / 10)
 
 				radius = 32
-				for i = -powerLevel/2, powerLevel/2
-					angle = math.pi * (1 / 2 + 1 / 5 * i)
+				for i = 1, powerLevel
+					k = (i - 1/2 - powerLevel/2)
+					angle = math.pi * (1 / 2 + 1 / 5 * k)
 					ox = radius * math.cos angle
 					oy = radius * math.sin angle
 					@\fire
-						angle: -math.pi / 2 + i * math.pi / 2 / 64
+						angle: -math.pi / 2 + k * math.pi / 2 / 64
 						speed: 12
 						x: @x + ox
 						y: @y + oy
@@ -197,15 +160,16 @@ missileUpdate = =>
 						radius: 3
 						damage: 10
 
-				powerLevel = math.floor(@power / 10) - 1
+				powerLevel = math.floor(@power / 10)
 
 				radius = 48
-				for i = -powerLevel/2, powerLevel/2
-					angle = math.pi * (-1 / 2 + 1 / 5 * i)
+				for i = 1, powerLevel
+					k = (i - 1/2 - powerLevel/2)
+					angle = math.pi * (-1 / 2 + 1 / 5 * k)
 					ox = radius * math.cos angle
 					oy = radius * math.sin angle
 					@\fire
-						angle: -math.pi / 2 - i * math.pi / 2 / 32
+						angle: -math.pi / 2 - k * math.pi / 2 / 32
 						speed: 6.5
 						x: @x + ox
 						y: @y + oy
