@@ -54,7 +54,27 @@ missileUpdate = =>
 						damage: 6
 						update: missileUpdate
 		bomb: (game) =>
-			@game\clearScreen!
+			x, y = @x, @y
+			radius = 24
+
+			for i = 1, 6
+				angle = math.pi / 2 + math.pi * 2 / 6 * i
+				@\fire
+					damageable: false
+					radius: 48
+					update: =>
+						@x = x + radius * math.cos angle
+						@y = y + radius * math.sin angle
+
+						radius = 64 * math.log((@frame + 60) / 60)
+						angle += 0.065
+
+						for bullet in *@game.bullets
+							if bullet\collides self
+								bullet\die!
+
+						if @frame >= 60 * 5
+							@\die!
 		death: =>
 			print "Lost a life, right about now."
 	}
