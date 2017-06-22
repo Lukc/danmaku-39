@@ -138,9 +138,6 @@ class
 	--
 	-- Its purpose is to be used by children classes.
 	doUpdate: (onUpdate) =>
-		dx = @speed * math.cos @direction
-		dy = @speed * math.sin @direction
-
 		-- That time should be greated for bosses, maybe even disabled completely.
 		unless @disableTimeoutRemoval
 			if @frame >= 60 * 60 * 5 and not @isPlayer
@@ -155,7 +152,10 @@ class
 			if @frameEvents[@frame]
 				@frameEvents[@frame] self
 
-			onUpdate self
+		onUpdate self
+
+		dx = @speed * math.cos @direction
+		dy = @speed * math.sin @direction
 
 		@x += dx
 		@y += dy
