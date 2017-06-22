@@ -44,6 +44,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 			if @firingFrame and @firingFrame % 8 == 0
 				for i = -1, 1, 2
 					@\fire
+						spawnTime: 0
 						angle: -math.pi/2
 						speed: 12
 						x: @x + 8 * i
@@ -56,6 +57,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 
 				for i = 1, powerLevel
 					@\fire
+						spawnTime: 0
 						angle: -math.pi / 2
 						speed: 1.5
 						x: @x + (i - 1/2 - powerLevel/2) * 18
@@ -70,6 +72,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 			for i = 1, 6
 				angle = math.pi / 2 + math.pi * 2 / 6 * i
 				@\fire
+					spawnTime: 0
 					damageable: false
 					radius: 48
 					update: =>
@@ -100,6 +103,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 			if @firingFrame and @firingFrame % 8 == 0
 				for i = -1, 1, 2
 					@\fire
+						spawnTime: 0
 						angle: -math.pi/2
 						speed: 6
 						x: @x + 8 * i
@@ -109,6 +113,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 				if @power > 10
 					for i = -1, 1, 2
 						@\fire
+							spawnTime: 0
 							angle: -math.pi/2 + math.pi / 128 * i
 							speed: 4
 							x: @x + 12 * i
@@ -118,6 +123,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 				if @power > 20
 					for i = -1, 1, 2
 						@\fire
+							spawnTime: 0
 							angle: -math.pi/2 + math.pi / 32 * i
 							speed: 4
 							x: @x + 12 * i
@@ -142,6 +148,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 			if @firingFrame and @firingFrame % 8 == 0
 				for i = -1, 1, 2
 					@\fire
+						spawnTime: 0
 						angle: -math.pi/2
 						speed: 12
 						x: @x + 8 * i
@@ -158,6 +165,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 					ox = radius * math.cos angle
 					oy = radius * math.sin angle
 					@\fire
+						spawnTime: 0
 						angle: -math.pi / 2 + k * math.pi / 2 / 64
 						speed: 12
 						x: @x + ox
@@ -177,6 +185,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 					60 * 2.5
 
 				@\fire
+					spawnTime: 0
 					damageable: false
 					:radius, :angle
 					speed: 4
@@ -210,6 +219,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 			if @firingFrame and @firingFrame % 8 == 0
 				for i = -1, 1, 2
 					@\fire
+						spawnTime: 0
 						angle: -math.pi/2
 						speed: 12
 						x: @x + 8 * i
@@ -226,6 +236,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 					ox = radius * math.cos angle
 					oy = radius * math.sin angle
 					@\fire
+						spawnTime: 0
 						angle: -math.pi / 2 - k * math.pi / 2 / 32
 						speed: 6.5
 						x: @x + ox
@@ -245,6 +256,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 					if @frame % 4 == 0
 						for i = -1, 1, 2
 							player\fire
+								spawnTime: 0
 								angle: i * math.pi / 2 + @frame / 4 * math.pi / 8
 								speed: 4.5
 								x: @x
