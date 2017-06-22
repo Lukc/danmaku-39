@@ -110,7 +110,7 @@ sinusoid = (arg) ->
 					else
 						@direction = angle + a * math.cos @frame / b
 
-laser = do
+attachedLaser = do
 	update = (parent, duration, oldUpdate) ->
 		=>
 			if parent.readyForRemoval
@@ -161,11 +161,58 @@ laser = do
 			.hitbox = Entity.Rectangle
 			.damageable = damageable
 
+laser = do
+	(arg) ->
+		arg or= {}
+
+		entity = arg.from
+		bulletData = arg.bullet or {}
+
+		angle = bulletData.angle or math.pi / 2
+		w     = bulletData.w or 5
+		h     = bulletData.h or 25
+
+		origin =
+			x: entity.x
+			y: entity.y
+
+		speed = bulletData.speed or 3
+
+		oldUpdate = bulletData.update
+
+		damageable = if bulletData.damageable != nil
+			bulletData.damageable
+		else
+			false
+
+		with clone bulletData
+			.hitbox = Entity.Rectangle
+			.speed = 0
+			.damageable = damageable
+			.h = 0
+			.update = =>
+				if @height != h
+					@x = origin.x +
+						speed * @frame * math.cos angle
+					@y = origin.y +
+						speed * @frame * math.sin angle
+
+					@height = math.min h, speed * @frame * 2
+
+					if @height == h
+						@speed = speed
+
+				if oldUpdate
+					oldUpdate self
+
 {
 	:clone
 	:radial
 	:circle
 	:sinusoid
+
+	-- Move to data.bullets?
 	:laser
+	:attachedLaser
 }
 
