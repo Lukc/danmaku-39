@@ -20,6 +20,16 @@ missileUpdate = =>
 			dx = sign * (60 - @frame) / 60 / 3
 			@x += dx
 
+flameUpdate = (growthTime, radiusVariation) ->
+	=>
+		if @frame < growthTime
+			@radius += radiusVariation
+		else
+			@radius -= radiusVariation
+
+			if @radius <= 0
+				@readyForRemoval = true
+
 {
 	{
 		name: "Missiles"
@@ -222,16 +232,36 @@ missileUpdate = =>
 						y: @y + oy
 						radius: 3
 						damage: 1
-						update: =>
-							if @frame < 24
-								@radius += 1.5
-							else
-								@radius -= 1.5
-
-								if @radius <= 0
-									@readyForRemoval = true
+						update: flameUpdate(24, 1.5)
 		bomb: (game) =>
-			@game\clearScreen!
+			player = self
+
+			controller = @\fire
+				touchable: false
+				update: =>
+					@x = player.x
+					@y = player.y
+
+					if @frame % 4 == 0
+						for i = -1, 1, 2
+							player\fire
+								angle: i * math.pi / 2 + @frame / 4 * math.pi / 8
+								speed: 4.5
+								x: @x
+								y: @y
+								radius: 1
+								damageable: false
+								update: do
+									flame = flameUpdate(30, 2)
+									=>
+										for bullet in *@game.bullets
+											if bullet\collides self
+												bullet\die!
+
+										flame self
+
+					if @frame == 60 * 5
+						@\die!
 		death: =>
 			print "Lost a life, right about now."
 	}
