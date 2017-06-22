@@ -176,5 +176,53 @@ missileUpdate = =>
 		death: =>
 			print "Lost a life, right about now."
 	}
+	{
+		name: "Flamethrower"
+		title: "Ordinary explorer"
+		mainAttackName: "Quick bullets"
+		secondaryAttackName: "Burning flames of love!"
+		radius: 3
+		itemAttractionRadius: 64
+		maxPower: 50
+		power: 30
+		update: =>
+			-- Damage estimation: 10 * 2 / 8 + 1 * powerLevel / 8
+			if @firingFrame and @firingFrame % 8 == 0
+				for i = -1, 1, 2
+					@\fire
+						angle: -math.pi/2
+						speed: 12
+						x: @x + 8 * i
+						y: @y - 5
+						radius: 3
+						damage: 10
+
+				powerLevel = math.floor(@power / 10) - 1
+
+				radius = 48
+				for i = -powerLevel/2, powerLevel/2
+					angle = math.pi * (-1 / 2 + 1 / 5 * i)
+					ox = radius * math.cos angle
+					oy = radius * math.sin angle
+					@\fire
+						angle: -math.pi / 2 - i * math.pi / 2 / 32
+						speed: 6.5
+						x: @x + ox
+						y: @y + oy
+						radius: 3
+						damage: 1
+						update: =>
+							if @frame < 24
+								@radius += 1.5
+							else
+								@radius -= 1.5
+
+								if @radius <= 0
+									@readyForRemoval = true
+		bomb: (game) =>
+			@game\clearScreen!
+		death: =>
+			print "Lost a life, right about now."
+	}
 }
 
