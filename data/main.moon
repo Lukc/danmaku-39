@@ -104,14 +104,14 @@ stage1 = {
 		if spell and spell.name
 			love.graphics.print "#{spell.name}", 40,60
 
-			timeout = math.floor (@boss.spellEndFrame - @boss.frame) / 60
-			print timeout
-			timeout = tostring timeout
-			print timeout
+			if @boss.frame >= @boss.spellStartFrame
+				timeout = math.floor (@boss.spellEndFrame - @boss.frame) / 60
+				timeout = tostring timeout
 
-			font = love.graphics.getFont!
+				font = love.graphics.getFont!
 
-			love.graphics.print timeout, @width - font\getWidth(timeout) - 20, 20
+				love.graphics.print timeout,
+					@width - font\getWidth(timeout) - 20, 20
 
 	update: =>
 		if @frame % 4 == 0
