@@ -49,6 +49,7 @@
 			player\addFragment "life"
 
 		(arg) -> Item with {
+				important: true
 				radius: 18
 				:draw
 				:collection
@@ -64,6 +65,7 @@
 			player\addFragment "bomb"
 
 		(arg) -> Item with {
+				important: true
 				radius: 10
 				:draw
 				:collection

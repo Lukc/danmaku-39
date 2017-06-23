@@ -126,6 +126,24 @@ state.draw = =>
 	else
 		love.graphics.setColor 255, 255, 255
 
+	-- XXX: Temporary markers.
+	for item in *@danmaku.items
+		if item.important
+			love.graphics.setColor 255, 0, 0
+			love.graphics.circle "fill",
+				@danmaku.x + item.x, @danmaku.y + @danmaku.height,
+				32
+
+	-- XXX: Temporary markers.
+	if @danmaku.boss
+		boss = @danmaku.boss
+
+		love.graphics.setColor 255, 0, 0
+		love.graphics.circle "fill",
+			@danmaku.x + boss.x, @danmaku.y + @danmaku.height,
+			32
+
+	love.graphics.setColor 255, 255, 255
 	@danmaku\draw!
 
 	w = @danmaku.width + @danmaku.x * 2

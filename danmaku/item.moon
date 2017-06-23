@@ -13,6 +13,9 @@ class extends Entity
 
 		@normalSpeed = @speed
 
+		-- Wether the GUI should try to put a marker below it or not.
+		@important = arg.important or false
+
 		@onCollection = arg.collection or nil
 
 	-- Items are entities that collide only with players.
