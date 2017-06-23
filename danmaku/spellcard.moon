@@ -14,5 +14,7 @@ class
 		@name = arg.name or nil
 		@description = arg.description or nil
 
+		@difficulties = [difficulty for difficulty in *(arg.difficulties or {})]
+
 		@position = arg.position
 

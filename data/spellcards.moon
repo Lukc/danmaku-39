@@ -2,7 +2,10 @@
 {
 	:Entity,
 	:Spellcard
+	:Danmaku
 } = require "danmaku"
+
+{:Difficulties} = Danmaku
 
 {:BigBullet, :SmallBullet, :MiniBullet} = require "data.bullets"
 
@@ -10,6 +13,9 @@
 
 s5 = Spellcard {
 	name: "Rosace multiple"
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
 	health: 60
 	timeout: 30 * 60
 	update: =>
@@ -30,6 +36,9 @@ s5 = Spellcard {
 }
 s2 = Spellcard {
 	name: "Unnamed spellcard"
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
 	health: 60
 	timeout: 30 * 60
 	update: =>
@@ -51,6 +60,9 @@ s2 = Spellcard {
 }
 s1 = Spellcard {
 	name: "Flower spellcard"
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
 	health: 60
 	timeout: 30 * 60
 	update: =>
@@ -115,6 +127,9 @@ s3 = Spellcard {
 }
 s4 = Spellcard {
 	name: "Test sign - Named Spellcards test"
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
 	description: "A basically unwinable spellcard meant to be used for tests."
 	health: 60 * 60 * 60 * 60
 	timeout: 30 * 60

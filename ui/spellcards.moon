@@ -1,5 +1,5 @@
 
-{:Boss} = require "danmaku"
+{:Danmaku, :Boss} = require "danmaku"
 
 Menu = require "ui.tools.menu"
 
@@ -7,31 +7,40 @@ data = require "data"
 
 state = {}
 
-state.enter = =>
-	@descriptionsFont = love.graphics.newFont "data/fonts/miamanueva.otf", 18
-	@optionsMenu = Menu {
-		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
-		{
-			label: "Options will go here"
-		}
-	}
-
-	spellcardsList = {
-		font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
+updateSpellcardsList = ->
+	newValues = {
 		maxDisplayedItems: 15
 	}
 
+	difficulty = do
+		string = state.optionsMenu.items[1].value
+		Danmaku.Difficulties[string]
+
 	for boss in *data.bosses
-		table.insert spellcardsList, {
-			label: boss.name
-			height: 48
-		}
+		insertedBossItem = false
 
 		for spellcard in *boss
 			unless spellcard.name
 				continue
 
-			table.insert spellcardsList, {
+			difficultyMatches = false
+			for i, d in ipairs spellcard.difficulties
+				if d == difficulty
+					difficultyMatches = true
+					break
+
+			unless difficultyMatches
+				continue
+
+			unless insertedBossItem
+				insertedBossItem = true
+
+				table.insert newValues, {
+					label: boss.name
+					height: 48
+				}
+
+			table.insert newValues, {
 				label: spellcard.name
 				height: 48
 				:spellcard
@@ -55,7 +64,37 @@ state.enter = =>
 					state.manager\setState newState, newStage
 			}
 
-	@spellcardsMenu = Menu spellcardsList
+	state.spellcardsMenu\setItemsList newValues
+
+state.enter = =>
+	@descriptionsFont = love.graphics.newFont "data/fonts/miamanueva.otf", 18
+	@optionsMenu = Menu {
+		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
+		{
+			label: "Difficulty"
+			type: "selector"
+			values: do
+				values = {}
+				t = {v, k for k, v in pairs Danmaku.Difficulties}
+
+				for i = 0, Danmaku.Difficulties["Ultra Extra"]
+					s = t[i]
+
+					if s
+						table.insert values, s
+
+				values
+			value: "Normal"
+			onValueChange: (item) =>
+				updateSpellcardsList Danmaku.Difficulties[item.value]
+		}
+	}
+
+	@spellcardsMenu = Menu {
+		font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
+	}
+
+	updateSpellcardsList Danmaku.Difficulties.Normal
 
 state.draw = =>
 	x = (love.graphics.getWidth! - 1024)/2
@@ -63,6 +102,7 @@ state.draw = =>
 
 	@optionsMenu.x = x + 10
 	@optionsMenu.y = y + 15
+	@optionsMenu.width = 1024 - 20
 
 	@spellcardsMenu.x = x + 10
 	@spellcardsMenu.y = y + 100
@@ -78,7 +118,14 @@ state.draw = =>
 
 	hoveredSpellcard = do
 		menuItem = @spellcardsMenu.items[@spellcardsMenu.items.selection]
+
+		unless menuItem
+			return
+
 		menuItem.spellcard
+
+	unless hoveredSpellcard
+		return
 
 	-- FIXME: Hacky as fuck. Children, don’t do this at home.
 	with print = love.graphics.print
@@ -96,10 +143,14 @@ state.update = (dt) =>
 	@spellcardsMenu\update dt
 
 state.keypressed = (key, ...) =>
-	if key == "escape"
+	-- FIXME: Use the common input thing.
+	if key == "left" or key == "right"
+		return @optionsMenu\keypressed key, ...
+	elseif key == "escape"
 		state.manager\setState require("ui.menu"), true
 
-	@spellcardsMenu\keypressed key, ...
+	if #@spellcardsMenu.items > 0
+		@spellcardsMenu\keypressed key, ...
 
 state
 
