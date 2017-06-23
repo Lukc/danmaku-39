@@ -38,10 +38,25 @@ updateSpellcardsList = ->
 				table.insert newValues, {
 					label: boss.name
 					height: 48
+					onSelection: =>
+						newState = require "ui.difficulty"
+						newStage = {
+							drawBossData: data.stages[1].drawBossData
+
+							update: =>
+								if @frame > 60 and #@enemies == 0
+									@\endOfStage!
+
+							[1]: =>
+								@\addEntity Boss boss
+						}
+
+						state.manager\setState newState, newStage
+
 				}
 
 			table.insert newValues, {
-				label: spellcard.name
+				label: "    " .. spellcard.name
 				height: 48
 				:spellcard
 				onSelection: =>
@@ -110,12 +125,6 @@ state.draw = =>
 	@optionsMenu\draw!
 	@spellcardsMenu\draw!
 
-	-- Drawing preview here
-	love.graphics.setColor 255, 255, 255
-	love.graphics.rectangle "line",
-		x + 1024 - 20 - 480, y + 800 - 680 - 20,
-		480, 600
-
 	hoveredSpellcard = do
 		menuItem = @spellcardsMenu.items[@spellcardsMenu.items.selection]
 
@@ -126,6 +135,14 @@ state.draw = =>
 
 	unless hoveredSpellcard
 		return
+
+	-- FIXME: Attempt to draw stage metadata here?
+
+	-- Drawing preview here
+	love.graphics.setColor 255, 255, 255
+	love.graphics.rectangle "line",
+		x + 1024 - 20 - 480, y + 800 - 680 - 20,
+		480, 600
 
 	-- FIXME: Hacky as fuck. Children, don’t do this at home.
 	with print = love.graphics.print
