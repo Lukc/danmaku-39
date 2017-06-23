@@ -11,7 +11,7 @@
 {:BigBullet, :SmallBullet} = require "data.bullets"
 spellcards = require "data.spellcards"
 items = require "data.items"
-players = require "data.players"
+characters = require "data.characters"
 
 {:circle, :laser} = require "data.helpers"
 
@@ -196,6 +196,7 @@ stage1 = {
 		stage1
 	}
 	spellcards: spellcards
-	:players
+	:characters
+	characterVariants: characters.variants
 }
 

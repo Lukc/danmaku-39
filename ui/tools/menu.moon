@@ -76,7 +76,7 @@ MenuItem = class
 
 			if @type == "selector"
 				label = tostring(@value)
-				@menu\print label, r.x - 12 + 600 - @menu.font\getWidth(label),
+				@menu\print label, r.x - 12 + @menu.width - @menu.font\getWidth(label),
 					r.y - 20,
 					color
 

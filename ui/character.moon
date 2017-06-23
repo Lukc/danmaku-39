@@ -1,11 +1,34 @@
 
 Grid = require "ui.tools.grid"
+Menu = require "ui.tools.menu"
 
 data = require "data"
 
 state = {
 	font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
 }
+
+goToGame = ->
+	characters = {}
+	for index, c in ipairs state.selectedCharacters
+		if c
+			character = {}
+
+			for key, value in pairs c
+				character[key] = value
+
+			for key, value in pairs state.selectedVariants[index]
+				character[key] = value
+
+			-- Eheh. We’ll have to force a few settings to not
+			-- be erased.
+			character.name = c.name
+
+			table.insert characters, character
+
+	nextState = require "ui.game"
+	state.manager\setState nextState,
+		state.options, characters
 
 state.enter = (options, multiplayer, noReset) =>
 	if noReset
@@ -16,6 +39,7 @@ state.enter = (options, multiplayer, noReset) =>
 	@options = options
 	@selection = 1
 
+	@selectedVariants = {}
 	@selectedCharacters = [false for i = 1, multiplayer and 4 or 1]
 
 	local cursors
@@ -57,19 +81,13 @@ state.enter = (options, multiplayer, noReset) =>
 
 	@grid = Grid
 		:x, :y, :width, :height, :cursors
-		cells: data.players
-		columns: #data.players
+		cells: data.characters
+		columns: #data.characters
 		rows: 1
 		onSelection: (cursor) =>
 			for i = 1, #@cursors
 				if cursor != @cursors[i]
 					continue
-
-				unless state.multiplayer
-					nextState = require "ui.game"
-					state.manager\setState nextState,
-						state.options, {cursor.selectedCell}
-					return
 
 				state.selectedCharacters[i] = cursor.selectedCell
 
@@ -80,9 +98,33 @@ state.enter = (options, multiplayer, noReset) =>
 		onEscape: =>
 			state.manager\setState require("ui.difficulty"), nil, true
 
-	while #data.players / @grid.rows > 4
+	while #data.characters / @grid.rows > 4
 		@grid.column = math.ceil(@grid.columns / 2)
 		@grid.rows *= 2
+
+	@variantMenus = [Menu {
+		font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
+		w: (1024 - 30) / 2
+		h: (800 - 30 - @grid.height) / 2
+		{
+			label: ""
+			type: "selector"
+			values: [variant.name for variant in *data.characterVariants]
+			value: data.characterVariants[1].name
+			onSelection: (item) =>
+				print "Variant selected for player #{i}."
+				state.selectedVariants[i] = do
+					variant = nil
+					for v in *data.characterVariants
+						if item.value == v.name
+							variant = v
+							break
+					variant
+
+				unless state.multiplayer
+					goToGame!
+		}
+	} for i = 1, 4]
 
 state.update = (dt) =>
 	unless @multiplayer
@@ -103,6 +145,10 @@ state.update = (dt) =>
 			when 6
 				{191, 255, 63, 191}
 
+	for i, cursor in ipairs @grid.cursors
+		if @selectedCharacters[i]
+			@variantMenus[i]\update dt
+
 state.draw = =>
 	love.graphics.setFont @font
 
@@ -113,51 +159,107 @@ state.draw = =>
 
 	@grid\draw!
 
-	if @multiplayer
-		width = 1024 / 2 - 20
-		height = (800 - @grid.height) / 2 - 20
+	width = 1024 / 2
+	height = @grid.y + @grid.height
 
-		for i, cursor in ipairs @grid.cursors
-			X, Y = switch i
+	for i, cursor in ipairs @grid.cursors
+		X, Y = if @multiplayer
+			switch i
 				when 1
 					10, 10
 				when 2
-					width + 20, 10
+					width, 10
 				when 3
-					10, height + 20 + 120
+					10, height
 				when 4
-					width + 20, height + 20 + 120
+					width, height
+		else
+			r = @grid\getCellRectangle cursor.index
+			width = r.w - 20
 
-			if @selectedCharacters[i]
-				love.graphics.print @selectedCharacters[i].name,
+			r.x, r.y + @grid.height - 400 - 10
+
+		if @selectedCharacters[i]
+			if @selectedVariants[i]
+				key = data.config.inputs[i].firing
+				love.graphics.setColor 255, 255, 255
+				love.graphics.print "Press #{key} to start playing.",
 					X, Y
+			else
+				with @variantMenus[i]
+					.x = X
+					.y = Y
+					.width = width - 20
+					.height = height
+
+					\draw!
+		else
+			love.graphics.setColor 255, 255, 255
+			hoveredCharacter = @grid.cells[cursor.index]
+			love.graphics.print hoveredCharacter.name,
+				X, Y
 
 state.keypressed = (key, scanCode, ...) =>
 	for i, cursor in ipairs @grid.cursors
 		if @selectedCharacters[i]
-			if scanCode == data.config.inputs[i].firing
-				print "Starting to play, duh~?"
-
+			if @selectedVariants[i]
+				if scanCode == data.config.inputs[i].firing
 				-- FIXME: Doesn’t work if a player hasn’t selected between
 				--        two players who have. Mostly due to ui.game.
+					print "Start of play requested~"
+					
+					goToGame!
 
-				characters = {}
-				for character in *state.selectedCharacters
-					if character
-						table.insert characters, character
-
-				nextState = require "ui.game"
-				state.manager\setState nextState,
-					state.options, characters
-			elseif scanCode == data.config.inputs[i].bombing
-				print "Unselecting character."
-
-				@selectedCharacters[i] = nil
-
-				for i = 1, 3
-					cursor.color[i] -= 64
+					return
+				elseif scanCode == data.config.inputs[i].bombing
+					@selectedVariants[i] = nil
+					return
+				else
+					print "Not sure what else could possibly happen here."
 			else
-				print "Not sure what else could possibly happen here."
+				menuInputs = data.config.menuInputs
+				inputs = data.config.inputs[i]
+
+				-- This feels SOOO hacky.
+				if @multiplayer
+					if inputs.left == scanCode
+						key = menuInputs.left[1]
+						@variantMenus[i]\keypressed key, key, ...
+						return
+					elseif inputs.right == scanCode
+						key = menuInputs.right[1]
+						@variantMenus[i]\keypressed key, key, ...
+						return
+					elseif inputs.firing == scanCode
+						key = menuInputs.select[1]
+						@variantMenus[i]\keypressed key, key, ...
+						return
+					elseif inputs.bombing == scanCode
+						print "Unselecting character."
+						-- FIXME: Duplication. Also, breach of OOP.
+						@variantMenus[i].selectionTime = 0
+						@variantMenus[i].selectedItem = {
+							onSelection: =>
+								state.selectedCharacters[i] = nil
+
+								for i = 1, 3
+									cursor.color[i] -= 64
+						}
+						return
+				else
+					if data.isMenuInput key, "back"
+						@variantMenus[i].selectionTime = 0
+						@variantMenus[i].selectedItem = {
+							onSelection: =>
+								print "unselecting character?"
+								state.selectedCharacters[i] = nil
+
+								for i = 1, 3
+									cursor.color[i] -= 64
+						}
+						return
+					else
+						@variantMenus[1]\keypressed key, scanCode, ...
 
 			for _, input in pairs data.config.inputs[i]
 				if input == scanCode
