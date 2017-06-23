@@ -58,6 +58,9 @@ state.enter = (noReset) =>
 			label: "Training"
 			onSelection: {
 				{
+					label: "WILL BE REMOVED (Soon™)"
+				}
+				{
 					label: "Stages"
 					onSelection: =>
 						list = [{
@@ -75,48 +78,12 @@ state.enter = (noReset) =>
 
 						@\setItemsList list
 				}
-				{
-					label: "Boss"
-					onSelection: =>
-						list = {
-							maxDisplayedItems: 8
-						}
-
-						for boss in *data.bosses
-							table.insert list, {
-								label: "#{boss.name}"
-								onSelection: =>
-									newState = require "ui.difficulty"
-									newStage = {
-										drawBossData: data.stages[1].drawBossData
-										update: =>
-											if @frame > 60 and #@enemies == 0
-												@\endOfStage!
-										[1]: =>
-											@\addEntity Boss boss
-									}
-									state.manager\setState newState,
-										newStage
-							}
-
-						table.insert list, {
-							label: "Go back"
-							onSelection: => @\setItemsList @items.parent
-						}
-
-						@\setItemsList list
-				}
-				{
-					label: "Spellcards"
-					onSelection: =>
-						state.manager\setState require("ui.spellcards")
-				}
-				{
-					label: "Go back"
-					onSelection: =>
-						@\setItemsList @items.parent
-				}
 			}
+		}
+		{
+			label: "Spellcards"
+			onSelection: =>
+				state.manager\setState require("ui.spellcards")
 		}
 		{
 			label: "Highscores"
