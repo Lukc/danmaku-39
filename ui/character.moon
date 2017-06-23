@@ -16,30 +16,21 @@ state.enter = (options, multiplayer, noReset) =>
 	@options = options
 	@selection = 1
 
-	@selectedPlayers = [false for i = 1, multiplayer and 4 or 1]
+	@selectedCharacters = [false for i = 1, multiplayer and 4 or 1]
 
-	@grids = {}
-	for i = 1, multiplayer and 4 or 1
-		local inputs, color
-		width  = 1024
-		height = 800
-		x      = 0
-		y      = 0
+	local cursors
+	width  = 1024
+	height = 800
+	x      = 0
+	y      = 0
 
-		if multiplayer
-			width = (1024 - 40) / 2
-			height = (800 - 40 - 120) / 2
+	if multiplayer
+		cursors = {}
+		width = 1024
+		height = (800 - 40 - 120) / 2
+		y = (800 - height - 20) / 2
 
-			x, y = switch i
-				when 1
-					10, 10
-				when 2
-					width + 20, 10
-				when 3
-					10, height + 20 + 120
-				when 4
-					width + 20, height + 20 + 120
-
+		for i = 1, 4
 			color = switch i
 				when 1
 					{255, 63,  63 }
@@ -58,43 +49,59 @@ state.enter = (options, multiplayer, noReset) =>
 				select: data.config.inputs[i].firing
 			}
 
-		@grids[i] = Grid
-			:x, :y, :width, :height, :inputs
-			cells: data.players
-			columns: #data.players
-			rows: 1
-			selectionColor: color
-			onSelection: =>
+			table.insert cursors, {
+				:index
+				:color
+				:inputs
+			}
+
+	@grid = Grid
+		:x, :y, :width, :height, :cursors
+		cells: data.players
+		columns: #data.players
+		rows: 1
+		onSelection: (cursor) =>
+			for i = 1, #@cursors
+				if cursor != @cursors[i]
+					continue
+
 				unless state.multiplayer
 					nextState = require "ui.game"
 					state.manager\setState nextState,
-						state.options, {@selectedCell}
+						state.options, {cursor.selectedCell}
 					return
 
-				state.selectedPlayers[i] = @selectedCell
-			onEscape: =>
-				state.manager\setState require("ui.difficulty"), nil, true
+				state.selectedCharacters[i] = cursor.selectedCell
 
-	while #data.players / @grids[1].rows > 4
-		@grids[1].column = math.ceil(@grids[1].columns / 2)
-		@grids[1].rows *= 2
+				for i = 1, 3
+					cursor.color[i] += 64
 
-	for i = 2, #@grids
-		@grids[i].rows    = @grids[1].rows
-		@grids[i].columns = @grids[1].columns
+				return
+		onEscape: =>
+			state.manager\setState require("ui.difficulty"), nil, true
+
+	while #data.players / @grid.rows > 4
+		@grid.column = math.ceil(@grid.columns / 2)
+		@grid.rows *= 2
 
 state.update = (dt) =>
 	unless @multiplayer
-		character = @grids[1].selectedCell
-		index = @grids[1].selection
+		character = @grid.cursors[1].selectedCell
+		index = @grid.cursors[1].index
 
-		@grids[1].selectionColor = switch index
+		@grid.cursors[1].color = switch index
 			when 1
-				{255, 63, 63}
+				{255, 63, 63, 191}
 			when 2
-				{63, 255, 63}
+				{63, 255, 63, 191}
 			when 3
-				{63, 191, 255}
+				{63, 191, 255, 191}
+			when 4
+				{255, 255, 63, 191}
+			when 5
+				{255, 63, 191, 191}
+			when 6
+				{191, 255, 63, 191}
 
 state.draw = =>
 	love.graphics.setFont @font
@@ -104,72 +111,59 @@ state.draw = =>
 
 	@selectedCharacter = nil
 
-	for i = 1, #@grids
-		if @selectedPlayers[i]
-			love.graphics.print "#{@selectedPlayers[i].name}", @grids[i].x, @grids[i].y
-		else
-			@grids[i]\draw!
+	@grid\draw!
 
-	unless @multiplayer
-		-- The character that has focus within the grid.
-		character = @grids[1].selectedCell
+	if @multiplayer
+		width = 1024 / 2 - 20
+		height = (800 - @grid.height) / 2 - 20
 
-		if character
-			r = @grids[1]\getCellRectangle @grids[1].selection
-			with x = x + r.x + 10
-				with y = y + r.y + r.h - 10 - 320
-					love.graphics.setColor 255, 255, 255
+		for i, cursor in ipairs @grid.cursors
+			X, Y = switch i
+				when 1
+					10, 10
+				when 2
+					width + 20, 10
+				when 3
+					10, height + 20 + 120
+				when 4
+					width + 20, height + 20 + 120
 
-					love.graphics.rectangle "line",
-						x, y + 10, 320, 320
-
-					love.graphics.print "#{character.name}",
-						x + (320 - @font\getWidth character.name) / 2, y + 10
-					love.graphics.print "#{character.title}",
-						x + (320 - @font\getWidth character.title) / 2, y + 50
-
-					love.graphics.print "#{character.mainAttackName}",
-						x, y + 120
-					love.graphics.print "#{character.secondaryAttackName}",
-						x, y + 160
-	else
-		with y = y + @grids[1].height + 10
-			hasPlayer = false
-			for player in *@selectedPlayers
-				if player
-					hasPlayer = true
-					break
-
-			if hasPlayer
-				inputsTable = {}
-
-				for i = 1, 4
-					if @selectedPlayers[i]
-						table.insert inputsTable,
-							data.config.inputs[i].firing
-
-				inputsString = table.concat inputsTable, ", "
-				text = "Press #{inputsString} to play"
-				love.graphics.print text,
-					x + (1024 - @font\getWidth text) / 2,
-					y + (120 - @font\getHeight text) / 2 - 8
+			if @selectedCharacters[i]
+				love.graphics.print @selectedCharacters[i].name,
+					X, Y
 
 state.keypressed = (key, scanCode, ...) =>
-	for i, grid in ipairs @grids
-		unless @selectedPlayers[i]
-			grid\keypressed key, scanCode, ...
-			continue
+	for i, cursor in ipairs @grid.cursors
+		if @selectedCharacters[i]
+			if scanCode == data.config.inputs[i].firing
+				print "Starting to play, duh~?"
 
-		if scanCode == data.config.inputs[i].firing
-			players = {}
+				-- FIXME: Doesn’t work if a player hasn’t selected between
+				--        two players who have. Mostly due to ui.game.
 
-			for i = 1, 4
-				if @selectedPlayers[i]
-					table.insert players, @selectedPlayers[i]
+				characters = {}
+				for character in *state.selectedCharacters
+					if character
+						table.insert characters, character
 
-			nextState = require "ui.game"
-			state.manager\setState nextState,
-				state.options, players
+				nextState = require "ui.game"
+				state.manager\setState nextState,
+					state.options, characters
+			elseif scanCode == data.config.inputs[i].bombing
+				print "Unselecting character."
+
+				@selectedCharacters[i] = nil
+
+				for i = 1, 3
+					cursor.color[i] -= 64
+			else
+				print "Not sure what else could possibly happen here."
+
+			for _, input in pairs data.config.inputs[i]
+				if input == scanCode
+					return
+
+	@grid\keypressed key, scanCode, ...
 
 state
 

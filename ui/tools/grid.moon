@@ -14,16 +14,21 @@ class
 		for variable in *{"x", "y", "width", "height"}
 			@[variable] = arg[variable] or 1
 
-		@selectedCell = nil
-		@selection = 1
+		@cursors = {}
+		for cursor in *(arg.cursors or {{}})
+			table.insert @cursors, {
+				index: cursor.index or 1
+				color: cursor.color or {255, 191, 127}
+				inputs: {k,v for k,v in pairs cursor.inputs or {}}
+				selectedCell: nil
+			}
 
-		if arg.inputs
-			@inputs =
-				left:   arg.inputs.left   or "left"
-				right:  arg.inputs.right  or "right"
-				down:   arg.inputs.down   or "down"
-				up:     arg.inputs.up     or "up"
-				select: arg.inputs.select or "return"
+		with inputs = @cursors[1].inputs
+			inputs.left =   inputs.left   or "left"
+			inputs.right =  inputs.right  or "right"
+			inputs.down =   inputs.down   or "down"
+			inputs.up =     inputs.up     or "up"
+			inputs.select = inputs.select or "return"
 
 		@drawCell = arg.drawCell or       ->
 
@@ -46,7 +51,8 @@ class
 		x = (love.graphics.getWidth! - 1024) / 2
 		y = (love.graphics.getHeight! - 800) / 2
 
-		@selectedCell = nil
+		for cursor in *@cursors
+			cursor.selectedCell = nil
 
 		for index = 1, (@columns * @rows)
 			cell = @cells[index]
@@ -64,20 +70,36 @@ class
 			love.graphics.setColor 255, 255, 255
 			love.graphics.rectangle "line", r.x, r.y, r.w, r.h
 
-			if @selection == index
-				-- FIXME: This should maybe be done in an update! or something.
-				if cell
-					@selectedCell = cell
+			cursorsHere = {}
 
-				love.graphics.setColor @selectionColor
+			for cursor in *@cursors
+				if cursor.index == index
+					-- FIXME: This should maybe be done in an update! or
+					--        something.
+					table.insert cursorsHere, cursor
+					cursor.selectedCell = cell
+
+			for i, cursor in ipairs cursorsHere
+				dx = (r.w + 50) / #cursorsHere
+
+				oldScissor = {love.graphics.getScissor!}
+				love.graphics.setScissor r.x, r.y, r.w, r.h
+
+				love.graphics.setColor cursor.color
+				love.graphics.polygon "fill",
+					r.x +  0 + dx * (i - 1), r.y,
+					r.x +  0 + dx * (i),     r.y,
+					r.x - 50 + dx * (i),     r.y + r.h,
+					r.x - 50 + dx * (i - 1), r.y + r.h
+
+				love.graphics.setColor cursor.color
 				for j = 1.5, 4.5
 					love.graphics.rectangle "line",
-						r.x + j, r.y + j, r.w - 2*j, r.h - 2*j
+						r.x + j, r.y + j, r.w - 2 * j, r.h - 2 * j
+
+				love.graphics.setScissor unpack oldScissor
 
 	keypressed: (key, scanCode, ...) =>
-		x = (@selection - 1) % @columns + 1
-		y = math.floor((@selection - 1) / @columns) + 1
-
 		getWidth = (y) ->
 			if y <= math.floor(#@cells / @columns)
 				@columns
@@ -90,32 +112,24 @@ class
 				h += 1
 			h
 
-		if @inputs
+		for cursor in *@cursors
+			x = (cursor.index - 1) % @columns + 1
+			y = math.floor((cursor.index - 1) / @columns) + 1
+
+			inputs = cursor.inputs
+
 			if scanCode == "escape"
 				@\onEscape!
-			elseif scanCode == @inputs.select
-				@\onSelection @selectedCell
-			elseif scanCode == @inputs.down
+			elseif scanCode == inputs.select
+				@\onSelection cursor
+			elseif scanCode == inputs.down
 				y = (y - 0) % getHeight(x) + 1
-			elseif scanCode == @inputs.up
+			elseif scanCode == inputs.up
 				y = (y - 2) % getHeight(x) + 1
-			elseif scanCode == @inputs.left
+			elseif scanCode == inputs.left
 				x = (x - 2) % getWidth(y) + 1
-			elseif scanCode == @inputs.right
-				x = (x - 0) % getWidth(y) + 1
-		else
-			if data.isMenuInput key, "back"
-				@\onEscape!
-			elseif data.isMenuInput key, "select"
-				@\onSelection @selectedCell
-			elseif data.isMenuInput key, "down"
-				y = (y - 0) % getHeight(x) + 1
-			elseif data.isMenuInput key, "up"
-				y = (y - 2) % getHeight(x) + 1
-			elseif data.isMenuInput key, "left"
-				x = (x - 2) % getWidth(y) + 1
-			elseif data.isMenuInput key, "right"
+			elseif scanCode == inputs.right
 				x = (x - 0) % getWidth(y) + 1
 
-		@selection = (y - 1) * @columns + (x - 1) + 1
+			cursor.index = (y - 1) * @columns + (x - 1) + 1
 
