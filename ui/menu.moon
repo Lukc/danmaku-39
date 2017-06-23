@@ -109,39 +109,7 @@ state.enter = (noReset) =>
 				{
 					label: "Spellcards"
 					onSelection: =>
-						list = {
-							maxDisplayedItems: 8
-						}
-
-						for boss in *data.bosses
-							for spellcard in *boss
-								unless spellcard.name
-									continue
-
-								table.insert list, {
-									label: "#{spellcard.name}"
-									onSelection: =>
-										newState = require "ui.difficulty"
-										newStage = {
-											drawBossData: data.stages[1].drawBossData
-											update: =>
-												if @frame > 60 and #@enemies == 0
-													@\endOfStage!
-											[1]: =>
-												@\addEntity Boss with boss
-													[1] = spellcard
-													[2] = nil
-										}
-										state.manager\setState newState,
-											newStage
-								}
-
-						table.insert list, {
-							label: "Go back"
-							onSelection: => @\setItemsList @items.parent
-						}
-
-						@\setItemsList list
+						state.manager\setState require("ui.spellcards")
 				}
 				{
 					label: "Go back"

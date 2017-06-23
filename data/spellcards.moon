@@ -115,7 +115,8 @@ s3 = Spellcard {
 }
 s4 = Spellcard {
 	name: "Test sign - Named Spellcards test"
-	health: 60
+	description: "A basically unwinable spellcard meant to be used for tests."
+	health: 60 * 60 * 60 * 60
 	timeout: 30 * 60
 	update: =>
 		if @frame % 10 == 0

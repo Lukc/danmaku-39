@@ -109,6 +109,8 @@ class
 		for item in *arg
 			table.insert @items, item
 
+		@items.maxDisplayedItems = arg.maxDisplayedItems
+
 		@items.root = true
 
 		@\setItemsList @items
