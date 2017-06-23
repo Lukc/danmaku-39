@@ -151,8 +151,6 @@ loadMod = (path) ->
 		mod
 
 	if ok
-		print "Loading #{path}"
-
 		table.insert cache.mods, result
 
 		unless result.name
