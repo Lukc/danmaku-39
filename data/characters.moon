@@ -3,6 +3,8 @@
 	:Entity,
 } = require "danmaku"
 
+{:CharacterData, :CharacterVariantData} = require "data.checks"
+
 missileUpdate = =>
 	speedingSequence = 60 * 2
 
@@ -31,7 +33,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 				@readyForRemoval = true
 
 {
-	{
+	CharacterData {
 		name: "Best gurl"
 		title: "Ordinary explorer"
 		mainAttackName: "Quick bullets"
@@ -64,7 +66,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 		death: =>
 			print "Lost a life, right about now."
 	}
-	{
+	CharacterData {
 		name: "Second best gurl"
 		title: "Friendly tribal warrior"
 		mainAttackName: "Quick bullets"
@@ -104,7 +106,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 		death: =>
 			print "Lost a life, right about now."
 	}
-	{
+	CharacterData {
 		name: "Needs-more-love gurl"
 		title: "Simple navigator"
 		mainAttackName: "Quick bullets"
@@ -145,7 +147,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 			print "Lost a life, right about now."
 	}
 	variants: {
-		{
+		CharacterVariantData {
 			name: "Missiles"
 			description: "Big, slow, and dangerous."
 			maxPower: 50
@@ -176,7 +178,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 							damage: 6
 							update: missileUpdate
 		}
-		{
+		CharacterVariantData {
 			name: "Sword and rifle"
 			description: "Bullets, bullets everywhere."
 			maxPower: 50
@@ -210,7 +212,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 							radius: 3
 							damage: 1
 		}
-		{
+		CharacterVariantData {
 			name: "Flamethrower"
 			description: "Burning flames of love!"
 			maxPower: 50

@@ -18,6 +18,8 @@ characters = require "data.characters"
 
 {:circle, :laser} = require "data.helpers"
 
+{:StageData, :ModData, :BossData} = require "data.checks"
+
 titleFont = love.graphics.newFont 42
 subtitleFont = love.graphics.newFont 24
 
@@ -31,7 +33,7 @@ circularDrop = (entity, count, radius, constructor) ->
 		entity.game\addEntity constructor
 			:x, :y
 
-boss = {
+boss = BossData {
 	radius: 32
 	x: 600 / 2
 	y: 800 / 5
@@ -66,7 +68,7 @@ boss = {
 	spellcards[5]
 }
 
-stage1 = {
+stage1 = StageData {
 	title: "A Stage for Testers"
 	subtitle: "Developers’ playground"
 	difficulties: {
@@ -198,7 +200,7 @@ stage1 = {
 		@\addEntity Boss boss
 }
 
-{
+ModData {
 	name: "Core Data"
 	bosses: {
 		boss
