@@ -168,6 +168,12 @@ state.update = (dt) =>
 	@menu\update dt
 
 state.draw = =>
+	x = (love.graphics.getWidth! - 1024) / 2
+	y = (love.graphics.getHeight! - 800) / 2
+
+	@menu.x = x + (800 - @menu.width)
+	@menu.y = y + 200
+
 	@menu\draw!
 
 state

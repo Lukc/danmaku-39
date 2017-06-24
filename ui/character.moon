@@ -179,6 +179,9 @@ state.draw = =>
 
 			r.x, r.y + @grid.height - 400 - 10
 
+		X += x
+		Y += y
+
 		if @selectedCharacters[i]
 			if @selectedVariants[i]
 				key = data.config.inputs[i].firing
