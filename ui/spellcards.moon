@@ -12,6 +12,8 @@ updateSpellcardsList = ->
 		maxDisplayedItems: 15
 	}
 
+	state.playableSpellcard = false
+
 	for boss in *(state.stage.bosses or {})
 		insertedBossItem = false
 
@@ -65,6 +67,13 @@ updateSpellcardsList = ->
 
 					state.manager\setState newState, newStage
 			}
+
+			state.playableSpellcard = true
+
+	unless state.playableSpellcard
+		table.insert newValues, {
+			label: "No playable spellcards."
+		}
 
 	state.spellcardsMenu\setItemsList newValues
 
@@ -145,6 +154,9 @@ state.keypressed = (key, ...) =>
 			@spellcardsMenu\keypressed key, ...
 		return
 	elseif data.isMenuInput(key, "down")
+		unless state.playableSpellcard
+			return
+
 		if @playStageMenu.items.selection == 1
 			@playStageMenu.items.selection = 0
 			@spellcardsMenu.items.selection = 1
@@ -158,6 +170,9 @@ state.keypressed = (key, ...) =>
 				@spellcardsMenu\keypressed key, ...
 		return
 	elseif data.isMenuInput(key, "up")
+		unless state.playableSpellcard
+			return
+
 		items = @spellcardsMenu.items
 
 		if @playStageMenu.items.selection == 1
