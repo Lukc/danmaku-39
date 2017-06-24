@@ -103,6 +103,9 @@ s1 = Spellcard {
 s3 = Spellcard {
 	health: 60
 	timeout: 30 * 60
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
 	update: =>
 		if @frame % 40 == 0
 			bullet =
