@@ -33,13 +33,18 @@ class extends Enemy
 		@spellEndFrame = 0
 		@spellEndHealth = 0
 
-		@lives = 0
-		for spell in *@spellcards
-			if spell.endOfLife or spell == @spellcards[#@spellcards]
-				@lives += 1
-
 	update: =>
 		@\doUpdate =>
+			if @frame == 0
+				@lives = 0
+				for spell in *@spellcards
+					unless spell\playableAtDifficulty @game.difficulty
+						print "Skipping #{spell} due to difficulty."
+						continue
+
+					if spell.endOfLife or spell == @spellcards[#@spellcards]
+						@lives += 1
+
 			currentSpell = @spellcards[@currentSpellIndex]
 
 			if currentSpell
@@ -94,8 +99,14 @@ class extends Enemy
 
 		oldSpell = @spellcards[@currentSpellIndex]
 
+
 		@currentSpellIndex += 1
 		@touchable = true
+
+		-- FIXME: WHY DOES IT HAVE TO TAKE TWO LINES? I hate you.
+		while @spellcards[@currentSpellIndex] and not @spellcards[@currentSpellIndex]\playableAtDifficulty @game.difficulty
+			print "Skipping #{@spellcards[@currentSpellIndex]}"
+			@currentSpellIndex += 1
 
 		spell = @spellcards[@currentSpellIndex]
 

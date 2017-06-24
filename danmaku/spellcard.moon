@@ -1,4 +1,6 @@
 
+Danmaku = require "danmaku.danmaku"
+
 class
 	new: (arg) =>
 		arg or= {}
@@ -17,4 +19,21 @@ class
 		@difficulties = [difficulty for difficulty in *(arg.difficulties or {})]
 
 		@position = arg.position
+
+	playableAtDifficulty: (difficulty) =>
+		for e in *@difficulties
+			if e == difficulty
+				return true
+
+		false
+
+	__tostring: =>
+		difficultyString = do
+			t = [Danmaku.getDifficultyString(d) for d in *@difficulties]
+			table.concat t, ", "
+
+		if @name
+			"<Spellcard: '#{@name}', [#{difficultyString}]>"
+		else
+			"<Spellcard: [#{difficultyString}]>"
 
