@@ -146,7 +146,7 @@ state.draw = =>
 	love.graphics.setColor 255, 255, 255
 	@danmaku\draw!
 
-	w = @danmaku.width + @danmaku.x * 2
+	w = @danmaku.width + (@danmaku.x - x) * 2
 
 	love.graphics.setFont @font
 
