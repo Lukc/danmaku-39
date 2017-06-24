@@ -61,7 +61,7 @@ state.enter = (options, players) =>
 
 	options or= {}
 	{
-		:noBombs, :pacific, :training
+		:noBombs, :pacific, :training, :difficulty
 		:stage
 	} = options
 
@@ -97,7 +97,7 @@ state.enter = (options, players) =>
 		y: 25
 		stage: Stage stage
 		:width, :height
-		:noBombs, :pacific, :training
+		:noBombs, :pacific, :training, :difficulty
 
 	-- FIXME: update their positions, based on players count
 	for player in *players

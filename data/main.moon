@@ -36,6 +36,9 @@ boss = {
 	x: 600 / 2
 	y: 800 / 5
 	name: "Mi~mi~midori"
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
 
 	endOfSpell: (spell) =>
 		local pointItems, powerItems

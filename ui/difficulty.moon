@@ -1,6 +1,8 @@
 
 state = {}
 
+{:Danmaku} = require "danmaku"
+
 Menu = require "ui.tools.menu"
 
 bigFont = love.graphics.newFont "data/fonts/miamanueva.otf", 72
@@ -8,12 +10,26 @@ bigFont = love.graphics.newFont "data/fonts/miamanueva.otf", 72
 drawSelector = (x, y) =>
 	r = @\getRectangle x, y
 	color = switch @value
+		when "Tutorial"
+			{63, 191, 255}
+		when "Easy"
+			{127, 255, 255}
 		when "Normal"
 			{127, 255, 127}
 		when "Hard"
 			{255, 191,  95}
 		when "Lunatic"
 			{255,  95, 191}
+		when "Ultra Lunatic"
+			{255, 31, 127}
+		when "Extra"
+			{255, 63, 63}
+		when "Ultra Extra"
+			{255, 31, 127}
+		when "Last Word"
+			{127, 127, 127}
+		when "Extra Last Word"
+			{63, 63, 63}
 		else
 			{255, 255, 255}
 
@@ -68,8 +84,8 @@ play = ->
 			noBombs: state.noBombs
 			pacific: state.pacific
 			training: state.training
+			difficulty: Danmaku.Difficulties[state.difficulty]
 		}
-		print "FIXME: Options and difficulty are not passed!"
 		state.manager\setState require("ui.character"), options, state.multiplayer
 
 state.enter = (stage, noReset) =>
@@ -79,20 +95,25 @@ state.enter = (stage, noReset) =>
 	@stage = stage
 	@multiplayer = false
 
+	@difficulty = Danmaku.getDifficultyString(stage.difficulties[1])
+
 	@menu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
 
-		x: 200
+		x: 150
 		y: 200
 
 		{
 			type: "selector"
-			values: {"Normal", "Hard", "Lunatic"}
-			label: "Normal"
+			values: [Danmaku.getDifficultyString(d) for d in *stage.difficulties]
+			label: state.difficulty
 			noTransition: true
 			height: 128
 			draw: drawSelector
 			onSelection: play!
+			onValueChange: (item) =>
+				print item.value
+				state.difficulty = item.value
 		}
 		{height: 32}
 		{

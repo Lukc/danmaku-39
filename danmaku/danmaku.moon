@@ -66,7 +66,7 @@ class
 		@training = arg.training or false
 
 	@Difficulties: {
-		Tutoriel: 0
+		Tutorial: 0
 		Easy:     1
 		Normal:   2
 		Hard:     3
@@ -77,6 +77,22 @@ class
 		"Last Word": 12
 		"Extra Last Word": 13
 	}
+
+	@getDifficultyString: (i) ->
+		for k,v in pairs @@Difficulties
+			if v == i
+				return k
+
+	@DifficultyStrings: do
+		t = {}
+
+		for i = 0, @@Difficulties["Extra Last Word"]
+			difficulty = @@.getDifficultyString i
+
+			if difficulty
+				table.insert t, difficulty
+
+		t
 
 	difficultyString: (difficulty = @difficulty) =>
 		for key, value in @@Difficulties
