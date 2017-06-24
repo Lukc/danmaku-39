@@ -117,7 +117,7 @@ state.draw = =>
 				love.graphics.print text, x, y
 
 	do
-		text = "Development Build - Week 1"
+		text = "Development Build - Week 2"
 
 		love.graphics.setFont @smallFont
 		love.graphics.setColor 127, 127, 127, alpha
