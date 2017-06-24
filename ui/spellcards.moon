@@ -46,9 +46,32 @@ updateSpellcardsList = ->
 				}
 
 			table.insert newValues, {
-				label: "    " .. spellcard.name
+				label: spellcard.name
 				height: 48
 				:spellcard
+				draw: (x, y) =>
+					r = @\getRectangle x, y
+					defaultColor = @\getDefaultColor!
+
+					sameDifficulty = false
+
+					for stageDifficulty in *(state.stage.difficulties or {})
+						for spellDifficulty in *(spellcard.difficulties or {})
+							if stageDifficulty == spellDifficulty
+								sameDifficulty = true
+								break
+
+					color = if sameDifficulty
+						defaultColor
+					else
+						o = if @\hovered!
+							math.sin @menu.drawTime * 5
+						else
+							0
+
+						{255, 127 + 64 * o, 127 + 64 * o}
+
+					@menu\print @label, r.x + 48, r.y - 20, color
 				onSelection: =>
 					newState = require "ui.difficulty"
 					newStage = {

@@ -74,6 +74,8 @@ class
 		"Ultra Lunatic":  5
 		Extra:    10
 		"Ultra Extra":    11
+		"Last Word": 12
+		"Extra Last Word": 13
 	}
 
 	difficultyString: (difficulty = @difficulty) =>

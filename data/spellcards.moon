@@ -128,7 +128,7 @@ s3 = Spellcard {
 s4 = Spellcard {
 	name: "Test sign - Named Spellcards test"
 	difficulties: {
-		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+		Difficulties["Extra Last Word"]
 	}
 	description: "A basically unwinable spellcard meant to be used for tests."
 	health: 60 * 60 * 60 * 60

@@ -6,7 +6,10 @@
 	:Item,
 	:Stage,
 	:Boss,
+	:Danmaku
 } = require "danmaku"
+
+{:Difficulties} = Danmaku
 
 {:BigBullet, :SmallBullet} = require "data.bullets"
 spellcards = require "data.spellcards"
@@ -63,6 +66,9 @@ boss = {
 stage1 = {
 	title: "A Stage for Testers"
 	subtitle: "Developers’ playground"
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
 
 	bosses: {boss}
 
