@@ -209,7 +209,7 @@ class
 			@selectedItem = nil
 			@selectionTime = nil
 
-	keypressed: (key, ...) =>
+	catchInput: (key, ...) =>
 		if @inputCatchMode
 			@inputCatchMode = false
 
@@ -217,90 +217,131 @@ class
 
 			@selectedItem = nil
 
-			return
+			return true
 
 		if @selectedItem
+			return true
+
+	select: =>
+		item = @items[@items.selection]
+
+		if item.onSelection
+			if item.onImmediateSelection
+				item.onImmediateSelection self
+			@selectedItem = item
+			@selectionTime = 0
+
+			if item.noTransition
+				@selectionTime = math.huge
+		elseif item.onInputCatch
+			@inputCatchMode = true
+			@selectedItem = item
+		elseif item.type == "check"
+			item.value = not item.value
+
+	up: =>
+		@items.selection = (@items.selection - 2) % #@items + 1
+
+		while not @\isSelectable @items[@items.selection]
+			@items.selection = (@items.selection - 2) % #@items + 1
+
+		@\checkOverflows!
+
+	down: =>
+		@items.selection = (@items.selection) % #@items + 1
+
+		while not @\isSelectable @items[@items.selection]
+			@items.selection = (@items.selection) % #@items + 1
+
+		@\checkOverflows!
+
+	right: =>
+		item = @items[@items.selection]
+
+		if item.type == "check"
+			item.value = not item.value
+
+			if item.onValueChange
+				item.onValueChange self, item
+		elseif item.type == "selector"
+			currentIndex = 1
+			for i = 1, #item.values
+				if item.values[i] == item.value
+					currentIndex = i
+
+					break
+
+			item.value = item.values[currentIndex % #item.values + 1]
+
+			if item.onValueChange
+				item.onValueChange self, item
+
+	left: =>
+		item = @items[@items.selection]
+
+		if item.type == "check"
+			item.value = not item.value
+
+			if item.onValueChange
+				item.onValueChange self, item
+		elseif item.type == "selector"
+			currentIndex = 1
+			for i = 1, #item.values
+				if item.values[i] == item.value
+					currentIndex = i
+
+					break
+
+			item.value = item.values[(currentIndex - 2) % #item.values + 1]
+
+			if item.onValueChange
+				item.onValueChange self, item
+
+	back: =>
+		if @items.parent
+			@selectionTime = 0
+			@selectedItem = {
+				onSelection: =>
+					@\setItemsList @items.parent
+			}
+		else
+			@items.selection = #@items
+
+	gamepadpressed: (joystick, button) =>
+		config = data.config
+
+		if @\catchInput button
+			return
+
+		if button == config.menuGamepadInputs.select
+			@\select!
+		elseif button == config.menuGamepadInputs.down
+			@\down!
+		elseif button == config.menuGamepadInputs.up
+			@\up!
+		elseif button == config.menuGamepadInputs.right
+			@\right!
+		elseif button == config.menuGamepadInputs.left
+			@\left!
+		elseif button == config.menuGamepadInputs.back
+			@\back!
+
+	keypressed: (key, ...) =>
+		if @\catchInput key, ...
 			return
 
 		if data.isMenuInput key, "select"
-			item = @items[@items.selection]
-
-			if item.onSelection
-				if item.onImmediateSelection
-					item.onImmediateSelection self
-				@selectedItem = item
-				@selectionTime = 0
-
-				if item.noTransition
-					@selectionTime = math.huge
-			elseif item.onInputCatch
-				@inputCatchMode = true
-				@selectedItem = item
-			elseif item.type == "check"
-				item.value = not item.value
+			@\select!
 		elseif data.isMenuInput key, "up"
-			@items.selection = (@items.selection - 2) % #@items + 1
-
-			while not @\isSelectable @items[@items.selection]
-				@items.selection = (@items.selection - 2) % #@items + 1
-
-			@\checkOverflows!
+			@\up!
 		elseif data.isMenuInput key, "down"
-			@items.selection = (@items.selection) % #@items + 1
-
-			while not @\isSelectable @items[@items.selection]
-				@items.selection = (@items.selection) % #@items + 1
-
-			@\checkOverflows!
+			@\down!
 		elseif data.isMenuInput key, "right"
-			item = @items[@items.selection]
-
-			if item.type == "check"
-				item.value = not item.value
-
-				if item.onValueChange
-					item.onValueChange self, item
-			elseif item.type == "selector"
-				currentIndex = 1
-				for i = 1, #item.values
-					if item.values[i] == item.value
-						currentIndex = i
-
-						break
-
-				item.value = item.values[currentIndex % #item.values + 1]
-
-				if item.onValueChange
-					item.onValueChange self, item
+			@\right!
 		elseif data.isMenuInput key, "left"
-			item = @items[@items.selection]
-
-			if item.type == "check"
-				item.value = not item.value
-
-				if item.onValueChange
-					item.onValueChange self, item
-			elseif item.type == "selector"
-				currentIndex = 1
-				for i = 1, #item.values
-					if item.values[i] == item.value
-						currentIndex = i
-
-						break
-
-				item.value = item.values[(currentIndex - 2) % #item.values + 1]
-
-				if item.onValueChange
-					item.onValueChange self, item
+			@\left!
 		elseif data.isMenuInput key, "back"
-			if @items.parent
-				@selectionTime = 0
-				@selectedItem = {
-					onSelection: =>
-						@\setItemsList @items.parent
-				}
-			else
-				@items.selection = #@items
+			@\back!
 
 	checkOverflows: =>
 		start = @items.startDisplayIndex or 1

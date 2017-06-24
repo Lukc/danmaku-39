@@ -256,11 +256,51 @@ state.update = (dt) =>
 
 		@menu = victoryMenu!
 
+	allJoysticks = love.joystick.getJoysticks!
 	for i = 1, #@players
+		inputs = data.config.inputs[i]
+		padInputs = data.config.gamepadInputs[i]
+		keyboard = (key) ->
+			love.keyboard.isScancodeDown inputs[key]
+		gamepad = (button) ->
+			for joystick in *allJoysticks
+				if joystick\getID! == padInputs.gamepad
+					return joystick\isGamepadDown padInputs[button]
+
+				return false
+
+		-- Gamepad joysticks get priority, here.
+		joystick = do
+			joystick = nil
+			for j in *allJoysticks
+				if padInputs.gamepad == j\getID!
+					joystick = j
+					break
+			joystick
+
+		@players[i].movement.left = false
+		@players[i].movement.right = false
+		@players[i].movement.up = false
+		@players[i].movement.down = false
+
+		if joystick and joystick\getAxisCount! >= 1
+			dx, dy = joystick\getAxes!
+
+			if dx > 0
+				@players[i].movement.right = dx
+			elseif dx < 0
+				@players[i].movement.left = -dx
+
+			if dy > 0
+				@players[i].movement.down = dy
+			elseif dy < 0
+				@players[i].movement.up = -dy
+
 		for key in *{"left", "right", "up", "down"}
-			@players[i].movement[key] = love.keyboard.isScancodeDown data.config.inputs[i][key]
+			@players[i].movement[key] or= (keyboard(key) or gamepad(key)) and 1
+
 		for key in *{"bombing", "firing", "focusing"}
-			@players[i][key] = love.keyboard.isScancodeDown data.config.inputs[i][key]
+			@players[i][key] = keyboard(key) or gamepad(key)
 
 	playersLeft = false
 	for i, player in ipairs @players
@@ -279,10 +319,26 @@ state.keypressed = (key, ...) =>
 	if state.paused
 		-- Holy shit, this is the project’s hackiest hack. I think.
 		if key == "escape" and @menu.items.selection == 1 and @menu.items[1].label == "Resume"
-			@menu\keypressed "return"
+			@menu\back!
 		else
 			@menu\keypressed key, ...
 	elseif key == "escape"
+		@menu.drawTime = 0
+
+		unless state.paused
+			state.paused = 0
+
+state.gamepadpressed = (joystick, button) =>
+	if state.paused
+		if button == "start"
+			@menu.selectionTime = 0
+			@menu.selectedItem = {
+				onSelection: =>
+					state.paused = false
+			}
+		else
+			@menu\gamepadpressed joystick, button
+	elseif button == "start"
 		@menu.drawTime = 0
 
 		unless state.paused

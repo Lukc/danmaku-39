@@ -201,71 +201,77 @@ state.draw = =>
 
 state.keypressed = (key, scanCode, ...) =>
 	for i, cursor in ipairs @grid.cursors
-		if @selectedCharacters[i]
+		inputs = data.config.inputs[i]
+
+		if scanCode == inputs.firing or data.isMenuInput scanCode, "select"
 			if @selectedVariants[i]
-				if scanCode == data.config.inputs[i].firing
-				-- FIXME: Doesn’t work if a player hasn’t selected between
-				--        two players who have. Mostly due to ui.game.
-					print "Start of play requested~"
-					
-					goToGame!
-
-					return
-				elseif scanCode == data.config.inputs[i].bombing
-					@selectedVariants[i] = nil
-					return
-				else
-					print "Not sure what else could possibly happen here."
+				goToGame!
+			elseif @selectedCharacters[i]
+				@variantMenus[i]\select!
 			else
-				menuInputs = data.config.menuInputs
-				inputs = data.config.inputs[i]
+				@grid\select i
+		elseif scanCode == inputs.bombing or data.isMenuInput scanCode, "back"
+			if @selectedVariants[i]
+				@selectedVariants[i] = nil
+			elseif @selectedCharacters[i]
+				-- FIXME: Breach of OOP.
+				@variantMenus[i].selectionTime = 0
+				@variantMenus[i].selectedItem = {
+					onSelection: =>
+						state.selectedCharacters[i] = nil
 
-				-- This feels SOOO hacky.
-				if @multiplayer
-					if inputs.left == scanCode
-						key = menuInputs.left[1]
-						@variantMenus[i]\keypressed key, key, ...
-						return
-					elseif inputs.right == scanCode
-						key = menuInputs.right[1]
-						@variantMenus[i]\keypressed key, key, ...
-						return
-					elseif inputs.firing == scanCode
-						key = menuInputs.select[1]
-						@variantMenus[i]\keypressed key, key, ...
-						return
-					elseif inputs.bombing == scanCode
-						print "Unselecting character."
-						-- FIXME: Duplication. Also, breach of OOP.
-						@variantMenus[i].selectionTime = 0
-						@variantMenus[i].selectedItem = {
-							onSelection: =>
-								state.selectedCharacters[i] = nil
-
-								for i = 1, 3
-									cursor.color[i] -= 64
-						}
-						return
-				else
-					if data.isMenuInput key, "back"
-						@variantMenus[i].selectionTime = 0
-						@variantMenus[i].selectedItem = {
-							onSelection: =>
-								print "unselecting character?"
-								state.selectedCharacters[i] = nil
-
-								for i = 1, 3
-									cursor.color[i] -= 64
-						}
-						return
+						for i = 1, 3
+							cursor.color[i] -= 64
+				}
+			else
+				@grid\back!
+		else
+			for direction in *{"left", "up", "right", "down"}
+				menuInput = data.isMenuInput scanCode, direction
+				if inputs[direction] == scanCode or menuInput
+					if @selectedVariants[i]
+						false -- ignoring
+					elseif @selectedCharacters[i]
+						@variantMenus[i][direction] @variantMenus[i]
 					else
-						@variantMenus[1]\keypressed key, scanCode, ...
+						@grid[direction] @grid, i
 
-			for _, input in pairs data.config.inputs[i]
-				if input == scanCode
-					return
+state.gamepadpressed = (joystick, button) =>
+	for i, cursor in ipairs @grid.cursors
+		inputs = data.config.gamepadInputs[i]
 
-	@grid\keypressed key, scanCode, ...
+		if button == inputs.firing
+			if @selectedVariants[i]
+				goToGame!
+			elseif @selectedCharacters[i]
+				unless @variantMenus[i].selectedItem -- Waiting, duh~
+					@variantMenus[i]\select!
+			else
+				@grid\select i
+		elseif button == inputs.bombing
+			if @selectedVariants[i]
+				@selectedVariants[i] = nil
+			elseif @selectedCharacters[i]
+				-- FIXME: Breach of OOP.
+				@variantMenus[i].selectionTime = 0
+				@variantMenus[i].selectedItem = {
+					onSelection: =>
+						state.selectedCharacters[i] = nil
+
+						for i = 1, 3
+							cursor.color[i] -= 64
+				}
+			else
+				@grid\back!
+		else
+			for direction in *{"left", "up", "right", "down"}
+				if inputs[direction] == button
+					if @selectedVariants[i]
+						false -- ignoring
+					elseif @selectedCharacters[i]
+						@variantMenus[i][direction] @variantMenus[i]
+					else
+						@grid[direction] @grid, i
 
 state
 

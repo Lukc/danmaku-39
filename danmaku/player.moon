@@ -131,22 +131,21 @@ class extends Enemy
 		dx, dy = 0, 0
 
 		if @movement.left
-			dx -= 1
+			dx -= @movement.left
 		if @movement.right
-			dx += 1
+			dx += @movement.right
 		if @movement.up
-			dy -= 1
+			dy -= @movement.up
 		if @movement.down
-			dy += 1
+			dy += @movement.down
 
-		dx = speed * dx
-		dy = speed * dy
+		dist = math.sqrt(dx^2 + dy^2)
 
-		if dx != 0 and dy != 0
-			hsr2 = math.sqrt(2) / 2
+		if dist != 0
+			angle = math.atan2 dy, dx
 
-			dx *= hsr2
-			dy *= hsr2
+			dx = speed * math.cos angle
+			dy = speed * math.sin angle
 
 		bombsAllowed = not @game.noBombs and not @game.pacific
 		if @bombing and @bombs >= 1 and bombsAllowed

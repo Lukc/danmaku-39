@@ -31,6 +31,24 @@ defaultConfig = {
 		select: {"return", "kp3"}
 		back:   {"escape", "kp9", "tab"}
 	}
+	menuGamepadInputs: {
+		down:   "dpdown"
+		up:     "dpup"
+		left:   "dpleft"
+		right:  "dpright"
+		select: "a"
+		back:   "b"
+	}
+	gamepadInputs: [{
+		firing:   "a"
+		bombing:  "b"
+		focusing: "rightshoulder"
+		down:     "dpdown"
+		up:       "dpup"
+		left:     "dpleft"
+		right:    "dpright"
+		gamepad:  i
+	} for i = 1, 4]
 	inputs: {
 		{
 			firing:   "z"

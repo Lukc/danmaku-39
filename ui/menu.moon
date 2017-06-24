@@ -135,6 +135,9 @@ state.enter = (noReset) =>
 state.keypressed = (...) =>
 	menu\keypressed ...
 
+state.gamepadpressed = (...) =>
+	menu\gamepadpressed ...
+
 state.draw = =>
 	with c = math.min 255, @drawTime * 511
 		love.graphics.setColor c, c, c

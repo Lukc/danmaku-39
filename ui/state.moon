@@ -3,6 +3,8 @@ events = {
 	"update", "draw",
 	"keypressed", "keyreleased",
 	"mousepressed", "mousemoved", "mousereleased",
+	"gamepadpressed", "gamepadreleased",
+	"joystickpressed", "joystickreleased",
 	"lowmemory"
 }
 

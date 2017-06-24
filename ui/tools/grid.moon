@@ -20,6 +20,7 @@ class
 				index: cursor.index or 1
 				color: cursor.color or {255, 191, 127}
 				inputs: {k,v for k,v in pairs cursor.inputs or {}}
+				gamepadInputs: {k,v for k,v in pairs cursor.gamepadInputs or {}}
 				selectedCell: nil
 			}
 
@@ -29,6 +30,15 @@ class
 			inputs.down =   inputs.down   or "down"
 			inputs.up =     inputs.up     or "up"
 			inputs.select = inputs.select or "return"
+
+		with inputs = @cursors[1].gamepadInputs
+			config = data.config.menuGamepadInputs
+
+			inputs.left =   inputs.left   or config.left
+			inputs.right =  inputs.right  or config.right
+			inputs.down =   inputs.down   or config.down
+			inputs.up =     inputs.up     or config.up
+			inputs.select = inputs.select or config.select
 
 		@drawCell = arg.drawCell or       ->
 
@@ -99,7 +109,7 @@ class
 
 				love.graphics.setScissor unpack oldScissor
 
-	keypressed: (key, scanCode, ...) =>
+	moveCursor: (id, dx = 0, dy = 0) =>
 		getWidth = (y) ->
 			if y <= math.floor(#@cells / @columns)
 				@columns
@@ -112,24 +122,73 @@ class
 				h += 1
 			h
 
-		for cursor in *@cursors
-			x = (cursor.index - 1) % @columns + 1
-			y = math.floor((cursor.index - 1) / @columns) + 1
+		cursor = @cursors[id]
 
+		x = (cursor.index - 1) % @columns + 1
+		y = math.floor((cursor.index - 1) / @columns) + 1
+
+		if dx != 0
+			x = (x - 1 + dx) % getWidth(y) + 1
+
+		if dy != 0
+			y = (y - 1 + dy) % getHeight(x) + 1
+
+		cursor.index = (y - 1) * @columns + (x - 1) + 1
+
+	left: (id = 1) =>
+		@\moveCursor id, -1,  0
+
+	right: (id = 1) =>
+		@\moveCursor id,  1,  0
+
+	up: (id = 1) =>
+		@\moveCursor id,  0, -1
+
+	down: (id = 1) =>
+		@\moveCursor id,  0,  1
+
+	back: =>
+		@\onEscape!
+
+	select: (id = 1) =>
+		cursor = @cursors[id]
+
+		@\onSelection cursor
+
+	keypressed: (key, scanCode, ...) =>
+		for id, cursor in ipairs @cursors
 			inputs = cursor.inputs
 
 			if scanCode == "escape"
-				@\onEscape!
+				@\back!
 			elseif scanCode == inputs.select
-				@\onSelection cursor
+				@\select id
 			elseif scanCode == inputs.down
-				y = (y - 0) % getHeight(x) + 1
+				@\down id
 			elseif scanCode == inputs.up
-				y = (y - 2) % getHeight(x) + 1
+				@\up id
 			elseif scanCode == inputs.left
-				x = (x - 2) % getWidth(y) + 1
+				@\left id
 			elseif scanCode == inputs.right
-				x = (x - 0) % getWidth(y) + 1
+				@\right id
 
-			cursor.index = (y - 1) * @columns + (x - 1) + 1
+	gamepadpressed: (joystick, button) =>
+		for id, cursor in ipairs @cursors
+			inputs = cursor.gamepadInputs
+
+			if inputs.id and joystick\getID! != inputs.id
+				continue
+
+			if button == data.config.menuGamepadInputs.back
+				@\back!
+			elseif button == inputs.select
+				@\select id
+			elseif button == inputs.down
+				@\down id
+			elseif button == inputs.up
+				@\up id
+			elseif button == inputs.left
+				@\left id
+			elseif button == inputs.right
+				@\right id
 

@@ -182,53 +182,72 @@ state.update = (dt) =>
 	@playStageMenu\update dt
 	@spellcardsMenu\update dt
 
-state.keypressed = (key, ...) =>
-	if data.isMenuInput(key, "select")
-		if @playStageMenu.items.selection == 1
-			@playStageMenu\keypressed key, ...
-		else
-			@spellcardsMenu\keypressed key, ...
+state.select = =>
+	if @playStageMenu.items.selection == 1
+		@playStageMenu\select!
+	else
+		@spellcardsMenu\select!
+
+state.down = =>
+	unless state.playableSpellcard
 		return
-	elseif data.isMenuInput(key, "down")
-		unless state.playableSpellcard
-			return
 
-		if @playStageMenu.items.selection == 1
-			@playStageMenu.items.selection = 0
-			@spellcardsMenu.items.selection = 1
-		else
-			items = @spellcardsMenu.items
-
-			if items.selection == #items
-				items.selection = 0
-				@playStageMenu.items.selection = 1
-			else
-				@spellcardsMenu\keypressed key, ...
-		return
-	elseif data.isMenuInput(key, "up")
-		unless state.playableSpellcard
-			return
-
+	if @playStageMenu.items.selection == 1
+		@playStageMenu.items.selection = 0
+		@spellcardsMenu.items.selection = 1
+	else
 		items = @spellcardsMenu.items
 
-		if @playStageMenu.items.selection == 1
-			@playStageMenu.items.selection = 0
-			items.selection = #items
+		if items.selection == #items
+			items.selection = 0
+			@playStageMenu.items.selection = 1
 		else
-			if items.selection == 1
-				items.selection = 0
-				@playStageMenu.items.selection = 1
-			else
-				@spellcardsMenu\keypressed key, ...
+			@spellcardsMenu\down!
+
+state.up = =>
+	unless state.playableSpellcard
 		return
-	elseif data.isMenuInput(key, "left") or data.isMenuInput(key, "right")
-		return @playStageMenu\keypressed key, ...
+
+	items = @spellcardsMenu.items
+
+	if @playStageMenu.items.selection == 1
+		@playStageMenu.items.selection = 0
+		items.selection = #items
+	else
+		if items.selection == 1
+			items.selection = 0
+			@playStageMenu.items.selection = 1
+		else
+			@spellcardsMenu\up!
+
+state.back = =>
+	-- FIXME: Force a transition.
+	state.manager\setState require("ui.menu"), true
+
+state.keypressed = (key, ...) =>
+	if data.isMenuInput(key, "select")
+		return @\select!
+	elseif data.isMenuInput(key, "down")
+		return @\down!
+	elseif data.isMenuInput(key, "up")
+		return @\up!
 	elseif data.isMenuInput key, "back"
-		-- FIXME: Force a transition.
-		state.manager\setState require("ui.menu"), true
+		return @\back!
 
 	if #@spellcardsMenu.items > 0
 		@spellcardsMenu\keypressed key, ...
+
+state.gamepadpressed = (joystick, button) =>
+	config = data.config
+
+	if button == config.menuGamepadInputs.select
+		@\select!
+	elseif button == config.menuGamepadInputs.down
+		@\down!
+	elseif button == config.menuGamepadInputs.up
+		@\up!
+	elseif button == config.menuGamepadInputs.back
+		@\back!
 
 state
 

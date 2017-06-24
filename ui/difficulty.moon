@@ -3,6 +3,8 @@ state = {}
 
 {:Danmaku} = require "danmaku"
 
+data = require "data"
+
 Menu = require "ui.tools.menu"
 
 bigFont = love.graphics.newFont "data/fonts/miamanueva.otf", 72
@@ -155,6 +157,12 @@ state.keypressed = (key, scanCode, ...) =>
 		return @manager\setState require("ui.menu"), nil, nil, true
 
 	@menu\keypressed key, scanCode, ...
+
+state.gamepadpressed = (joystick, button) =>
+	if button == data.config.menuGamepadInputs.back
+		return @manager\setState require("ui.menu"), nil, nil, true
+
+	@menu\gamepadpressed joystick, button
 
 state.update = (dt) =>
 	@menu\update dt

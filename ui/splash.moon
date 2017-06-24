@@ -178,5 +178,10 @@ state.keypressed = (key, scanCode, ...) =>
 			if @endTime - @time > 1
 				@endTime = @time + 1
 
+state.gamepadpressed = (joystick, button) =>
+	if button == "start" or button == "a"
+		if @endTime - @time > 1
+			@endTime = @time + 1
+
 state
 
