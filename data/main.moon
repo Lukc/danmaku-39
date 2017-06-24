@@ -64,6 +64,8 @@ stage1 = {
 	title: "A Stage for Testers"
 	subtitle: "Developers’ playground"
 
+	bosses: {boss}
+
 	drawTitle: =>
 		{:title, :subtitle} = @currentStage
 

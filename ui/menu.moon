@@ -55,35 +55,22 @@ state.enter = (noReset) =>
 			label: "Extras"
 		}
 		{
-			label: "Training"
-			onSelection: {
-				{
-					label: "WILL BE REMOVED (Soon™)"
-				}
-				{
-					label: "Stages"
-					onSelection: =>
-						list = [{
-							label: "#{stage.title}"
-							onSelection: =>
-								state.manager\setState require("ui.difficulty"), stage
-						} for n, stage in ipairs data.stages]
-
-						list.maxDisplayedItems = 8
-
-						table.insert list, {
-							label: "Go back"
-							onSelection: => @\setItemsList @items.parent
-						}
-
-						@\setItemsList list
-				}
-			}
-		}
-		{
 			label: "Spellcards"
 			onSelection: =>
-				state.manager\setState require("ui.spellcards")
+				list = {
+					maxDisplayedItems: 8
+				}
+
+				for stage in *data.stages
+					table.insert list, {
+						label: stage.title
+						onSelection: =>
+							state.manager\setState require("ui.spellcards"),
+								stage
+					}
+
+				@\setItemsList list
+
 		}
 		{
 			label: "Highscores"

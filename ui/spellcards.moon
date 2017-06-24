@@ -12,24 +12,11 @@ updateSpellcardsList = ->
 		maxDisplayedItems: 15
 	}
 
-	difficulty = do
-		string = state.optionsMenu.items[1].value
-		Danmaku.Difficulties[string]
-
-	for boss in *data.bosses
+	for boss in *(state.stage.bosses or {})
 		insertedBossItem = false
 
 		for spellcard in *boss
 			unless spellcard.name
-				continue
-
-			difficultyMatches = false
-			for i, d in ipairs spellcard.difficulties
-				if d == difficulty
-					difficultyMatches = true
-					break
-
-			unless difficultyMatches
 				continue
 
 			unless insertedBossItem
@@ -81,27 +68,18 @@ updateSpellcardsList = ->
 
 	state.spellcardsMenu\setItemsList newValues
 
-state.enter = =>
+	state.spellcardsMenu.items.selection = 0
+	state.playStageMenu.items.selection = 1
+
+state.enter = (stage) =>
+	@stage = stage
 	@descriptionsFont = love.graphics.newFont "data/fonts/miamanueva.otf", 18
-	@optionsMenu = Menu {
+	@playStageMenu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
 		{
-			label: "Difficulty"
-			type: "selector"
-			values: do
-				values = {}
-				t = {v, k for k, v in pairs Danmaku.Difficulties}
-
-				for i = 0, Danmaku.Difficulties["Ultra Extra"]
-					s = t[i]
-
-					if s
-						table.insert values, s
-
-				values
-			value: "Normal"
-			onValueChange: (item) =>
-				updateSpellcardsList Danmaku.Difficulties[item.value]
+			label: "Play stage!"
+			onSelection: =>
+				state.manager\setState require("ui.difficulty"), state.stage
 		}
 	}
 
@@ -109,20 +87,20 @@ state.enter = =>
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
 	}
 
-	updateSpellcardsList Danmaku.Difficulties.Normal
+	updateSpellcardsList!
 
 state.draw = =>
 	x = (love.graphics.getWidth! - 1024)/2
 	y = (love.graphics.getHeight! - 800)/2
 
-	@optionsMenu.x = x + 10
-	@optionsMenu.y = y + 15
-	@optionsMenu.width = 1024 - 20
+	@playStageMenu.x = x + 10
+	@playStageMenu.y = y + 15
+	@playStageMenu.width = 1024 - 20
 
 	@spellcardsMenu.x = x + 10
 	@spellcardsMenu.y = y + 100
 
-	@optionsMenu\draw!
+	@playStageMenu\draw!
 	@spellcardsMenu\draw!
 
 	hoveredSpellcard = do
@@ -156,14 +134,46 @@ state.draw = =>
 		love.graphics.print = print
 
 state.update = (dt) =>
-	@optionsMenu\update dt
+	@playStageMenu\update dt
 	@spellcardsMenu\update dt
 
 state.keypressed = (key, ...) =>
-	-- FIXME: Use the common input thing.
-	if key == "left" or key == "right"
-		return @optionsMenu\keypressed key, ...
-	elseif key == "escape"
+	if data.isMenuInput(key, "select")
+		if @playStageMenu.items.selection == 1
+			@playStageMenu\keypressed key, ...
+		else
+			@spellcardsMenu\keypressed key, ...
+		return
+	elseif data.isMenuInput(key, "down")
+		if @playStageMenu.items.selection == 1
+			@playStageMenu.items.selection = 0
+			@spellcardsMenu.items.selection = 1
+		else
+			items = @spellcardsMenu.items
+
+			if items.selection == #items
+				items.selection = 0
+				@playStageMenu.items.selection = 1
+			else
+				@spellcardsMenu\keypressed key, ...
+		return
+	elseif data.isMenuInput(key, "up")
+		items = @spellcardsMenu.items
+
+		if @playStageMenu.items.selection == 1
+			@playStageMenu.items.selection = 0
+			items.selection = #items
+		else
+			if items.selection == 1
+				items.selection = 0
+				@playStageMenu.items.selection = 1
+			else
+				@spellcardsMenu\keypressed key, ...
+		return
+	elseif data.isMenuInput(key, "left") or data.isMenuInput(key, "right")
+		return @playStageMenu\keypressed key, ...
+	elseif data.isMenuInput key, "back"
+		-- FIXME: Force a transition.
 		state.manager\setState require("ui.menu"), true
 
 	if #@spellcardsMenu.items > 0
