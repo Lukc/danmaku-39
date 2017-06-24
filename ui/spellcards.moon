@@ -27,6 +27,7 @@ updateSpellcardsList = ->
 				table.insert newValues, {
 					label: boss.name
 					height: 48
+					:boss
 					onSelection: =>
 						newState = require "ui.difficulty"
 						newStage = {
@@ -112,35 +113,45 @@ state.draw = =>
 	@playStageMenu\draw!
 	@spellcardsMenu\draw!
 
-	hoveredSpellcard = do
+	hoveredBoss = do
 		menuItem = @spellcardsMenu.items[@spellcardsMenu.items.selection]
 
-		unless menuItem
-			return
+		if menuItem
+			menuItem.boss
 
-		menuItem.spellcard
+	hoveredSpellcard = unless hoveredBoss
+		menuItem = @spellcardsMenu.items[@spellcardsMenu.items.selection]
 
-	unless hoveredSpellcard
-		return
+		if menuItem
+			menuItem.spellcard
 
-	-- FIXME: Attempt to draw stage metadata here?
-
-	-- Drawing preview here
-	love.graphics.setColor 255, 255, 255
-	love.graphics.rectangle "line",
-		x + 1024 - 20 - 480, y + 800 - 680 - 20,
-		480, 600
-
-	-- FIXME: Hacky as fuck. Children, don’t do this at home.
-	with print = love.graphics.print
+	with oldPrint = love.graphics.print
+		-- FIXME: Hacky as fuck. Children, don’t do this at home.
 		love.graphics.print = (text, x, y) ->
 			love.graphics.printf text, x, y, 480, "left"
 
-		@spellcardsMenu\print "#{hoveredSpellcard.description or ""}",
-			x + 1024 - 20 - 480, y + 800 - 80 - 20, {200, 200, 200},
-			@descriptionsFont
+		if hoveredBoss
+			-- FIXME: Add portrait or something.
+			@playStageMenu\print "#{hoveredBoss.description or "???"}",
+				x + 1024 - 20 - 400, y + 160, {200, 200, 200},
+				@descriptionsFont
+		elseif hoveredSpellcard
+			-- FIXME: Drawing preview here
+			love.graphics.setColor 255, 255, 255
+			love.graphics.rectangle "line",
+				x + 1024 - 20 - 480, y + 800 - 680 - 20,
+				480, 600
 
-		love.graphics.print = print
+			@spellcardsMenu\print "#{hoveredSpellcard.description or "???"}",
+				x + 1024 - 20 - 480, y + 800 - 80 - 20, {200, 200, 200},
+				@descriptionsFont
+		else
+			-- FIXME: Add background or something.
+			@playStageMenu\print "#{state.stage.description or "???"}",
+				x + 1024 - 20 - 400, y + 160, {200, 200, 200},
+				@descriptionsFont
+
+		love.graphics.print = oldPrint
 
 state.update = (dt) =>
 	@playStageMenu\update dt
