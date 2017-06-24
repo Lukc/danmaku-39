@@ -210,6 +210,9 @@ state.keypressed = (key, scanCode, ...) =>
 			if @selectedVariants[i]
 				goToGame!
 			elseif @selectedCharacters[i]
+				if @variantMenus[i].selectedItem
+					return
+
 				@variantMenus[i]\select!
 			else
 				@grid\select i
@@ -217,6 +220,11 @@ state.keypressed = (key, scanCode, ...) =>
 			if @selectedVariants[i]
 				@selectedVariants[i] = nil
 			elseif @selectedCharacters[i]
+				if @variantMenus[i].selectedItem
+					-- Speeding things up.
+					@variantMenus[i].selectionTime = math.huge
+					return
+
 				-- FIXME: Breach of OOP.
 				@variantMenus[i].selectionTime = 0
 				@variantMenus[i].selectedItem = {
@@ -235,6 +243,9 @@ state.keypressed = (key, scanCode, ...) =>
 					if @selectedVariants[i]
 						false -- ignoring
 					elseif @selectedCharacters[i]
+						if @variantMenus[i].selectedItem
+							return
+
 						@variantMenus[i][direction] @variantMenus[i]
 					else
 						@grid[direction] @grid, i
@@ -247,14 +258,21 @@ state.gamepadpressed = (joystick, button) =>
 			if @selectedVariants[i]
 				goToGame!
 			elseif @selectedCharacters[i]
-				unless @variantMenus[i].selectedItem -- Waiting, duh~
-					@variantMenus[i]\select!
+				if @variantMenus[i].selectedItem
+					return
+
+				@variantMenus[i]\select!
 			else
 				@grid\select i
 		elseif button == inputs.bombing
 			if @selectedVariants[i]
 				@selectedVariants[i] = nil
 			elseif @selectedCharacters[i]
+				if @variantMenus[i].selectedItem
+					-- Speeding things up.
+					@variantMenus[i].selectionTime = math.huge
+					return
+
 				-- FIXME: Breach of OOP.
 				@variantMenus[i].selectionTime = 0
 				@variantMenus[i].selectedItem = {
@@ -272,6 +290,9 @@ state.gamepadpressed = (joystick, button) =>
 					if @selectedVariants[i]
 						false -- ignoring
 					elseif @selectedCharacters[i]
+						if @variantMenus[i].selectedItem
+							return
+
 						@variantMenus[i][direction] @variantMenus[i]
 					else
 						@grid[direction] @grid, i
