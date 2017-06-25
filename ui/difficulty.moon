@@ -43,10 +43,12 @@ drawSelector = (x, y) =>
 	love.graphics.setColor color
 	love.graphics.rectangle "fill", r.x, r.y, r.w, r.h
 
-	w = bigFont\getWidth @value
-	h = bigFont\getHeight @value
+	value = tostring @value
 
-	@menu\print @value, r.x + (r.w - w) / 2, r.y + (r.h - h - 10) / 2 - 6,
+	w = bigFont\getWidth value
+	h = bigFont\getHeight value
+
+	@menu\print value, r.x + (r.w - w) / 2, r.y + (r.h - h - 10) / 2 - 6,
 		{255, 255, 255}, bigFont
 
 	love.graphics.print "<", r.x - 32,   r.y + (r.h - h - 10) / 2

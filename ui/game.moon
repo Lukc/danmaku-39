@@ -160,29 +160,10 @@ state.draw = =>
 	love.graphics.print "Highscore", x + w + 10, y + 40
 	love.graphics.print "HiScore here", x + w + 255, y + 40
 
-	livesBox =
-		height: 35
-		width: 395
-		draw: (player, x, y) =>
-			love.graphics.setColor 255, 125, 1955
-			for i = 0, 9
-				if (i + 1) <= player.lives
-					love.graphics.rectangle "line", x + 40 * i, y,
-						35, 35
-
-	bombsBox =
-		height: 35
-		width: 395
-		draw: (player, x, y) =>
-			love.graphics.setColor 127, 255, 127
-			for i = 0, 9
-				if (i + 1) <= player.bombs
-					love.graphics.rectangle "line", x + 40 * i, y,
-						35, 35
-
+	local livesBox, bombsBox
 	normalPlayerBox =
 		height: 260
-		width: 405
+		width: 1024 - @danmaku.width - (@danmaku.x - x) * 2 - 25
 		draw: (player, x, y) =>
 			love.graphics.rectangle "line", x, y, @width, @height
 
@@ -231,6 +212,26 @@ state.draw = =>
 		smallPlayerBox
 	else
 		normalPlayerBox
+
+	livesBox =
+		height: 35
+		width: box.width - 10
+		draw: (player, x, y) =>
+			love.graphics.setColor 255, 125, 1955
+			for i = 0, 9
+				if (i + 1) <= player.lives
+					love.graphics.rectangle "line", x + 40 * i, y,
+						35, 35
+
+	bombsBox =
+		height: 35
+		width: box.width - 10
+		draw: (player, x, y) =>
+			love.graphics.setColor 127, 255, 127
+			for i = 0, 9
+				if (i + 1) <= player.bombs
+					love.graphics.rectangle "line", x + 40 * i, y,
+						35, 35
 
 	for i, player in ipairs @players
 		box\draw player, x + w + 5, y + 80 + (i - 1) * (box.height + 5)
