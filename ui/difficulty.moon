@@ -99,6 +99,10 @@ state.enter = (stage, noReset) =>
 	@stage = stage
 	@multiplayer = false
 
+	@noBombs = false
+	@pacific = false
+	@training = false
+
 	@difficulty = Danmaku.getDifficultyString(stage.difficulties[1])
 
 	@menu = Menu {
