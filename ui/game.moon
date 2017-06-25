@@ -10,6 +10,7 @@
 
 -- Needed for configuration thingies.
 data = require "data"
+highscores = require "highscores"
 
 Menu = require "ui.tools.menu"
 
@@ -65,6 +66,9 @@ state.enter = (options, players) =>
 		:stage
 	} = options
 
+	@options = options
+	@stage = stage
+
 	unless @font
 		@font = love.graphics.newFont 24
 
@@ -106,6 +110,11 @@ state.enter = (options, players) =>
 
 		table.insert @players, @danmaku\addEntity Player player
 
+	print stage.name, players[1].name, players[1].secondaryAttackName, options
+	@highscore = do
+		if #players == 1
+			highscores.get stage, players[1], options
+
 	-- Mostly serves to print entity hitboxes.
 	@danmaku.debug = false
 
@@ -145,7 +154,7 @@ state.drawNormalUI = (x, y) =>
 	love.graphics.print "#{@danmaku.score}", x + w + 255, y + 10
 
 	love.graphics.print "Highscore", x + w + 10, y + 40
-	love.graphics.print "HiScore here", x + w + 255, y + 40
+	love.graphics.print "#{@highscore or @danmaku.score}", x + w + 255, y + 40
 
 	local livesBox, bombsBox
 	normalPlayerBox =
@@ -282,6 +291,8 @@ state.update = (dt) =>
 	if @danmaku.endReached
 		print "We reached the end."
 		state.paused = 0
+
+		highscores.save @stage, @players, @options, @danmaku.score, "???"
 
 		@menu = victoryMenu!
 

@@ -1,11 +1,13 @@
 
 {Manager: StateManager} = require "ui.state"
 
-data = require "data"
+highscores = require "highscores"
 
 local stateManager
 
 love.load = ->
+	highscores.load!
+
 	stateManager = StateManager!
 	stateManager\bindEvents love
 

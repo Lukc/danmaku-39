@@ -23,6 +23,7 @@ goToGame = ->
 			-- Eheh. We’ll have to force a few settings to not
 			-- be erased.
 			character.name = c.name
+			character.secondaryAttackName = state.selectedVariants[index].name
 
 			table.insert characters, character
 
