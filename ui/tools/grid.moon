@@ -5,6 +5,9 @@ class
 	new: (arg) =>
 		arg or= {}
 
+		@x = arg.x
+		@y = arg.y
+
 		@columns = arg.columns or 2
 		@rows = arg.rows or 2
 		@cells = arg.cells or do
@@ -59,8 +62,8 @@ class
 		}
 
 	draw: =>
-		x = (love.graphics.getWidth! - 1024) / 2
-		y = (love.graphics.getHeight! - 800) / 2
+		x = @x or (love.graphics.getWidth! - 1024) / 2
+		y = @y or (love.graphics.getHeight! - 800) / 2
 
 		for cursor in *@cursors
 			cursor.selectedCell = nil
@@ -71,7 +74,6 @@ class
 			r = with @\getCellRectangle index
 				.x += x
 				.y += y
-
 
 			if @drawCell
 				@.drawCell cell, r, self

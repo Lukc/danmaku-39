@@ -9,7 +9,7 @@ MenuItem = class
 			x: @x or x
 			y: @y or y
 			w: @width or @menu.width
-			h: @height or 65
+			h: @height or @menu.itemHeight or 65
 		}
 
 	init: (menu) =>

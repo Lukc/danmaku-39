@@ -3,7 +3,9 @@
 
 state = {}
 
+vscreen = require "vscreen"
 data = require "data"
+fonts = require "fonts"
 
 -- TODO: We need textures for the background, and possibly for the menu items.
 
@@ -142,21 +144,20 @@ state.draw = =>
 	with c = math.min 255, @drawTime * 511
 		love.graphics.setColor c, c, c
 
-	love.graphics.print "Press “Enter” to select…", 200, 160
-
 	menu\draw!
 
 state.update = (dt) =>
-	w, h = love.graphics.getWidth!, love.graphics.getHeight!
+	{:x, :y, :w, :h, :sizeModifier} = vscreen\update!
 
-	x = (w - 1024) / 2
-	y = (h - 800) / 2
+	menu.x = x + 200 * sizeModifier
+	menu.y = y + 200 * sizeModifier
 
-	menu.x = x + 200
-	menu.y = y + 200
+	menu.width = (w - 200 * 2) * sizeModifier
+	menu.itemHeight = 65 * sizeModifier
+
+	menu.font = fonts.get "miamanueva", 32 * sizeModifier
 
 	menu\update dt
 
 state
-
 

@@ -4,12 +4,14 @@ state = {}
 {:Danmaku} = require "danmaku"
 
 data = require "data"
+fonts = require "fonts"
+vscreen = require "vscreen"
 
 Menu = require "ui.tools.menu"
 
-bigFont = love.graphics.newFont "data/fonts/miamanueva.otf", 72
-
 drawSelector = (x, y) =>
+	@height = vscreen.rectangle.sizeModifier * @baseHeight
+
 	r = @\getRectangle x, y
 	color = switch @value
 		when "Tutorial"
@@ -45,16 +47,26 @@ drawSelector = (x, y) =>
 
 	value = tostring @value
 
+	bigFont = fonts.get "miamanueva", 72 * vscreen.sizeModifier
+
 	w = bigFont\getWidth value
 	h = bigFont\getHeight value
 
-	@menu\print value, r.x + (r.w - w) / 2, r.y + (r.h - h - 10) / 2 - 6,
+	@menu\print value, r.x + (r.w - w) / 2, r.y + (r.h - h ) / 2 - 14 * vscreen.sizeModifier,
 		{255, 255, 255}, bigFont
 
-	love.graphics.print "<", r.x - 32,   r.y + (r.h - h - 10) / 2
+	love.graphics.setFont bigFont
+
+	love.graphics.print "<", r.x - 72 * vscreen.sizeModifier, r.y + (r.h - h - 10) / 2
 	love.graphics.print ">", r.x + r.w, r.y + (r.h - h - 10) / 2
 
 drawCheck = (x, y) =>
+	{:sizeModifier} = vscreen.rectangle
+
+	@height = sizeModifier * @baseHeight
+
+	font = fonts.get "miamanueva", 32 * sizeModifier
+
 	r = @\getRectangle x, y
 
 	color = if @value
@@ -69,17 +81,22 @@ drawCheck = (x, y) =>
 
 	love.graphics.setColor color
 
-	with w = @menu.font\getWidth @label
+	with w = font\getWidth @label
 		y = r.y + r.h / 2
-		love.graphics.line r.x + w + 48, y,
-			r.x + r.w - 96 - 16, y
+		love.graphics.line r.x + w + 48 * sizeModifier, y,
+			r.x + r.w - (96 + 16) * sizeModifier, y
 
-	love.graphics.rectangle "fill", r.x + r.w - 96, r.y + 16, 64, 64
+	love.graphics.rectangle "fill",
+		r.x + r.w - 96 * sizeModifier,
+		r.y + 16 * sizeModifier,
+		64 * sizeModifier, 64 * sizeModifier
 
 	love.graphics.setColor 127, 127, 127
-	love.graphics.rectangle "line", r.x + r.w - 96, r.y + 16, 64, 64
+	love.graphics.rectangle "line",
+		r.x + r.w - 96 * sizeModifier, r.y + 16 * sizeModifier,
+		64 * sizeModifier, 64 * sizeModifier
 
-	@menu\print @label, r.x + 32, r.y, color
+	@menu\print @label, r.x + 32, r.y, color, font
 
 play = ->
 	=>
@@ -106,7 +123,7 @@ state.enter = (stage, noReset) =>
 	@difficulty = Danmaku.getDifficultyString(stage.difficulties[1])
 
 	@menu = Menu {
-		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
+		font: fonts.get "miamanueva", 32
 
 		x: 150
 		y: 200
@@ -116,7 +133,7 @@ state.enter = (stage, noReset) =>
 			values: [Danmaku.getDifficultyString(d) for d in *stage.difficulties]
 			label: state.difficulty
 			noTransition: true
-			height: 128
+			baseHeight: 128
 			draw: drawSelector
 			onSelection: play!
 			onValueChange: (item) =>
@@ -128,7 +145,7 @@ state.enter = (stage, noReset) =>
 			type: "check"
 			label: "Training"
 			noTransition: true
-			height: 96
+			baseHeight: 96
 			draw: drawCheck
 			onSelection: play!
 			onValueChange: (item) =>
@@ -138,7 +155,7 @@ state.enter = (stage, noReset) =>
 			type: "check"
 			label: "Pacific"
 			noTransition: true
-			height: 96
+			baseHeight: 96
 			draw: drawCheck
 			onSelection: play!
 			onValueChange: (item) =>
@@ -149,7 +166,7 @@ state.enter = (stage, noReset) =>
 			type: "check"
 			label: "Multiplayer"
 			noTransition: true
-			height: 96
+			baseHeight: 96
 			draw: drawCheck
 			onSelection: play!
 			onValueChange: (item) =>
@@ -174,11 +191,12 @@ state.update = (dt) =>
 	@menu\update dt
 
 state.draw = =>
-	x = (love.graphics.getWidth! - 1024) / 2
-	y = (love.graphics.getHeight! - 800) / 2
+	{:x, :y, sizeModifier: modifier, :w, :h} = vscreen\update!
 
-	@menu.x = x + (800 - @menu.width)
-	@menu.y = y + 200
+	@menu.x = x + 150 * modifier
+	@menu.y = y + 200 * modifier
+
+	@menu.width = w - (150 * 2) * modifier
 
 	@menu\draw!
 

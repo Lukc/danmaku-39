@@ -4,12 +4,15 @@
 Menu = require "ui.tools.menu"
 
 data = require "data"
+vscreen = require "vscreen"
+fonts = require "fonts"
 
 state = {}
 
 updateSpellcardsList = ->
 	newValues = {
 		maxDisplayedItems: 15
+		itemHeight: 48
 	}
 
 	state.playableSpellcard = false
@@ -26,7 +29,6 @@ updateSpellcardsList = ->
 
 				table.insert newValues, {
 					label: boss.name
-					height: 48
 					:boss
 					onSelection: =>
 						newState = require "ui.difficulty"
@@ -49,7 +51,6 @@ updateSpellcardsList = ->
 
 			table.insert newValues, {
 				label: spellcard.name
-				height: 48
 				:spellcard
 				draw: (x, y) =>
 					r = @\getRectangle x, y
@@ -73,7 +74,10 @@ updateSpellcardsList = ->
 
 						{255, 127 + 64 * o, 127 + 64 * o}
 
-					@menu\print @label, r.x + 48, r.y - 20, color
+					@menu\print @label,
+						r.x + 48 * vscreen.rectangle.sizeModifier,
+						r.y - 20,
+						color
 				onSelection: =>
 					newState = require "ui.difficulty"
 					newStage = {
@@ -116,7 +120,6 @@ updateSpellcardsList = ->
 
 state.enter = (stage) =>
 	@stage = stage
-	@descriptionsFont = love.graphics.newFont "data/fonts/miamanueva.otf", 18
 	@playStageMenu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
 		{
@@ -133,15 +136,19 @@ state.enter = (stage) =>
 	updateSpellcardsList!
 
 state.draw = =>
-	x = (love.graphics.getWidth! - 1024)/2
-	y = (love.graphics.getHeight! - 800)/2
+	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.rectangle
 
-	@playStageMenu.x = x + 10
-	@playStageMenu.y = y + 15
-	@playStageMenu.width = 1024 - 20
+	@descriptionsFont = fonts.get "miamanueva", 18 * sizemod
 
-	@spellcardsMenu.x = x + 10
-	@spellcardsMenu.y = y + 100
+	@playStageMenu.x = x + 10 * sizemod
+	@playStageMenu.y = y + 15 * sizemod
+	@playStageMenu.width = (vscreen.width - 20) * sizemod
+	@playStageMenu.font = fonts.get "miamanueva", 32 * sizemod
+
+	@spellcardsMenu.x = x + 10 * sizemod
+	@spellcardsMenu.y = y + 100 * sizemod
+	@spellcardsMenu.font = fonts.get "miamanueva", 24 * sizemod
+	@spellcardsMenu.itemHeight = 48 * sizemod
 
 	@playStageMenu\draw!
 	@spellcardsMenu\draw!
@@ -161,32 +168,41 @@ state.draw = =>
 	with oldPrint = love.graphics.print
 		-- FIXME: Hacky as fuck. Children, don’t do this at home.
 		love.graphics.print = (text, x, y) ->
-			love.graphics.printf text, x, y, 480, "left"
+			love.graphics.printf text, x, y, 480 * sizemod, "left"
 
 		if hoveredBoss
 			-- FIXME: Add portrait or something.
 			@playStageMenu\print "#{hoveredBoss.description or "???"}",
-				x + 1024 - 20 - 400, y + 160, {200, 200, 200},
+				x + (vscreen.width - 20 - 400) * sizemod,
+				y + 160 * sizemod,
+				{200, 200, 200},
 				@descriptionsFont
 		elseif hoveredSpellcard
 			-- FIXME: Drawing preview here
 			love.graphics.setColor 255, 255, 255
 			love.graphics.rectangle "line",
-				x + 1024 - 20 - 480, y + 800 - 680 - 20,
-				480, 600
+				x + (vscreen.width - 20 - 480) * sizemod,
+				y + (vscreen.height - 680 - 20) * sizemod,
+				480 * sizemod, 600 * sizemod
 
 			@spellcardsMenu\print "#{hoveredSpellcard.description or "???"}",
-				x + 1024 - 20 - 480, y + 800 - 80 - 20, {200, 200, 200},
+				x + (vscreen.width - 20 - 480) * sizemod,
+				y + (vscreen.height - 80 - 20) * sizemod,
+				{200, 200, 200},
 				@descriptionsFont
 		else
 			-- FIXME: Add background or something.
 			@playStageMenu\print "#{state.stage.description or "???"}",
-				x + 1024 - 20 - 400, y + 160, {200, 200, 200},
+				x + (vscreen.width - 20 - 400) * sizemod,
+				y + 160 * sizemod,
+				{200, 200, 200},
 				@descriptionsFont
 
 		love.graphics.print = oldPrint
 
 state.update = (dt) =>
+	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen\update!
+
 	@playStageMenu\update dt
 	@spellcardsMenu\update dt
 
