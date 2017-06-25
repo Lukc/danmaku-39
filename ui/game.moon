@@ -432,7 +432,7 @@ state.update = (dt) =>
 
 state.keypressed = (key, ...) =>
 	if state.paused
-		if not state.savedHighscore
+		if @danmaku.endReached and not state.savedHighscore
 			@nameGrid\keypressed key, ...
 		-- Holy shit, this is the project’s hackiest hack. I think.
 		elseif key == "escape" and @menu.items.selection == 1 and @menu.items[1].label == "Resume"
@@ -447,7 +447,7 @@ state.keypressed = (key, ...) =>
 
 state.gamepadpressed = (joystick, button) =>
 	if state.paused
-		if not state.savedHighscore
+		if @danmaku.endReached and not state.savedHighscore
 			@nameGrid\gamepadpressed joystick, button
 		elseif button == "start"
 			@menu.selectionTime = 0
