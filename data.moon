@@ -22,6 +22,7 @@ importTable = (t) =>
 					@[k] = v
 
 defaultConfig = {
+	lastUsedName: ""
 	blockedMods: {}
 	menuInputs: {
 		down:   {"down",   "kp2"}

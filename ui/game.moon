@@ -8,11 +8,14 @@
 	:Stage
 } = require "danmaku"
 
+utf8 = require "utf8"
+
 -- Needed for configuration thingies.
 data = require "data"
 highscores = require "highscores"
 
 Menu = require "ui.tools.menu"
+Grid = require "ui.tools.grid"
 
 state = {
 }
@@ -59,6 +62,9 @@ state.enter = (options, players) =>
 	@players = {}
 	@paused = false
 	@resuming = false
+	@savedHighscore = false
+
+	@playerName = data.config.lastUsedName
 
 	options or= {}
 	{
@@ -86,6 +92,67 @@ state.enter = (options, players) =>
 				state.paused = false
 		}
 		mainMenuItem!
+	}
+	@nameGrid = Grid {
+		columns: 20
+		rows: 8
+		width: 550
+		height: 300
+		cells: {
+			"a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
+			"k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
+
+			"u", "v", "w", "x", "y", "z", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+
+			"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+			"K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+
+			"U", "V", "W", "X", "Y", "Z", " ", " ", " ", " ",
+			".", ",", "’", ":", ";", "@", "#", "(", ")", "[",
+
+			" ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+
+			" ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+
+			" ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ", " ", " ", " ", " ", "END",
+		}
+		cursors: {
+			{
+				color: {0, 0, 0}
+			}
+		}
+		onSelection: (cursor) =>
+			char = @cells[cursor.index]
+
+			if char == "END"
+				self = state
+
+				highscores.save @stage, @players, @options, @danmaku.score, @playerName
+				data.config.lastUsedName = @playerName
+				data.saveConfig!
+
+				@savedHighscore = true
+			else
+				state.playerName ..= char
+		onEscape: =>
+			name = state.playerName
+			offset = utf8.offset(name, -1)
+
+			if offset
+				state.playerName = string.sub(name, 1, offset - 1)
+		drawCursor: =>
+		drawCell: (r, grid) =>
+			unless self
+				self = " "
+
+			if grid.cells[grid.cursors[1].index] == self
+				love.graphics.setColor 255, 127, 127
+			else
+				love.graphics.setColor 255, 255, 255
+
+			love.graphics.print (self or " "), r.x, r.y - 14
 	}
 
 	width, height = switch stage.screenRatio
@@ -240,11 +307,19 @@ state.draw = =>
 	@danmaku.y = y + 25
 
 	if @paused
-		c = if @resuming
-			c = 127 + 127 * math.min 1, @menu.drawTime - @resuming
+		if @danmaku.endReached and not @savedHighscore
+			@nameGrid.x = x + 25
+			@nameGrid.y = y + 800 - @nameGrid.height - 25
+
+			love.graphics.print @playerName .. "_", @nameGrid.x, @nameGrid.y - 50
+
+			@nameGrid\draw!
 		else
-			c = 255 - 127 * math.min 1, @paused
-		love.graphics.setColor c, c, c
+			c = if @resuming
+				c = 127 + 127 * math.min 1, @menu.drawTime - @resuming
+			else
+				c = 255 - 127 * math.min 1, @paused
+			love.graphics.setColor c, c, c
 	else
 		love.graphics.setColor 255, 255, 255
 
@@ -292,9 +367,9 @@ state.update = (dt) =>
 		print "We reached the end."
 		state.paused = 0
 
-		highscores.save @stage, @players, @options, @danmaku.score, "???"
-
 		@menu = victoryMenu!
+
+		return
 
 	allJoysticks = love.joystick.getJoysticks!
 	for i = 1, #@players
@@ -357,8 +432,10 @@ state.update = (dt) =>
 
 state.keypressed = (key, ...) =>
 	if state.paused
+		if not state.savedHighscore
+			@nameGrid\keypressed key, ...
 		-- Holy shit, this is the project’s hackiest hack. I think.
-		if key == "escape" and @menu.items.selection == 1 and @menu.items[1].label == "Resume"
+		elseif key == "escape" and @menu.items.selection == 1 and @menu.items[1].label == "Resume"
 			@menu\back!
 		else
 			@menu\keypressed key, ...
@@ -370,7 +447,9 @@ state.keypressed = (key, ...) =>
 
 state.gamepadpressed = (joystick, button) =>
 	if state.paused
-		if button == "start"
+		if not state.savedHighscore
+			@nameGrid\gamepadpressed joystick, button
+		elseif button == "start"
 			@menu.selectionTime = 0
 			@menu.selectedItem = {
 				onSelection: =>

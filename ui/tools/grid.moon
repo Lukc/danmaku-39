@@ -40,7 +40,8 @@ class
 			inputs.up =     inputs.up     or config.up
 			inputs.select = inputs.select or config.select
 
-		@drawCell = arg.drawCell or       ->
+		@drawCell = arg.drawCell
+		@drawCursor = arg.drawCursor
 
 		@onSelection = arg.onSelection or ->
 		@onEscape = arg.onEscape or       ->
@@ -71,14 +72,15 @@ class
 				.x += x
 				.y += y
 
-			@\drawCell r
 
-			unless cell
+			if @drawCell
+				@.drawCell cell, r, self
+			else
 				love.graphics.setColor 127, 127, 127, 63
 				love.graphics.rectangle "fill", r.x, r.y, r.w, r.h
 
-			love.graphics.setColor 255, 255, 255
-			love.graphics.rectangle "line", r.x, r.y, r.w, r.h
+				love.graphics.setColor 255, 255, 255
+				love.graphics.rectangle "line", r.x, r.y, r.w, r.h
 
 			cursorsHere = {}
 
@@ -92,22 +94,25 @@ class
 			for i, cursor in ipairs cursorsHere
 				dx = (r.w + 50) / #cursorsHere
 
-				oldScissor = {love.graphics.getScissor!}
-				love.graphics.setScissor r.x, r.y, r.w, r.h
+				if @drawCursor
+					@.drawCursor cursor, cell, self
+				else
+					oldScissor = {love.graphics.getScissor!}
+					love.graphics.setScissor r.x, r.y, r.w, r.h
 
-				love.graphics.setColor cursor.color
-				love.graphics.polygon "fill",
-					r.x +  0 + dx * (i - 1), r.y,
-					r.x +  0 + dx * (i),     r.y,
-					r.x - 50 + dx * (i),     r.y + r.h,
-					r.x - 50 + dx * (i - 1), r.y + r.h
+					love.graphics.setColor cursor.color
+					love.graphics.polygon "fill",
+						r.x +  0 + dx * (i - 1), r.y,
+						r.x +  0 + dx * (i),     r.y,
+						r.x - 50 + dx * (i),     r.y + r.h,
+						r.x - 50 + dx * (i - 1), r.y + r.h
 
-				love.graphics.setColor cursor.color
-				for j = 1.5, 4.5
-					love.graphics.rectangle "line",
-						r.x + j, r.y + j, r.w - 2 * j, r.h - 2 * j
+					love.graphics.setColor cursor.color
+					for j = 1.5, 4.5
+						love.graphics.rectangle "line",
+							r.x + j, r.y + j, r.w - 2 * j, r.h - 2 * j
 
-				love.graphics.setScissor unpack oldScissor
+					love.graphics.setScissor unpack oldScissor
 
 	moveCursor: (id, dx = 0, dy = 0) =>
 		getWidth = (y) ->
