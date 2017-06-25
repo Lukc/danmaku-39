@@ -42,7 +42,9 @@ flameUpdate = (growthTime, radiusVariation) ->
 		itemAttractionRadius: 64
 		bomb: (game) =>
 			x, y = @x, @y
-			radius = 24
+			radius = 6
+
+			player = self
 
 			for i = 1, 6
 				angle = math.pi / 2 + math.pi * 2 / 6 * i
@@ -51,17 +53,39 @@ flameUpdate = (growthTime, radiusVariation) ->
 					damageable: false
 					radius: 48
 					update: =>
-						@x = x + radius * math.cos angle
-						@y = y + radius * math.sin angle
+						@x = player.x + radius * math.cos angle
+						@y = player.y + radius * math.sin angle
 
-						radius = 64 * math.log((@frame + 60) / 60)
-						angle += 0.065
+						with f = 60 + math.min @frame, 60 * 6
+							radius = 64 * math.log(f / 60)
+							angle += 0.065
 
 						for bullet in *@game.bullets
 							if bullet\collides self
 								bullet\die!
 
-						if @frame >= 60 * 5
+						if @frame % 12 == 0
+							player\fire
+								x: @x
+								y: @y
+								radius: @radius
+								health: 3 -- damageable, though not easily
+								spawnTime: 0
+								update: =>
+									if @radius == 0
+										return
+
+									@radius -= 0.5
+
+									if @radius <= 0
+										@radius = 0
+										@\die!
+
+									for bullet in *@game.bullets
+										if bullet\collides self
+											bullet\die!
+
+						if @frame >= 60 * 8
 							@\die!
 		death: =>
 			print "Lost a life, right about now."
@@ -74,6 +98,8 @@ flameUpdate = (growthTime, radiusVariation) ->
 		radius: 3
 		itemAttractionRadius: 64
 		bomb: (game) =>
+			player = self
+
 			for i = 1, 9
 				radius = if i % 3 == 2
 					48
@@ -81,9 +107,9 @@ flameUpdate = (growthTime, radiusVariation) ->
 					32
 				angle = math.pi / 2 + math.pi * 2 / 9 * (i - 0.5)
 				timeout = if i % 3 == 2
-					60 * 3
+					60 * 4
 				else
-					60 * 2.5
+					60 * 6.5
 
 				@\fire
 					spawnTime: 0
@@ -96,6 +122,25 @@ flameUpdate = (growthTime, radiusVariation) ->
 						@speed = math.max 0, @speed
 
 						@y -= @speed
+
+						if @speed > 0
+							if @frame % 5 == 0
+								player\fire
+									x: @x
+									y: @y
+									radius: @radius
+									spawnTime: 0
+									health: 5
+									update: =>
+										@radius -= 0.3
+
+										if @radius <= 0
+											@radius = 0
+											@\die!
+
+										for bullet in *@game.bullets
+											if bullet\collides self
+												bullet\die!
 
 						for bullet in *@game.bullets
 							if bullet\collides self
