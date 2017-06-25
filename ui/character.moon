@@ -202,100 +202,91 @@ state.draw = =>
 			love.graphics.print hoveredCharacter.name,
 				X, Y
 
+state.select = (i = 1) =>
+	if @selectedVariants[i]
+		goToGame!
+	elseif @selectedCharacters[i]
+		if @variantMenus[i].selectedItem
+			return
+
+		@variantMenus[i]\select!
+	else
+		@grid\select i
+
+state.back = (i = 1) =>
+	if @selectedVariants[i]
+		@selectedVariants[i] = nil
+	elseif @selectedCharacters[i]
+		if @variantMenus[i].selectedItem
+			-- Speeding things up.
+			@variantMenus[i].selectionTime = math.huge
+			return
+
+		cursor = @grid.cursors[i]
+
+		-- FIXME: Breach of OOP.
+		@variantMenus[i].selectionTime = 0
+		@variantMenus[i].selectedItem = {
+			onSelection: =>
+				state.selectedCharacters[i] = nil
+
+				for i = 1, 3
+					cursor.color[i] -= 64
+		}
+	else
+		@grid\back!
+
+state.direction = (direction, i = 1) =>
+	if @selectedVariants[i]
+		false -- ignoring
+	elseif @selectedCharacters[i]
+		if @variantMenus[i].selectedItem
+			return
+
+		@variantMenus[i][direction] @variantMenus[i]
+	else
+		@grid[direction] @grid, i
+
 state.keypressed = (key, scanCode, ...) =>
-	for i, cursor in ipairs @grid.cursors
-		inputs = data.config.inputs[i]
 
-		if scanCode == inputs.firing or data.isMenuInput scanCode, "select"
-			if @selectedVariants[i]
-				goToGame!
-			elseif @selectedCharacters[i]
-				if @variantMenus[i].selectedItem
-					return
-
-				@variantMenus[i]\select!
-			else
-				@grid\select i
-		elseif scanCode == inputs.bombing or data.isMenuInput scanCode, "back"
-			if @selectedVariants[i]
-				@selectedVariants[i] = nil
-			elseif @selectedCharacters[i]
-				if @variantMenus[i].selectedItem
-					-- Speeding things up.
-					@variantMenus[i].selectionTime = math.huge
-					return
-
-				-- FIXME: Breach of OOP.
-				@variantMenus[i].selectionTime = 0
-				@variantMenus[i].selectedItem = {
-					onSelection: =>
-						state.selectedCharacters[i] = nil
-
-						for i = 1, 3
-							cursor.color[i] -= 64
-				}
-			else
-				@grid\back!
+	if #@grid.cursors == 1
+		if data.isMenuInput scanCode, "select"
+			@\select!
+		elseif data.isMenuInput scanCode, "back"
+			@\back!
 		else
 			for direction in *{"left", "up", "right", "down"}
-				menuInput = data.isMenuInput scanCode, direction
-				if inputs[direction] == scanCode or menuInput
-					if @selectedVariants[i]
-						false -- ignoring
-					elseif @selectedCharacters[i]
-						if @variantMenus[i].selectedItem
-							return
+				if menuInput = data.isMenuInput scanCode, direction
+					@\direction direction, i
+	else
+		for i, cursor in ipairs @grid.cursors
+			inputs = data.config.inputs[i]
 
-						@variantMenus[i][direction] @variantMenus[i]
-					else
-						@grid[direction] @grid, i
+			if scanCode == inputs.firing
+				@\select i
+			elseif scanCode == inputs.bombing
+				@\back i
+			else
+				for direction in *{"left", "up", "right", "down"}
+					if inputs[direction] == scanCode
+						@\direction direction, i
 
 state.gamepadpressed = (joystick, button) =>
 	for i, cursor in ipairs @grid.cursors
 		inputs = data.config.gamepadInputs[i]
+		id = joystick\getID!
+		
+		unless inputs.gamepad == id
+			continue
 
 		if button == inputs.firing
-			if @selectedVariants[i]
-				goToGame!
-			elseif @selectedCharacters[i]
-				if @variantMenus[i].selectedItem
-					return
-
-				@variantMenus[i]\select!
-			else
-				@grid\select i
+			@\select i
 		elseif button == inputs.bombing
-			if @selectedVariants[i]
-				@selectedVariants[i] = nil
-			elseif @selectedCharacters[i]
-				if @variantMenus[i].selectedItem
-					-- Speeding things up.
-					@variantMenus[i].selectionTime = math.huge
-					return
-
-				-- FIXME: Breach of OOP.
-				@variantMenus[i].selectionTime = 0
-				@variantMenus[i].selectedItem = {
-					onSelection: =>
-						state.selectedCharacters[i] = nil
-
-						for i = 1, 3
-							cursor.color[i] -= 64
-				}
-			else
-				@grid\back!
+			@\back i
 		else
 			for direction in *{"left", "up", "right", "down"}
 				if inputs[direction] == button
-					if @selectedVariants[i]
-						false -- ignoring
-					elseif @selectedCharacters[i]
-						if @variantMenus[i].selectedItem
-							return
-
-						@variantMenus[i][direction] @variantMenus[i]
-					else
-						@grid[direction] @grid, i
+					@\direction direction, i
 
 state
 
