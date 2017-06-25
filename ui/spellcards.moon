@@ -88,9 +88,15 @@ updateSpellcardsList = ->
 						[1]: =>
 							boss = {k,v for k,v in pairs boss}
 
-							@\addEntity Boss with boss
-								[1] = spellcard
-								[2] = nil
+							boss[1] = spellcard
+
+							for i = 2, #boss
+								boss[i] = nil
+
+							for i = 1, #boss
+								print i, boss[i]
+
+							@\addEntity Boss boss
 					}
 
 					state.manager\setState newState, newStage
