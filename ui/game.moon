@@ -109,43 +109,30 @@ state.enter = (options, players) =>
 	-- Mostly serves to print entity hitboxes.
 	@danmaku.debug = false
 
+state.drawWideUI = (x, y) =>
+	h = @danmaku.height + (@danmaku.y - y) * 2
 
-state.draw = =>
-	x = (love.graphics.getWidth! - 1024) / 2
-	y = (love.graphics.getHeight! - 800) / 2
+	love.graphics.setFont @font
 
-	@danmaku.x = x + 25
-	@danmaku.y = y + 25
+	for i = 1, #@players
+		player = @players[i]
 
-	if @paused
-		c = if @resuming
-			c = 127 + 127 * math.min 1, @menu.drawTime - @resuming
-		else
-			c = 255 - 127 * math.min 1, @paused
-		love.graphics.setColor c, c, c
-	else
+		r = with {
+			w: (1024 - 25 - 25 * #@players) / #@players
+			h: 800 - h - 25
+			x: x + 25
+			y: y + h
+		}
+			.x += (.w + 25) * (i - 1)
+
 		love.graphics.setColor 255, 255, 255
+		love.graphics.rectangle "line", r.x, r.y, r.w, r.h
 
-	-- XXX: Temporary markers.
-	for item in *@danmaku.items
-		if item.important
-			love.graphics.setColor 255, 0, 0
-			love.graphics.circle "fill",
-				@danmaku.x + item.x, @danmaku.y + @danmaku.height,
-				32
+		love.graphics.print "B: #{player.bombs}", r.x + 10, r.y + 10
+		love.graphics.print "L: #{player.lives}", r.x + 10, r.y + 50
+		love.graphics.print "S: #{player.score}", r.x + 10, r.y + 90
 
-	-- XXX: Temporary markers.
-	if @danmaku.boss
-		boss = @danmaku.boss
-
-		love.graphics.setColor 255, 0, 0
-		love.graphics.circle "fill",
-			@danmaku.x + boss.x, @danmaku.y + @danmaku.height,
-			32
-
-	love.graphics.setColor 255, 255, 255
-	@danmaku\draw!
-
+state.drawNormalUI = (x, y) =>
 	w = @danmaku.width + (@danmaku.x - x) * 2
 
 	love.graphics.setFont @font
@@ -235,6 +222,47 @@ state.draw = =>
 
 	for i, player in ipairs @players
 		box\draw player, x + w + 5, y + 80 + (i - 1) * (box.height + 5)
+
+state.draw = =>
+	x = (love.graphics.getWidth! - 1024) / 2
+	y = (love.graphics.getHeight! - 800) / 2
+
+	@danmaku.x = x + 25
+	@danmaku.y = y + 25
+
+	if @paused
+		c = if @resuming
+			c = 127 + 127 * math.min 1, @menu.drawTime - @resuming
+		else
+			c = 255 - 127 * math.min 1, @paused
+		love.graphics.setColor c, c, c
+	else
+		love.graphics.setColor 255, 255, 255
+
+	-- XXX: Temporary markers.
+	for item in *@danmaku.items
+		if item.important
+			love.graphics.setColor 255, 0, 0
+			love.graphics.circle "fill",
+				@danmaku.x + item.x, @danmaku.y + @danmaku.height,
+				32
+
+	-- XXX: Temporary markers.
+	if @danmaku.boss
+		boss = @danmaku.boss
+
+		love.graphics.setColor 255, 0, 0
+		love.graphics.circle "fill",
+			@danmaku.x + boss.x, @danmaku.y + @danmaku.height,
+			32
+
+	love.graphics.setColor 255, 255, 255
+	@danmaku\draw!
+
+	if @danmaku.width >= 700
+		@\drawWideUI x, y
+	else
+		@\drawNormalUI x, y
 
 	if state.paused
 		@menu\draw!
