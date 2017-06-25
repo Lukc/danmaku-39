@@ -37,6 +37,9 @@ class
 		@width = arg.width or 600
 		@height = arg.height or 750
 
+		@drawWidth = arg.drawWidth or @width
+		@drawHeight = arg.drawHeight or @height
+
 		@players = {}
 		@enemies = {}
 		@playerBullets = {}
@@ -108,6 +111,7 @@ class
 		oldColor = {love.graphics.getColor!}
 		oldCanvas = love.graphics.getCanvas!
 		canvas = love.graphics.newCanvas @width, @height
+		canvas\setFilter "nearest", "nearest"
 		love.graphics.setCanvas canvas
 
 		love.graphics.rectangle "line", 0.5, 0.5, @width - 1, @height - 1
@@ -127,7 +131,8 @@ class
 		love.graphics.setCanvas oldCanvas
 
 		love.graphics.setColor oldColor
-		love.graphics.draw canvas, @x, @y
+		love.graphics.draw canvas, @x, @y, nil,
+			@drawWidth / @width, @drawHeight / @height
 
 	---
 	-- Updates the game.

@@ -13,6 +13,8 @@ utf8 = require "utf8"
 -- Needed for configuration thingies.
 data = require "data"
 highscores = require "highscores"
+vscreen = require "vscreen"
+fonts = require "fonts"
 
 Menu = require "ui.tools.menu"
 Grid = require "ui.tools.grid"
@@ -66,6 +68,8 @@ state.enter = (options, players) =>
 
 	@playerName = data.config.lastUsedName
 
+	@font = fonts.get nil, 24
+
 	options or= {}
 	{
 		:noBombs, :pacific, :training, :difficulty
@@ -74,9 +78,6 @@ state.enter = (options, players) =>
 
 	@options = options
 	@stage = stage
-
-	unless @font
-		@font = love.graphics.newFont 24
 
 	@menu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
@@ -186,6 +187,7 @@ state.enter = (options, players) =>
 	@danmaku.debug = false
 
 state.drawWideUI = (x, y) =>
+	-- FIXME: sizemod
 	h = @danmaku.height + (@danmaku.y - y) * 2
 
 	love.graphics.setFont @font
@@ -194,8 +196,8 @@ state.drawWideUI = (x, y) =>
 		player = @players[i]
 
 		r = with {
-			w: (1024 - 25 - 25 * #@players) / #@players
-			h: 800 - h - 25
+			w: (vscreen.width - 25 - 25 * #@players) / #@players
+			h: vscreen.height - h - 25
 			x: x + 25
 			y: y + h
 		}
@@ -209,44 +211,65 @@ state.drawWideUI = (x, y) =>
 		love.graphics.print "S: #{player.score}", r.x + 10, r.y + 90
 
 state.drawNormalUI = (x, y) =>
-	w = @danmaku.width + (@danmaku.x - x) * 2
+	w = @danmaku.drawWidth + (@danmaku.x - x) * 2
+	sizemod = vscreen.rectangle.sizeModifier
 
 	love.graphics.setFont @font
 
 	love.graphics.setColor 255, 255, 255
-	love.graphics.print "#{love.timer.getFPS!} FPS", x + w + 10, y + 745
-	love.graphics.print "#{#@danmaku.entities} entities", x + w + 10, y + 770
+	love.graphics.print "#{love.timer.getFPS!} FPS",
+		x + w + 10 * sizemod, y + 705 * sizemod
+	love.graphics.print "#{#@danmaku.entities} entities",
+		x + w + 10 * sizemod, y + 770 * sizemod
 
-	love.graphics.print "Score", x + w + 10, y + 10
-	love.graphics.print "#{@danmaku.score}", x + w + 255, y + 10
+	love.graphics.print "Score",
+		x + w + 10 * sizemod, y + 10 * sizemod
+	love.graphics.print "#{@danmaku.score}",
+		x + w + 255 * sizemod, y + 10 * sizemod
 
-	love.graphics.print "Highscore", x + w + 10, y + 40
-	love.graphics.print "#{math.max @highscore, @danmaku.score}", x + w + 255, y + 40
+	love.graphics.print "Highscore",
+		x + w + 10 * sizemod, y + 40 * sizemod
+	love.graphics.print "#{math.max @highscore, @danmaku.score}",
+		x + w + 255 * sizemod, y + 40 * sizemod
 
 	local livesBox, bombsBox
 	normalPlayerBox =
-		height: 260
-		width: 1024 - @danmaku.width - (@danmaku.x - x) * 2 - 25
+		height: 260 * sizemod
+		width: love.graphics.getWidth! -
+			@danmaku.drawWidth -
+			(@danmaku.x - x) * 3
 		draw: (player, x, y) =>
-			love.graphics.rectangle "line", x, y, @width, @height
+			love.graphics.rectangle "line",
+				x, y,
+				@width, @height
+			print @width
 
-			love.graphics.print "#{player.name}", x + 5, y + 5
+			love.graphics.print "#{player.name}",
+				x + 5 * sizemod, y + 5 * sizemod
 
-			love.graphics.print "Score", x + 5, y + 45
-			love.graphics.print "#{player.score}", x + 250, y + 45
+			love.graphics.print "Score",
+				x + 5 * sizemod, y + 45 * sizemod
+			love.graphics.print "#{player.score}",
+				x + 250 * sizemod, y + 45 * sizemod
 
-			love.graphics.print "Points", x + 5, y + 75
-			love.graphics.print "#{player.customData.points or 0}", x + 250, y + 75
+			love.graphics.print "Points",
+				x + 5 * sizemod, y + 75 * sizemod
+			love.graphics.print "#{player.customData.points or 0}",
+				x + 250 * sizemod, y + 75 * sizemod
 
-			love.graphics.print "Graze", x + 5, y + 105
-			love.graphics.print "#{player.graze}", x + 250, y + 105
+			love.graphics.print "Graze",
+				x + 5 * sizemod, y + 105 * sizemod
+			love.graphics.print "#{player.graze}",
+				x + 250 * sizemod, y + 105 * sizemod
 
-			livesBox\draw player, x + 5, y + 140
-			bombsBox\draw player, x + 5, y + 180
+			livesBox\draw player,
+				x + 5 * sizemod, y + 140 * sizemod
+			bombsBox\draw player,
+				x + 5 * sizemod, y + 180 * sizemod
 
 			love.graphics.setColor 255, 63, 63
-			love.graphics.rectangle "line", 5 + x, 220 + y, 395 * (player.power / player.maxPower), 35
-			love.graphics.print "#{player.power}/#{player.maxPower}", 5 + x, 225 + y
+			love.graphics.rectangle "line", 5 * sizemod + x, 220 * sizemod + y, 395 * sizemod * (player.power / player.maxPower), 35 * sizemod
+			love.graphics.print "#{player.power}/#{player.maxPower}", 5 * sizemod + x, 225 * sizemod + y
 
 			love.graphics.setColor 255, 255, 255
 
@@ -283,8 +306,9 @@ state.drawNormalUI = (x, y) =>
 			love.graphics.setColor 255, 125, 1955
 			for i = 0, 9
 				if (i + 1) <= player.lives
-					love.graphics.rectangle "line", x + 40 * i, y,
-						35, 35
+					love.graphics.rectangle "line",
+						x + 40 * sizemod * i, y,
+						35 * sizemod, 35 * sizemod
 
 	bombsBox =
 		height: 35
@@ -293,23 +317,28 @@ state.drawNormalUI = (x, y) =>
 			love.graphics.setColor 127, 255, 127
 			for i = 0, 9
 				if (i + 1) <= player.bombs
-					love.graphics.rectangle "line", x + 40 * i, y,
-						35, 35
+					love.graphics.rectangle "line",
+						x + 40 * sizemod * i, y,
+						35 * sizemod, 35 * sizemod
 
 	for i, player in ipairs @players
-		box\draw player, x + w + 5, y + 80 + (i - 1) * (box.height + 5)
+		box\draw player,
+			x + w + 5 * sizemod,
+			y + 80 * sizemod + (i - 1) * (box.height + 5 * sizemod)
 
 state.draw = =>
-	x = (love.graphics.getWidth! - 1024) / 2
-	y = (love.graphics.getHeight! - 800) / 2
+	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen\update!
 
-	@danmaku.x = x + 25
-	@danmaku.y = y + 25
+	@danmaku.drawWidth = @danmaku.width * math.floor sizemod
+	@danmaku.drawHeight = @danmaku.height * math.floor sizemod
+
+	@danmaku.x = x + 25 * sizemod
+	@danmaku.y = y + 25 * sizemod
 
 	if @paused
 		if @danmaku.endReached and not @savedHighscore
 			@nameGrid.x = x + 25
-			@nameGrid.y = y + 800 - @nameGrid.height - 25
+			@nameGrid.y = y + vscreen.height - @nameGrid.height - 25
 
 			love.graphics.print @playerName .. "_", @nameGrid.x, @nameGrid.y - 50
 
@@ -328,8 +357,9 @@ state.draw = =>
 		if item.important
 			love.graphics.setColor 255, 0, 0
 			love.graphics.circle "fill",
-				@danmaku.x + item.x, @danmaku.y + @danmaku.height,
-				32
+				@danmaku.x + item.x * sizemod,
+				@danmaku.y + @danmaku.drawHeight,
+				32 * sizemod
 
 	-- XXX: Temporary markers.
 	if @danmaku.boss
@@ -337,8 +367,9 @@ state.draw = =>
 
 		love.graphics.setColor 255, 0, 0
 		love.graphics.circle "fill",
-			@danmaku.x + boss.x, @danmaku.y + @danmaku.height,
-			32
+			@danmaku.x + boss.x * sizemod,
+			@danmaku.y + @danmaku.drawHeight,
+			32 * sizemod
 
 	love.graphics.setColor 255, 255, 255
 	@danmaku\draw!
@@ -352,14 +383,15 @@ state.draw = =>
 		@menu\draw!
 
 state.update = (dt) =>
+	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen\update!
+
+	@font = fonts.get nil, 24 * sizemod
+
 	if state.paused
 		state.paused += dt
 
-		x = (love.graphics.getWidth! - 1024) / 2
-		y = (love.graphics.getHeight! - 800) / 2
-
-		@menu.x = x + 50
-		@menu.y = y + 300
+		@menu.x = x + 50 * sizemod
+		@menu.y = y + 300 * sizemod
 		@menu\update dt
 		return
 

@@ -1,8 +1,15 @@
 
-cache = {}
+cache = {
+	__default: {}
+}
 
 {
 	get: (name, size) ->
+		unless name
+			cache.__default[size] or= love.graphics.newFont size
+
+			return cache.__default[size]
+
 		unless cache[name]
 			cache[name] = {}
 
