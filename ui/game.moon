@@ -210,6 +210,98 @@ state.drawWideUI = (x, y) =>
 		love.graphics.print "L: #{player.lives}", r.x + 10, r.y + 50
 		love.graphics.print "S: #{player.score}", r.x + 10, r.y + 90
 
+livesBox =
+	height: 35
+	draw: (player, x, y, sizemod) =>
+		love.graphics.setColor 255, 125, 1955
+		for i = 0, 9
+			if (i + 1) <= player.lives
+				love.graphics.rectangle "line",
+					x + 40 * sizemod * i, y,
+					35 * sizemod, 35 * sizemod
+
+bombsBox =
+	height: 35
+	draw: (player, x, y, sizemod) =>
+		love.graphics.setColor 127, 255, 127
+		for i = 0, 9
+			if (i + 1) <= player.bombs
+				love.graphics.rectangle "line",
+					x + 40 * sizemod * i, y,
+					35 * sizemod, 35 * sizemod
+
+normalPlayerBox =
+	resize: (sizemod) =>
+		x = vscreen.rectangle.x
+
+		@height = 260 * sizemod
+		@width = love.graphics.getWidth! -
+			state.danmaku.drawWidth -
+			(state.danmaku.x - x) * 3
+	draw: (player, x, y, sizemod) =>
+		love.graphics.rectangle "line",
+			x, y,
+			@width, @height
+
+		love.graphics.print "#{player.name}",
+			x + 5 * sizemod, y + 5 * sizemod
+
+		love.graphics.print "Score",
+			x + 5 * sizemod, y + 45 * sizemod
+		love.graphics.print "#{player.score}",
+			x + 250 * sizemod, y + 45 * sizemod
+
+		love.graphics.print "Points",
+			x + 5 * sizemod, y + 75 * sizemod
+		love.graphics.print "#{player.customData.points or 0}",
+			x + 250 * sizemod, y + 75 * sizemod
+
+		love.graphics.print "Graze",
+			x + 5 * sizemod, y + 105 * sizemod
+		love.graphics.print "#{player.graze}",
+			x + 250 * sizemod, y + 105 * sizemod
+
+		livesBox\draw player,
+			x + 5 * sizemod, y + 140 * sizemod,
+			sizemod
+		bombsBox\draw player,
+			x + 5 * sizemod, y + 180 * sizemod,
+			sizemod
+
+		love.graphics.setColor 255, 63, 63
+		love.graphics.rectangle "line",
+			5 * sizemod + x, 220 * sizemod + y,
+			(@width - 5 * 2) * sizemod * (player.power / player.maxPower), 35 * sizemod
+		love.graphics.print "#{player.power}/#{player.maxPower}",
+			5 * sizemod + x, 225 * sizemod + y
+
+		love.graphics.setColor 255, 255, 255
+
+smallPlayerBox =
+	resize: (sizemod) =>
+		@height = 160
+		@width = 405
+	draw: (player, x, y, sizemod) =>
+		love.graphics.rectangle "line", x, y, @width, @height
+
+		love.graphics.print "#{player.name}", x + 5, y + 5
+		love.graphics.print "#{player.score}", x + 250, y + 5
+
+		livesBox\draw player, x + 5, y + 40, sizemod
+		bombsBox\draw player, x + 5, y + 80, sizemod
+
+		love.graphics.setColor 255, 63, 63
+		love.graphics.rectangle "line",
+			5 + x, 120 + y,
+			245 * (player.power / player.maxPower), 35
+		love.graphics.print "#{player.power}/#{player.maxPower}", 5 + x, 125 + y
+
+		love.graphics.setColor 255, 255, 255
+		love.graphics.print "#{player.graze}",
+			250 + x, 125 + y
+
+		love.graphics.setColor 255, 255, 255
+
 state.drawNormalUI = (x, y) =>
 	w = @danmaku.drawWidth + (@danmaku.x - x) * 2
 	sizemod = vscreen.rectangle.sizeModifier
@@ -232,99 +324,17 @@ state.drawNormalUI = (x, y) =>
 	love.graphics.print "#{math.max @highscore, @danmaku.score}",
 		x + w + 255 * sizemod, y + 40 * sizemod
 
-	local livesBox, bombsBox
-	normalPlayerBox =
-		height: 260 * sizemod
-		width: love.graphics.getWidth! -
-			@danmaku.drawWidth -
-			(@danmaku.x - x) * 3
-		draw: (player, x, y) =>
-			love.graphics.rectangle "line",
-				x, y,
-				@width, @height
-			print @width
-
-			love.graphics.print "#{player.name}",
-				x + 5 * sizemod, y + 5 * sizemod
-
-			love.graphics.print "Score",
-				x + 5 * sizemod, y + 45 * sizemod
-			love.graphics.print "#{player.score}",
-				x + 250 * sizemod, y + 45 * sizemod
-
-			love.graphics.print "Points",
-				x + 5 * sizemod, y + 75 * sizemod
-			love.graphics.print "#{player.customData.points or 0}",
-				x + 250 * sizemod, y + 75 * sizemod
-
-			love.graphics.print "Graze",
-				x + 5 * sizemod, y + 105 * sizemod
-			love.graphics.print "#{player.graze}",
-				x + 250 * sizemod, y + 105 * sizemod
-
-			livesBox\draw player,
-				x + 5 * sizemod, y + 140 * sizemod
-			bombsBox\draw player,
-				x + 5 * sizemod, y + 180 * sizemod
-
-			love.graphics.setColor 255, 63, 63
-			love.graphics.rectangle "line", 5 * sizemod + x, 220 * sizemod + y, 395 * sizemod * (player.power / player.maxPower), 35 * sizemod
-			love.graphics.print "#{player.power}/#{player.maxPower}", 5 * sizemod + x, 225 * sizemod + y
-
-			love.graphics.setColor 255, 255, 255
-
-	smallPlayerBox =
-		height: 160
-		width: 405
-		draw: (player, x, y) =>
-			love.graphics.rectangle "line", x, y, @width, @height
-
-			love.graphics.print "#{player.name}", x + 5, y + 5
-			love.graphics.print "#{player.score}", x + 250, y + 5
-
-			livesBox\draw player, x + 5, y + 40
-			bombsBox\draw player, x + 5, y + 80
-
-			love.graphics.setColor 255, 63, 63
-			love.graphics.rectangle "line", 5 + x, 120 + y, 245 * (player.power / player.maxPower), 35
-			love.graphics.print "#{player.power}/#{player.maxPower}", 5 + x, 125 + y
-
-			love.graphics.setColor 255, 255, 255
-			love.graphics.print "#{player.graze}", 250 + x, 125 + y
-
-			love.graphics.setColor 255, 255, 255
-
 	box = if #@players > 2
 		smallPlayerBox
 	else
 		normalPlayerBox
 
-	livesBox =
-		height: 35
-		width: box.width - 10
-		draw: (player, x, y) =>
-			love.graphics.setColor 255, 125, 1955
-			for i = 0, 9
-				if (i + 1) <= player.lives
-					love.graphics.rectangle "line",
-						x + 40 * sizemod * i, y,
-						35 * sizemod, 35 * sizemod
-
-	bombsBox =
-		height: 35
-		width: box.width - 10
-		draw: (player, x, y) =>
-			love.graphics.setColor 127, 255, 127
-			for i = 0, 9
-				if (i + 1) <= player.bombs
-					love.graphics.rectangle "line",
-						x + 40 * sizemod * i, y,
-						35 * sizemod, 35 * sizemod
-
 	for i, player in ipairs @players
+		box\resize sizemod
 		box\draw player,
 			x + w + 5 * sizemod,
-			y + 80 * sizemod + (i - 1) * (box.height + 5 * sizemod)
+			y + 80 * sizemod + (i - 1) * (box.height + 5 * sizemod),
+			sizemod
 
 state.draw = =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen\update!
