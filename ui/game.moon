@@ -154,7 +154,7 @@ state.drawNormalUI = (x, y) =>
 	love.graphics.print "#{@danmaku.score}", x + w + 255, y + 10
 
 	love.graphics.print "Highscore", x + w + 10, y + 40
-	love.graphics.print "#{@highscore or @danmaku.score}", x + w + 255, y + 40
+	love.graphics.print "#{math.max @highscore, @danmaku.score}", x + w + 255, y + 40
 
 	local livesBox, bombsBox
 	normalPlayerBox =

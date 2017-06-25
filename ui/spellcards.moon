@@ -31,6 +31,7 @@ updateSpellcardsList = ->
 					onSelection: =>
 						newState = require "ui.difficulty"
 						newStage = {
+							name: "Boss - " .. boss.name
 							difficulties: boss.difficulties -- XXX check
 							drawBossData: data.stages[1].drawBossData
 
@@ -76,6 +77,7 @@ updateSpellcardsList = ->
 				onSelection: =>
 					newState = require "ui.difficulty"
 					newStage = {
+						name: "Spellcard - " .. spellcard.name
 						difficulties: spellcard.difficulties
 						drawBossData: data.stages[1].drawBossData
 

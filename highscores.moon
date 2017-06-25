@@ -92,25 +92,23 @@ setmetatable {
 	load: ->
 		cache = {}
 
-		file = io.open scoresFile, "r"
-
-		unless file
-			return false
-
 		success, value = pcall ->
-			func = moon.loadfile(file)!
-
-		file\close!
+			moon.loadfile(scoresFile)!
 
 		if success
 			cache = value
 
 			value
+		else
+			print "Loading highscores failed…"
+			print value
 
 	get: (stage, players, options) ->
 		for score in *cache
 			unless score.stage == stage.name
 				continue
+
+			print "stage name is ok"
 
 			for i, player in ipairs players
 				character = score.characters[i]
@@ -124,22 +122,27 @@ setmetatable {
 				unless character.variant == player.secondaryAttackName
 					continue
 
+			print "characters are ok"
+
 			mismatchingOption = false
 			for option, value in pairs options
-				unless value
-					continue
-
 				if type(value) == "table"
 					continue
 
 				if score.options[option] != value
+					print "#{option} mismatch!"
 					mismatchingOption = true
 					break
 
 			if mismatchingOption
 				continue
 
+			print "options are ok"
+
 			return score.score
+
+		return 0
+
 	save: (stage, players, options, score, name) ->
 		score = {
 			stage: stage.name
