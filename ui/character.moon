@@ -3,6 +3,8 @@ Grid = require "ui.tools.grid"
 Menu = require "ui.tools.menu"
 
 data = require "data"
+vscreen = require "vscreen"
+fonts = require "fonts"
 
 state = {
 	font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
@@ -81,7 +83,9 @@ state.enter = (options, multiplayer, noReset) =>
 			}
 
 	@grid = Grid
-		:x, :y, :width, :height, :cursors
+		x: 0
+		y: 0
+		:width, :height, :cursors
 		cells: data.characters
 		columns: #data.characters
 		rows: 1
@@ -128,7 +132,23 @@ state.enter = (options, multiplayer, noReset) =>
 	} for i = 1, 4]
 
 state.update = (dt) =>
-	unless @multiplayer
+	vscreen\update!
+
+	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.fullRectangle
+
+	@font = fonts.get "miamanueva", 24 * sizemod
+
+	if @multiplayer
+		@grid.width = love.graphics.getWidth!
+		@grid.height = love.graphics.getHeight! - 320 * sizemod
+		@grid.x = 0
+		@grid.y = (h - @grid.height) / 2
+	else
+		@grid.width = love.graphics.getWidth!
+		@grid.height = love.graphics.getHeight!
+		@grid.x = 0
+		@grid.y = 0
+
 		character = @grid.cursors[1].selectedCell
 		index = @grid.cursors[1].index
 
@@ -147,31 +167,32 @@ state.update = (dt) =>
 				{191, 255, 63, 191}
 
 	for i, cursor in ipairs @grid.cursors
+		@variantMenus[i].font = fonts.get "miamanueva", 24 * sizemod
 		if @selectedCharacters[i]
 			@variantMenus[i]\update dt
 
 state.draw = =>
-	love.graphics.setFont @font
+	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.fullRectangle
 
-	x = (love.graphics.getWidth! - 1024) / 2
-	y = (love.graphics.getHeight! - 800) / 2
+	love.graphics.setFont @variantMenus[1].font
 
 	@selectedCharacter = nil
 
 	@grid\draw!
 
-	width = 1024 / 2
-	height = @grid.y + @grid.height
+	-- FIXME: Rename this shit.
+	width = @grid.width / 2 + 10 * sizemod
+	height = @grid.y + @grid.height + 10 * sizemod
 
 	for i, cursor in ipairs @grid.cursors
 		X, Y = if @multiplayer
 			switch i
 				when 1
-					10, 10
+					10 * sizemod, 10 * sizemod
 				when 2
-					width, 10
+					width, 10 * sizemod
 				when 3
-					10, height
+					10 * sizemod, height
 				when 4
 					width, height
 		else
@@ -179,9 +200,6 @@ state.draw = =>
 			width = r.w - 20
 
 			r.x, r.y + @grid.height - 400 - 10
-
-		X += x
-		Y += y
 
 		if @selectedCharacters[i]
 			if @selectedVariants[i]
@@ -193,7 +211,7 @@ state.draw = =>
 				with @variantMenus[i]
 					.x = X
 					.y = Y
-					.width = width - 20
+					.width = width - 10 * sizemod
 					.height = height
 
 					\draw!
@@ -249,7 +267,6 @@ state.direction = (direction, i = 1) =>
 		@grid[direction] @grid, i
 
 state.keypressed = (key, scanCode, ...) =>
-
 	if #@grid.cursors == 1
 		if data.isMenuInput scanCode, "select"
 			@\select!

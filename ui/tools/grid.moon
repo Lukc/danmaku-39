@@ -55,8 +55,8 @@ class
 		w = @width / @columns
 		h = @height / @rows
 		{
-			x: @x + ((index - 1) % @columns) * w
-			y: @y + (math.ceil(index / @columns) - 1) * h
+			x: ((index - 1) % @columns) * w
+			y: (math.ceil(index / @columns) - 1) * h
 			:w
 			:h
 		}
