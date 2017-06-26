@@ -22,6 +22,26 @@ Grid = require "ui.tools.grid"
 state = {
 }
 
+tryAgainItem = ->
+	{
+		label: "Restart"
+		onSelection: {
+			{
+				label: "Are you sure?"
+			}
+			{
+				label: "No"
+				onSelection: =>
+					@\setItemsList @items.parent
+			}
+			{
+				label: "Yes"
+				onSelection: =>
+					state\enter state.options, state.playerOptions
+			}
+		}
+	}
+
 mainMenuItem = ->
 	{
 		label: "Main menu"
@@ -48,6 +68,7 @@ gameOverMenu = ->
 		{
 			label: "Game over…"
 		}
+		tryAgainItem!
 		mainMenuItem!
 	}
 
@@ -57,6 +78,7 @@ victoryMenu = ->
 		{
 			label: "Victory!"
 		}
+		tryAgainItem!
 		mainMenuItem!
 	}
 
@@ -77,6 +99,8 @@ state.enter = (options, players) =>
 	} = options
 
 	@options = options
+	@playerOptions = players
+
 	@stage = stage
 
 	@menu = Menu {
@@ -92,6 +116,7 @@ state.enter = (options, players) =>
 				state.resuming = false
 				state.paused = false
 		}
+		tryAgainItem!
 		mainMenuItem!
 	}
 	@nameGrid = Grid {
@@ -170,6 +195,7 @@ state.enter = (options, players) =>
 		stage: Stage stage
 		:width, :height
 		:noBombs, :pacific, :training, :difficulty
+
 
 	-- FIXME: update their positions, based on players count
 	for player in *players
