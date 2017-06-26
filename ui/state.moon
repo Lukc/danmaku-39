@@ -39,7 +39,7 @@ Manager = ->
 					time += dt
 
 					while time >= frameDuration
-						self\update dt
+						self\update frameDuration
 
 						time -= frameDuration
 			else
