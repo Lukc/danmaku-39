@@ -133,6 +133,21 @@ stage1 = StageData {
 			love.graphics.setColor 255, 63, 63, alpha
 			love.graphics.circle "line", x, y, radius + width/2
 			love.graphics.circle "line", x, y, radius - width/2
+
+			love.graphics.setLineWidth 3
+			health = @boss.maxHealth
+			for spell in *@boss.spellcards
+				if spell.endOfLife or spell == @boss.spellcards[#@boss.spellcards]
+					break
+
+				health -= spell.health
+				angle = -math.pi/2 - math.pi * 2 * (health / @boss.maxHealth) * fm
+
+				love.graphics.line x + math.cos(angle) * (radius - width / 2 + 1),
+					y + math.sin(angle) * (radius - width / 2 + 1),
+					x + math.cos(angle) * (radius + width / 2 - 1),
+					y + math.sin(angle) * (radius + width / 2 - 1)
+
 			love.graphics.setLineWidth 1
 
 		spell = @boss.currentSpell
