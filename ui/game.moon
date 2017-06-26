@@ -393,7 +393,7 @@ state.draw = =>
 		if item.important
 			love.graphics.setColor 255, 0, 0
 			love.graphics.circle "fill",
-				@danmaku.x + item.x * sizemod,
+				@danmaku.x + item.x * (@danmaku.width / @danmaku.drawWidth),
 				@danmaku.y + @danmaku.drawHeight,
 				32 * sizemod
 
@@ -403,7 +403,7 @@ state.draw = =>
 
 		love.graphics.setColor 255, 0, 0
 		love.graphics.circle "fill",
-			@danmaku.x + boss.x * sizemod,
+			@danmaku.x + boss.x * (@danmaku.width / @danmaku.drawWidth),
 			@danmaku.y + @danmaku.drawHeight,
 			32 * sizemod
 
