@@ -8,9 +8,17 @@ radial = (arg) ->
 	arg or= {}
 
 	entity     = arg.from
-	radius     = arg.radius or entity.radius or math.max(entity.width, entity.height)
+	radius     = arg.radius
 	bulletData = arg.bullet or {}
 	bulletsPerCircle = arg.bullets or 6
+
+	if not radius
+		radius = entity.radius
+
+		if entity.width and entity.height
+			radius = math.max(entity.width, entity.height)
+
+		radius or= 1
 
 	unless entity
 		return ->
