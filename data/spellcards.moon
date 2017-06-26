@@ -16,7 +16,7 @@ s5 = Spellcard {
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
-	health: 60
+	health: 3600
 	timeout: 30 * 60
 	update: =>
 		if @frame % 40 == 0
@@ -39,7 +39,7 @@ s2 = Spellcard {
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
-	health: 60
+	health: 3600
 	timeout: 30 * 60
 	update: =>
 		if @frame % 5 == 0
@@ -63,7 +63,7 @@ s1 = Spellcard {
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
-	health: 60
+	health: 3600
 	timeout: 30 * 60
 	update: =>
 		-- Flower spell card
@@ -101,7 +101,7 @@ s1 = Spellcard {
 
 
 s3 = Spellcard {
-	health: 60
+	health: 3600
 	timeout: 30 * 60
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
