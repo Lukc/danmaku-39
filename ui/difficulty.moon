@@ -99,14 +99,15 @@ drawCheck = (x, y) =>
 	@menu\print @label, r.x + 32, r.y, color, font
 
 play = =>
-		options = {
-			stage: state.stage
-			noBombs: state.noBombs
-			pacific: state.pacific
-			training: state.training
-			difficulty: Danmaku.Difficulties[state.difficulty]
-		}
-		state.manager\setState require("ui.character"), options, state.multiplayer
+	options = {
+		stage: state.stage
+		noBombs: state.noBombs
+		pacific: state.pacific
+		training: state.training
+		difficulty: Danmaku.Difficulties[state.difficulty]
+	}
+
+	state.manager\setState require("ui.character"), options, state.multiplayer
 
 state.enter = (stage, noReset) =>
 	if noReset
