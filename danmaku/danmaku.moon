@@ -253,6 +253,9 @@ class
 	setBoss: (boss) =>
 		@boss = boss
 
+		@bossSince = if boss
+			@frame
+
 	failSpellcard: =>
 		if @boss
 			@boss.spellSuccess = false

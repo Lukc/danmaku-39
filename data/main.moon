@@ -113,6 +113,28 @@ stage1 = StageData {
 		love.graphics.setColor 255, 255, 255
 		love.graphics.print "#{@boss.name}, #{@boss.health}/#{@boss.maxHealth}", 20, 20
 
+		with x, y = @boss.x, @boss.y
+			f = @boss.frame - @bossSince
+			fm = math.min 1, f / 60 -- frame modifier, for starting animations.
+
+			radius = 20 + (80 - 20) * fm
+			width = 7
+
+			alpha = 191 * fm
+
+			print radius, alpha
+
+			love.graphics.setColor 255, 255, 255, alpha
+			love.graphics.setLineWidth width
+			love.graphics.arc "line", "open", x, y, radius,
+				-math.pi/2, -math.pi/2 - math.pi * 2 * (@boss.health / @boss.maxHealth) * fm
+			love.graphics.setLineWidth 1.5
+
+			love.graphics.setColor 255, 63, 63, alpha
+			love.graphics.circle "line", x, y, radius + width/2
+			love.graphics.circle "line", x, y, radius - width/2
+			love.graphics.setLineWidth 1
+
 		spell = @boss.currentSpell
 		if spell and spell.name
 			love.graphics.print "#{spell.name}", 40,60
