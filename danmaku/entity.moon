@@ -83,6 +83,7 @@ class
 		@readyForRemoval = false
 
 		@outOfScreenTime = 0
+		@maxOutOfScreenTime = arg.outOfScreenTime or 30
 		@disableTimeoutRemoval = false
 
 		-- Generic storage area to be used by scripts.
@@ -184,7 +185,7 @@ class
 			else
 				@outOfScreenTime = 0
 
-		if @outOfScreenTime >= 30
+		if @outOfScreenTime >= @maxOutOfScreenTime
 			@readyForRemoval = true
 
 		@frame += 1
