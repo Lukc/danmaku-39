@@ -52,6 +52,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 					spawnTime: 0
 					damageable: false
 					radius: 48
+					outOfScreenTime: math.huge
 					update: =>
 						@x = player.x + radius * math.cos angle
 						@y = player.y + radius * math.sin angle
