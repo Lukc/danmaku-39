@@ -36,7 +36,9 @@ class extends Enemy
 	update: =>
 		@\doUpdate =>
 			if @frame == 0
+				-- Recalculating lives and trimming incompatible spellcards.
 				@lives = 0
+				newSpellcards = {}
 				for spell in *@spellcards
 					unless spell\playableAtDifficulty @game.difficulty
 						print "Skipping #{spell} due to difficulty."
@@ -44,6 +46,10 @@ class extends Enemy
 
 					if spell.endOfLife or spell == @spellcards[#@spellcards]
 						@lives += 1
+
+					table.insert newSpellcards, spell
+
+				@spellcards = newSpellcards
 
 			currentSpell = @spellcards[@currentSpellIndex]
 
