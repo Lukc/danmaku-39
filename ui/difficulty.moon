@@ -98,8 +98,7 @@ drawCheck = (x, y) =>
 
 	@menu\print @label, r.x + 32, r.y, color, font
 
-play = ->
-	=>
+play = =>
 		options = {
 			stage: state.stage
 			noBombs: state.noBombs
@@ -135,7 +134,7 @@ state.enter = (stage, noReset) =>
 			noTransition: true
 			baseHeight: 128
 			draw: drawSelector
-			onSelection: play!
+			onSelection: play
 			onValueChange: (item) =>
 				print item.value
 				state.difficulty = item.value
@@ -147,7 +146,7 @@ state.enter = (stage, noReset) =>
 			noTransition: true
 			baseHeight: 96
 			draw: drawCheck
-			onSelection: play!
+			onSelection: play
 			onValueChange: (item) =>
 				state.training = item.value
 		}
@@ -157,7 +156,7 @@ state.enter = (stage, noReset) =>
 			noTransition: true
 			baseHeight: 96
 			draw: drawCheck
-			onSelection: play!
+			onSelection: play
 			onValueChange: (item) =>
 				state.pacific = item.value
 				state.noBombs = item.value
@@ -168,7 +167,7 @@ state.enter = (stage, noReset) =>
 			noTransition: true
 			baseHeight: 96
 			draw: drawCheck
-			onSelection: play!
+			onSelection: play
 			onValueChange: (item) =>
 				print self, item, item.value
 				state.multiplayer = item.value
