@@ -85,8 +85,8 @@ victoryMenu = ->
 state.enter = (options, players) =>
 	@players = {}
 	@paused = false
+	@awaitingPlayerName = false
 	@resuming = false
-	@savedHighscore = false
 
 	@playerName = data.config.lastUsedName
 
@@ -157,7 +157,8 @@ state.enter = (options, players) =>
 				data.config.lastUsedName = @playerName
 				data.saveConfig!
 
-				@savedHighscore = true
+				@awaitingPlayerName = false
+				@paused = 0
 			else
 				state.playerName ..= char
 		onEscape: =>
@@ -369,15 +370,6 @@ state.draw = =>
 	@danmaku.x = x + 25 * sizemod
 	@danmaku.y = y + 25 * sizemod
 
-	if @paused
-		c = if @resuming
-			c = 127 + 127 * math.min 1, @menu.drawTime - @resuming
-		else
-			c = 255 - 127 * math.min 1, @paused
-		love.graphics.setColor c, c, c
-	else
-		love.graphics.setColor 255, 255, 255
-
 	-- XXX: Temporary markers.
 	for item in *@danmaku.items
 		if item.important
@@ -397,7 +389,15 @@ state.draw = =>
 			@danmaku.y + @danmaku.drawHeight,
 			32 * sizemod
 
-	love.graphics.setColor 255, 255, 255
+	if @paused or @awaitingPlayerName
+		c = if @resuming
+			c = 127 + 127 * math.min 1, @menu.drawTime - @resuming
+		else
+			c = 255 - 127 * math.min 1, @paused or 0
+		love.graphics.setColor c, c, c
+	else
+		love.graphics.setColor 255, 255, 255
+
 	@danmaku\draw!
 
 	if @danmaku.width >= 700
@@ -405,36 +405,38 @@ state.draw = =>
 	else
 		@\drawNormalUI x, y
 
-	if state.paused
-		if @danmaku.endReached and not @savedHighscore
-			love.graphics.print @playerName .. "_", @nameGrid.x, @nameGrid.y - 50
+	if state.awaitingPlayerName
+		love.graphics.print @playerName .. "_", @nameGrid.x, @nameGrid.y - 50
 
-			@nameGrid\draw!
-		else
-			@menu\draw!
+		@nameGrid\draw!
+	if state.paused
+		@menu\draw!
 
 state.update = (dt) =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen\update!
+	danmakuSizemod = state.danmaku.width / state.danmaku.drawWidth
 
 	@font = fonts.get nil, 24 * sizemod
 
-	if state.paused
+	if state.awaitingPlayerName
+		@nameGrid.width = 520 * danmakuSizemod
+		@nameGrid.height = 300 * danmakuSizemod
+		@nameGrid.x = x + 25 * sizemod
+		@nameGrid.y = y + vscreen.height - @nameGrid.height - 25 * danmakuSizemod
+
+		return
+	elseif state.paused
 		state.paused += dt
 
-		if @danmaku.endReached and not @savedHighscore
-			@nameGrid.width = 520 * sizemod
-			@nameGrid.height = 300 * sizemod
-			@nameGrid.x = x + 25 * sizemod
-			@nameGrid.y = y + vscreen.height - @nameGrid.height - 25 * sizemod
-
-		@menu.width = 400 * sizemod
+		@menu.width = 400 * danmakuSizemod
 		@menu.x = x + 50 * sizemod
-		@menu.y = y + 350 * sizemod
+		@menu.y = y + 350 * danmakuSizemod
 		@menu\update dt
 
 		return
 
 	if @danmaku.endReached
+		state.awaitingPlayerName = true
 		print "We reached the end."
 		state.paused = 0
 
@@ -502,11 +504,12 @@ state.update = (dt) =>
 	@danmaku\update dt
 
 state.keypressed = (key, ...) =>
-	if state.paused
-		if @danmaku.endReached and not state.savedHighscore
-			@nameGrid\keypressed key, ...
+	if state.awaitingPlayerName
+		@nameGrid\keypressed key, ...
+	elseif state.paused
 		-- Holy shit, this is the project’s hackiest hack. I think.
-		elseif key == "escape" and @menu.items.selection == 1 and @menu.items[1].label == "Resume"
+		-- FIXME: I DON’T EVEN KNOW WHAT THIS DOES ANYMORE HALP
+		if key == "escape" and @menu.items.selection == 1 and @menu.items[1].label == "Resume"
 			@menu\back!
 		else
 			@menu\keypressed key, ...
@@ -517,10 +520,13 @@ state.keypressed = (key, ...) =>
 			state.paused = 0
 
 state.gamepadpressed = (joystick, button) =>
-	if state.paused
-		if @danmaku.endReached and not state.savedHighscore
-			@nameGrid\gamepadpressed joystick, button
-		elseif button == "start"
+	if state.awaitingPlayerName
+		@nameGrid\gamepadpressed joystick, button
+	elseif state.paused
+		if button == "start"
+			if state.danmaku.endReached
+				return
+
 			@menu.selectionTime = 0
 			@menu.selectedItem = {
 				onSelection: =>
