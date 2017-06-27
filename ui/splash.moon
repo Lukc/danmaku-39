@@ -22,6 +22,7 @@ state.enter = =>
 			angle = math.pi * 2 * math.random!
 			dx = 0.1 * math.cos angle
 			dy = 0.1 * math.sin angle
+			colorFactor = math.random!
 
 			table.insert @particles, {
 				x: math.random x, x + 1024
@@ -30,7 +31,11 @@ state.enter = =>
 				type: "growing"
 				start: math.random! * 1.5
 				duration: 1 + math.random! * 3
-				color: {191, 191, 191}
+				color: {
+					191 + (255 - 191) * colorFactor,
+					191 - 32 * colorFactor,
+					191 - 32 * colorFactor
+				}
 				:dx, :dy
 			}
 
@@ -101,7 +106,7 @@ state.draw = =>
 			love.graphics.draw @sprite, x + particle.x, y + particle.y, nil, scale, scale, sw/2, sh/2
 
 	do
-		text = "Splash~"
+		text = "Nyaa~tan"
 
 		love.graphics.setFont @font
 		love.graphics.setColor 255, 255, 255, alpha
