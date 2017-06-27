@@ -122,8 +122,6 @@ state.enter = (options, players) =>
 	@nameGrid = Grid {
 		columns: 20
 		rows: 8
-		width: 550
-		height: 300
 		cells: {
 			"a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
 			"k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
@@ -372,19 +370,11 @@ state.draw = =>
 	@danmaku.y = y + 25 * sizemod
 
 	if @paused
-		if @danmaku.endReached and not @savedHighscore
-			@nameGrid.x = x + 25
-			@nameGrid.y = y + vscreen.height - @nameGrid.height - 25
-
-			love.graphics.print @playerName .. "_", @nameGrid.x, @nameGrid.y - 50
-
-			@nameGrid\draw!
+		c = if @resuming
+			c = 127 + 127 * math.min 1, @menu.drawTime - @resuming
 		else
-			c = if @resuming
-				c = 127 + 127 * math.min 1, @menu.drawTime - @resuming
-			else
-				c = 255 - 127 * math.min 1, @paused
-			love.graphics.setColor c, c, c
+			c = 255 - 127 * math.min 1, @paused
+		love.graphics.setColor c, c, c
 	else
 		love.graphics.setColor 255, 255, 255
 
@@ -416,7 +406,12 @@ state.draw = =>
 		@\drawNormalUI x, y
 
 	if state.paused
-		@menu\draw!
+		if @danmaku.endReached and not @savedHighscore
+			love.graphics.print @playerName .. "_", @nameGrid.x, @nameGrid.y - 50
+
+			@nameGrid\draw!
+		else
+			@menu\draw!
 
 state.update = (dt) =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen\update!
@@ -426,9 +421,17 @@ state.update = (dt) =>
 	if state.paused
 		state.paused += dt
 
+		if @danmaku.endReached and not @savedHighscore
+			@nameGrid.width = 520 * sizemod
+			@nameGrid.height = 300 * sizemod
+			@nameGrid.x = x + 25 * sizemod
+			@nameGrid.y = y + vscreen.height - @nameGrid.height - 25 * sizemod
+
+		@menu.width = 400 * sizemod
 		@menu.x = x + 50 * sizemod
-		@menu.y = y + 300 * sizemod
+		@menu.y = y + 350 * sizemod
 		@menu\update dt
+
 		return
 
 	if @danmaku.endReached
