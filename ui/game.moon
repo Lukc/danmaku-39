@@ -212,8 +212,9 @@ state.enter = (options, players) =>
 	@danmaku.debug = false
 
 state.drawWideUI = (x, y) =>
-	-- FIXME: sizemod
-	h = @danmaku.height + (@danmaku.y - y) * 2
+	sizemod = vscreen.rectangle.sizeModifier
+	h = @danmaku.drawHeight + (@danmaku.y - y) * 2
+	totalWidth = @danmaku.drawWidth - 25 * sizemod * (#@players - 1)
 
 	love.graphics.setFont @font
 
@@ -221,19 +222,19 @@ state.drawWideUI = (x, y) =>
 		player = @players[i]
 
 		r = with {
-			w: (vscreen.width - 25 - 25 * #@players) / #@players
-			h: vscreen.height - h - 25
-			x: x + 25
+			w: (totalWidth) / #@players
+			h: vscreen.height * sizemod - h - 25 * sizemod
+			x: x
 			y: y + h
 		}
-			.x += (.w + 25) * (i - 1)
+			.x += .w * (i - 1) + 25 * sizemod * i
 
 		love.graphics.setColor 255, 255, 255
 		love.graphics.rectangle "line", r.x, r.y, r.w, r.h
 
-		love.graphics.print "B: #{player.bombs}", r.x + 10, r.y + 10
-		love.graphics.print "L: #{player.lives}", r.x + 10, r.y + 50
-		love.graphics.print "S: #{player.score}", r.x + 10, r.y + 90
+		love.graphics.print "B: #{player.bombs}", r.x + 10 * sizemod, r.y + 10 * sizemod
+		love.graphics.print "L: #{player.lives}", r.x + 10 * sizemod, r.y + 50 * sizemod
+		love.graphics.print "S: #{player.score}", r.x + 10 * sizemod, r.y + 90 * sizemod
 
 livesBox =
 	height: 35
@@ -363,6 +364,7 @@ state.drawNormalUI = (x, y) =>
 
 state.draw = =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen\update!
+	danmakuSizemod = state.danmaku.drawWidth / state.danmaku.width
 
 	@danmaku.drawWidth = @danmaku.width * math.floor sizemod
 	@danmaku.drawHeight = @danmaku.height * math.floor sizemod
@@ -375,9 +377,9 @@ state.draw = =>
 		if item.important
 			love.graphics.setColor 255, 0, 0
 			love.graphics.circle "fill",
-				@danmaku.x + item.x * (@danmaku.width / @danmaku.drawWidth),
+				@danmaku.x + item.x * danmakuSizemod,
 				@danmaku.y + @danmaku.drawHeight,
-				32 * sizemod
+				32 * danmakuSizemod
 
 	-- XXX: Temporary markers.
 	if @danmaku.boss
@@ -385,9 +387,9 @@ state.draw = =>
 
 		love.graphics.setColor 255, 0, 0
 		love.graphics.circle "fill",
-			@danmaku.x + boss.x * (@danmaku.width / @danmaku.drawWidth),
+			@danmaku.x + boss.x * danmakuSizemod,
 			@danmaku.y + @danmaku.drawHeight,
-			32 * sizemod
+			32 * danmakuSizemod
 
 	if @paused or @awaitingPlayerName
 		c = if @resuming
@@ -414,7 +416,7 @@ state.draw = =>
 
 state.update = (dt) =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen\update!
-	danmakuSizemod = state.danmaku.width / state.danmaku.drawWidth
+	danmakuSizemod = state.danmaku.drawWidth / state.danmaku.width
 
 	@font = fonts.get nil, 24 * sizemod
 
@@ -427,10 +429,13 @@ state.update = (dt) =>
 		return
 	elseif state.paused
 		state.paused += dt
+		print danmakuSizemod
 
 		@menu.width = 400 * danmakuSizemod
-		@menu.x = x + 50 * sizemod
-		@menu.y = y + 350 * danmakuSizemod
+		@menu.itemHeight = 64 * danmakuSizemod
+		@menu.font = fonts.get "miamanueva", 32 * danmakuSizemod
+		@menu.x = x + 25 * sizemod + 25 * danmakuSizemod
+		@menu.y = y + 25 * sizemod + 325 * danmakuSizemod
 		@menu\update dt
 
 		return
