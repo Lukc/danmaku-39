@@ -1,4 +1,6 @@
 
+fonts = require "fonts"
+
 state = {
 	-- Will get loaded only once.
 	time: 0
@@ -81,6 +83,17 @@ state.draw = =>
 	x = (love.graphics.getWidth! - 1024) / 2
 	y = (love.graphics.getHeight! - 800) / 2
 
+	width = love.graphics.getWidth!
+	height = love.graphics.getHeight!
+
+	widthModifier = width / 1024
+	heightModifier = height / 800
+
+	sizeModifier = math.min widthModifier, heightModifier
+
+	@font = fonts.get "miamanueva", 192 * sizeModifier
+	@smallFont = fonts.get "miamanueva", 36 * sizeModifier
+
 	alpha = math.min 255, 255 * @time
 	alpha = math.min alpha, 255 * (@endTime - @time)
 
@@ -102,8 +115,8 @@ state.draw = =>
 
 			love.graphics.setColor r, g, b, a
 
-			scale = particle.radius / sw * 4
-			love.graphics.draw @sprite, x + particle.x, y + particle.y, nil, scale, scale, sw/2, sh/2
+			scale = particle.radius / sw * 4 * sizeModifier
+			love.graphics.draw @sprite, particle.x * widthModifier, particle.y * heightModifier, nil, scale, scale, sw/2, sh/2
 
 	do
 		text = "Nyaa~tan"
@@ -111,8 +124,8 @@ state.draw = =>
 		love.graphics.setFont @font
 		love.graphics.setColor 255, 255, 255, alpha
 
-		with x = x + (1024 - @font\getWidth text) / 2
-			with y = y + 100
+		with x = (width - @font\getWidth text) / 2
+			with y = (height - @font\getHeight test) / 2 - 100 * heightModifier
 				love.graphics.setColor 0, 0, 0, alpha
 				love.graphics.print text, x + 4, y + 2
 				love.graphics.print text, x + 2, y + 4
@@ -122,13 +135,13 @@ state.draw = =>
 				love.graphics.print text, x, y
 
 	do
-		text = "Development Build - Week 2"
+		text = "Development Build - Week 3"
 
 		love.graphics.setFont @smallFont
 		love.graphics.setColor 127, 127, 127, alpha
 
-		with x = x + 1024 - @smallFont\getWidth(text) - 150
-			with y = y + 800 - @smallFont\getHeight(text) - 125
+		with x = width - @smallFont\getWidth(text) - 50 * widthModifier
+			with y = height - @smallFont\getHeight(text)
 				love.graphics.setColor 0, 0, 0, alpha
 				love.graphics.print text, x + 4, y + 2
 				love.graphics.print text, x + 2, y + 4
@@ -178,7 +191,7 @@ state.update = (dt) =>
 
 state.keypressed = (key, scanCode, ...) =>
 	print key, scanCode
-	for e in *{"escape", "space", "return", "z"}
+	for e in *{"escape", "space", "return", "z", " "}
 		if scanCode == e
 			if @endTime - @time > 1
 				@endTime = @time + 1
