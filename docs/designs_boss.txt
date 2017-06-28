@@ -31,7 +31,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
  			peut etre des bijous et decoration en metal
 			possede une fleur dans les cheveux attachee a un ruban 
 				ref: https://deavita.fr/wp-content/uploads/2015/12/coiffure-hiver-2015-2016-cheveux-longs-brushing-ondul%C3%A9.jpg
-		Personalité :
+		Personnalité :
 			Elle est une shaman-guerriere reputée
 			a des désirs simples : explorer la jungle et se balader
 			couleur preferée: le rouge
@@ -75,7 +75,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
 		Details :
       			sandales decorées
       			utilise une magie plutot orientee vers des motifs 
-      		Personalité :
+      		Personnalité :
       			attitude dominante, c'est une chef de ville ou de gros village autochtone (il y aura une ziggourat en background de stage a ce moment) 
       			attitude pragmatique en general 
       			envers ses amis (et sa confidente Coactlicue), elle est connue comme une personne peu sure d'elle, car pouvant douter fortement de ses competences 
@@ -115,7 +115,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
                         - https://s-media-cache-ak0.pinimg.com/564x/de/64/ef/de64ef1c8b210e45df6f97c0bc38374b.jpg 
 			pour le fun et pour la reference stupide : son chapeau peut etre celui de Crocodile Dundee (https://glassy.ch/mag/wp-content/uploads/2012/06/Titel_2083835Nr1ze7vsXPICTg0DE-Kopie.jpg)
       			autre referense stupide : son sigle dans la serie Stargate est https://upload.wikimedia.org/wikipedia/commons/e/e9/Zipacna_%28Stargate%29.svg
-		Personalité :
+		Personnalité :
 			affectionne les canyons escarpes, les grottes, les rivieres rapides et les crabes (son repas favori)
 			attitude colerique, arrogante, asociale, prompte a suivre ses envies et instincts 
       			fière de son travail et des oeuvres qu'elle taille 
@@ -150,7 +150,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
 			utilise une magie orientée vers le Sang, la Protection, les Barrieres et (un peu) le Vent
 			peintures rouge sang sur le corps et maquillage or/argent autour des yeux
       			je ne sais pas du tout ce qu'elle pourrait avoir aux pieds 
-		Personalité :
+		Personnalité :
       			attitude calme mais tetue 
       			lorsque vaincue, a une attitude completement defaite. Elle est une moue d'enfant peut etre. 
       			elle a souvent l'impression d'etre une personne beaucoup trop morbide 
@@ -181,7 +181,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
 			habit en une longue robe composee -encore une fois- de plumes
 			possiblement (voir avec le designeur) un tatouage d'oiseau apparent sur le corps
 			reférence masculine : https://i.redd.it/ci693g7sczmy.jpg 
-		Personalité :
+		Personnalité :
 		      	attitude demandant l'obeissance ; les sacrifices de mortels sont attendus 
 		  	position corporelle fière et digne 
 		  	en realité, elle est une bonne personne (si on oublie c'est histoire de sacrifices et de colère divine suite a un vol) 
