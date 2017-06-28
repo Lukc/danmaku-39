@@ -3,8 +3,6 @@ data = require "data"
 
 MenuItem = class
 	getRectangle: (x = 0, y = 0) =>
-		if @x or @y
-			print @x, @y
 		{
 			x: @x or x
 			y: @y or y
