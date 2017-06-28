@@ -35,7 +35,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
 			Elle est une shaman-guerriere reputée
 			a des désirs simples : explorer la jungle et se balader
 			couleur preferée: le rouge
-			elle a confectionnée elle meme sa jupe de serpents
+			elle a confectionné elle-même sa jupe de serpents
 			la lance de feu est un artefact divin recu au terme de son initiation en temps que Shaman de Guerre  
        		Dans l'histoire : 
 			dirige la force d'attaque sur la colonie avec des mages et shamans autochtones
