@@ -37,11 +37,15 @@ local menu
 
 state.enter = (noReset) =>
 	@drawTime  = 0
+	@transitionTime = nil
 
 	if noReset
 		return
 
 	data.load!
+
+	-- For development purposes.
+	love.graphics.setBackgroundColor {31, 31, 31}
 
 	menu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
@@ -50,6 +54,8 @@ state.enter = (noReset) =>
 
 		{
 			label: "Adventure"
+			onImmediateSelection: =>
+				state.transitionTime = 0
 			onSelection: =>
 				state.manager\setState require("ui.difficulty"), data.stages[1]
 		}
@@ -66,6 +72,8 @@ state.enter = (noReset) =>
 				for stage in *data.stages
 					table.insert list, {
 						label: stage.title
+						onImmediateSelection: =>
+							state.transitionTime = 0
 						onSelection: =>
 							state.manager\setState require("ui.spellcards"),
 								stage
@@ -141,21 +149,58 @@ state.gamepadpressed = (...) =>
 	menu\gamepadpressed ...
 
 state.draw = =>
-	with c = math.min 255, @drawTime * 511
-		love.graphics.setColor c, c, c
+	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.rectangle
+
+	alpha = menu.items[1]\getDefaultAlpha!
+	alpha = if @drawTime <= 0.25
+		255 * @drawTime / 0.25
+	elseif @transitionTime
+		255 * (0.5 - @transitionTime) / 0.25
+	else
+		255 -- Default formula will come here.
+
+	alpha = math.min 255, alpha
+
+	menu\print "Story",
+		x + 200 * sizemod, y + 4 * sizemod,
+		{255, 255, 255, alpha},
+		fonts.get "miamanueva", 72 * sizemod
+
+	menu\print "of the",
+		x + 400 * sizemod, y + (72 + 28 - 8) * sizemod,
+		{191, 223, 255, alpha},
+		fonts.get "miamanueva", 54 * sizemod
+
+	menu\print "New Wonderland",
+		x + 100 * sizemod, y + (72 + 54 + 28) * sizemod,
+		{255, 255, 255, alpha},
+		fonts.get "miamanueva", 72 * sizemod
 
 	menu\draw!
 
 state.update = (dt) =>
+	@drawTime += dt
+
+	if @transitionTime
+		@transitionTime += dt
+
 	{:x, :y, :w, :h, :sizeModifier} = vscreen\update!
 
-	menu.x = x + 200 * sizeModifier
-	menu.y = y + 200 * sizeModifier
+	menu.x = x + 100 * sizeModifier
+	menu.y = y + 375 * sizeModifier
 
-	menu.width = (w - 200 * 2) * sizeModifier
-	menu.itemHeight = 65 * sizeModifier
+	menu.width = w - (100 * 2) * sizeModifier
+	menu.itemHeight = 48 * sizeModifier
 
-	menu.font = fonts.get "miamanueva", 32 * sizeModifier
+	menu.font = fonts.get "Sniglet-Regular", 32 * sizeModifier
+
+	if menu.items.root
+		menu.items[1].x = x + 140 * sizeModifier
+		menu.items[3].x = x + 120 * sizeModifier
+		menu.items[4].x = x + 160 * sizeModifier
+		menu.items[5].x = x + 130 * sizeModifier
+		menu.items[6].x = x + 120 * sizeModifier
+		menu.items[7].x = x + 140 * sizeModifier
 
 	menu\update dt
 

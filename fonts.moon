@@ -14,7 +14,11 @@ cache = {
 			cache[name] = {}
 
 		unless cache[name][size]
-			filePath = "data/fonts/" .. name.. ".otf", size
+			basename = "data/fonts/" .. name
+			filePath = basename .. ".otf"
+
+			if not love.filesystem.exists filePath
+				filePath = basename .. ".ttf"
 
 			cache[name][size] = love.graphics.newFont filePath, size
 
