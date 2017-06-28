@@ -1,0 +1,22 @@
+
+Ennemis -> ont besoin uniquement d'un sprite
+	stage 1
+	
+		Quetzal
+			ennemi commun et faible
+			oiseau colore rouge, vert et jaune 
+			ref: https://fr.wikipedia.org/wiki/Quetzal
+			
+		Magiciens Autochtones
+			ennemi commun mais plus robuste
+			magicien maya volant (possede peut etre des ailes de plumes, a tester lors du design)
+			peau brune, petite coiffe maya (ref: http://www.atthalin.fr/images_louvre2/pc_coiffe_plume_moctezuma_charlesquint.jpg)
+			decorations et bijous de bronze
+			
+		Boule Invoquee
+			ennemi commun et tres faible
+			ressemble betement a une boule d'energie
+			peut se faire spawner par les magiciens 
+		
+		Quetzal Booste
+			comme un Quetzal, mais avec une aura jaune translucide ou couleur equivalente

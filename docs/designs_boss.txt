@@ -1,0 +1,148 @@
+Fiche de reference pour le design des personnages 
+ 
+/!\ tres important: tout les personnages feminins doivent avoir un chapeau/couvre-chef/decoration dans les cheveux 
+(ceci est une reference au meme des chapeaux de Touhou) 
+ 
+Boss/demiboss -> ont besoin d'un sprite et d'un full art (normal + vaincu) 
+  stage 1 
+     
+    Xuhe (demi boss) 
+     
+      hibou/chouette multicoloree 
+      est le familier de Coactlicue, devrait posseder les memes tons de couleurs 
+      ref:  http://p6.storage.canalblog.com/67/68/388712/71660566.png 
+          http://media.gettyimages.com/vectors/patterned-owl-vector-id533403091?s=170667a&w=1007 
+     
+    Coactlicue (boss) 
+     
+      femme ou loli sud-americaine (peau brune/bronze), apparence plutot garconne 
+      cheveux et yeux a l'appreciation du designeur, mais possiblement cheveux courts et noirs et yeux verts 
+      jupe de serpents (inactifs ? une abstraction peut etre ?) 
+      sandales de tissu 
+      porte une lance de feu/lance enflammee 
+      attitude plutot enthousiaste, une posture plutot enjouee 
+      brassards de tissus avec des motifs maya (ref: https://s-media-cache-ak0.pinimg.com/originals/92/c8/c3/92c8c353b2991ab4a50b266243f2e8a0.jpg) 
+      haut de tissu colore 
+      couleurs dominantes : vert, rouge, bronze (prendre des teintes differentes des Quetzal) 
+      peut etre des bijous et decoration en metal (en rapport avec les Magiciens) 
+      dans l'histoire : dirige la force d'attaque sur la colonie avec des mages et shamans autochtones. Elle est une shaman-guerriere reputee, aimant simplement explorer et se balader 
+      est sous les ordres de Teotlalco et est sa confidante 
+      couleur preferee: le rouge 
+      elle a confectionnee elle meme sa jupe de serpents 
+      la lance de feu est un artefact divin recu au terme de son initiation en temps que Shaman de Guerre 
+      possede une fleur dans les cheveux attachee a un ruban (ref: https://deavita.fr/wp-content/uploads/2015/12/coiffure-hiver-2015-2016-cheveux-longs-brushing-ondul%C3%A9.jpg) 
+      lors de sa defaite, est plutot nonchalante 
+       
+  stage 2 
+   
+    Panthere d'Ombre (demi boss) 
+     
+      soit l'animal, soit une femme panthere noire 
+      pas important pour le plot, je voulais juste mettre une panthere noire dans le jeu 
+      recherche google rapide : https://www.google.fr/search?q=panth%C3%A8re+noire&client=firefox-b&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjw4c7B4-DUAhWJzRoKHZ2NAP4Q_AUIBigB&biw=1920&bih=947 
+      version costume slutty d'halloween : http://www.costume-deguisement-sexy-pas-cher.com/427-581-thickbox/costume-panthere-noire-en-fourrure.jpg 
+      version plus serieuse et interessante : www.renders-graphiques.fr/image/upload/normal/R19.png 
+   
+    Teotlalco (boss) 
+     
+      femme ou loli sud-americaine (peau brune/bronze), meme age environ que Coactlicue mais plus ronde (possiblement quelques kilos en trop ?) 
+      recouverte de penture evoquant un predateur de la jungle/ocelot/panthere (https://s-media-cache-ak0.pinimg.com/originals/2e/30/42/2e3042529b0d564ce56a6657b46fb271.jpg) 
+      cheveux teints dans les memes couleurs que sa peinture de corps, couleur originale a l'appreciation du designeur 
+      yeux rouges ou roses 
+      sandales decorees 
+      nombreux bijous et decoration de metal (bronze, fer ? couleur plutot terrienne) 
+        ref de bijous :  http://mayaetinca.com/files/BraceletTurquoieetTopazInde[1].jpg 
+                http://p1.storage.canalblog.com/18/11/136803/21310415_p.jpg 
+                http://www.museedelhistoire.ca/cmc/exhibitions/civil/maya/images/mayre25b.gif 
+                http://i60.servimg.com/u/f60/11/20/39/39/img_3727.jpg 
+      possiblement nue avec la decence protegee par les bijoux et decorations de metal 
+      grande coiffe maya elaboree (possible ref: https://us.123rf.com/450wm/v0v/v0v1212/v0v121200029/16765687-statue-de-pierre-m-soam-ricain-pr-colombienne-repr-sentant-un-guerrier-avec-une-coiffe-de-plumes-lab.jpg?ver=6) 
+      attitude dominante, c'est une chef de ville ou de gros village autochtone (il y aura une ziggourat en background de stage a ce moment) 
+      attitude pragmatique en general 
+      envers ses amis (et sa confidente Coactlicue), elle est connue comme une personne peu sure d'elle, car pouvant douter fortement de ses competences 
+      a ete ordonnee par la Cite d'Or, capitale sainte et cite divine de leur peuple, de piller les cites et forts des "envahisseurs" et de tout ramener en tribu a la Cite d'Or 
+      utilise une magie plutot orientee vers des motifs  
+      lors de sa defaite, est au bord des larmes (ses doutes internes surgissent) 
+      couleur preferee : le vert 
+      fruit prefere : la papaye 
+      (remarque : j'ai pas fait expres mais la couleur preferee de Teotlalco est la couleur de yeux de Coactlicue et inversement) 
+       
+  stage 3 
+     
+    a l'appreciation de Gris 
+     
+  stage 4 
+   
+    Zipacna (demi-boss & boss) 
+      deesse faconneuse de montages et vallees 
+      a pour theme le caiman ou le crocodile 
+      affectionne les canyons escarpes, les grottes, les rivieres rapides et les crables (son met favori) 
+      femme ou loli au cheveux verts, au yeaux ors (peut etre avec des pupilles de reptiles) 
+      peau a l'appreciation du designeur : soit completement noire (pour le contraste avec des bijous d'ecaille clairs), soit en faire une peau d'ecaille de reptile (comme pour une femme-serpent) 
+        -> ref possible : http://statics.lesinrocks.com/content/thumbnails/uploads/2010/09/thehisss6042-tt-width-604-height-474-fill-0-crop-0-bgcolor-eeeeee.jpg 
+      jambes normales et pieds nus (toujours en contact avec le sol) 
+      faconne et maintient la Cite d'Or, une ville pour les esprits et les dieux de la region 
+      griffes de crocodile au bout des doigts 
+      bijous et colliers en or 
+      attitude colerique, arrogante, asociale, prompte a suivre ses envies et instincts 
+      fiere de son travail et des oeuvres qu'elle taille 
+      sculpteuse a ses heures perdues 
+      utilie une magie en rapport avec ses themes : Terre et Eau 
+      lorsque vaincue, elle exprime sa colere impuissante  
+      tente de rediriger le personnage principal en dehors de la Cite, mais est une tres mauvaise menteuse 
+      pour le fun et pour la reference stupide : son chapeau peut etre celui de Crocodile Dundee (https://glassy.ch/mag/wp-content/uploads/2012/06/Titel_2083835Nr1ze7vsXPICTg0DE-Kopie.jpg) 
+      chaussures en crocodile ? 
+      quelques images-references pour la source : http://pre00.deviantart.net/1a9f/th/pre/i/2013/174/b/9/zipacna__herald_of_corrupton_by_toxiccalico-d61wkpy.jpg 
+                            https://s-media-cache-ak0.pinimg.com/564x/de/64/ef/de64ef1c8b210e45df6f97c0bc38374b.jpg 
+      (autre referense stupide : son sigle dans la serie Stargate est https://upload.wikimedia.org/wikipedia/commons/e/e9/Zipacna_%28Stargate%29.svg ) 
+   
+  stage 5 
+   
+    Demi-boss ? Aucune idee, Luka suggerait un garde de temple random.  
+    Idee rapide dans la droite de cette image : https://comps.canstockphoto.fr/can-stock-photo_csp2213521.jpg 
+     
+    Xquic (boss) 
+      pretresse gardienne du monde divin 
+      est nommee apres la Deesse de l'Au-Dela, dont elle est en quelque sorte l'avatar ou l'incarnation 
+      elle reprend surtout les themes de barriere, de protection, de "porte vivante" de sa deesse-patronne 
+      a comme patronne Xquic, mais sert activement Kukulkan 
+      utilise une magie orientee vers le Sang, la Protection, les Barrieres et (un peu) le Vent 
+      femme amerindienne habillee de toile blanche et de bijous en Or 
+      cheveux bleus ou blancs et yeux bleu sombre 
+      peintures rouge sang sur le corps et maquillage  
+      je ne sais pas du tout ce qu'elle pourrait avoir aux pieds 
+      attitude calme mais tetue 
+      lorsque vaincue, a une attitude completement defaite. Elle est une moue d'enfant peut etre. 
+      possede un voile sur les cheveux 
+      un crane pleurant du sang, insigne de son lien avec la deesse Xquic, doit etre present : soit monte sur un baton sacre, soit tenu directement sans la main tendue 
+      elle a souvent l'impression d'etre une personne beaucoup trop morbide 
+      Son reve est d'avoir des enfants. Un jour. Peut etre. 
+      elle a servit d'interprete entre Kukulkan et Teotlalco, donnant l'ordre de faire payer les "envahisseurs" et de tout ramener a Kukulkan en tribu. 
+      ref:  
+        https://s-media-cache-ak0.pinimg.com/736x/c7/0d/da/c70dda5013546b319481fc0e84c0f971--photography-of-women-fantasy-art-women.jpg 
+        http://img14.deviantart.net/e72c/i/2009/088/7/a/mayan_princess_by_ryougirl.png 
+        https://journeyingtothegoddess.files.wordpress.com/2012/08/270346_10150253840031962_4650077_n.jpg?w=350&h=457 
+       
+  stage 6 
+   
+    Kukulkan (boss) 
+      deesse des cieux, du paradis, de la meteo, du vent et des tempetes 
+      sous sa forme animale, est un serpent a plume 
+      ses themes en apparence sont : les plumes, le vent et les cieux 
+      boss final du jeu, elle a pique une terrible colere puisqu'un des "etrangers" lui a vole quelque chose  
+        (je propose que la chose volee est son coeur et en faire une histoire d'amour, ou alors un medaillon divin qui est la cle des royaumes celestes) 
+      aura de tempete et d'orage 
+      ailes de plumes multi-colore 
+      coiffe ressemblant a une tiare/couronne decoree de plumes 
+      habit en une longue robe composee -encore une fois- de plumes 
+      cheuveux mauves et yeux vert clair (ce sont des couleurs complementaires) 
+      attitude demandant l'obeissance ; les sacrifices de mortels sont attendus 
+      position corporelle fiere et digne 
+      en realite est une bonne personne (si on oublie c'est histoire de sacrifices et de colere divine suite a un vol) 
+      veut maintenir l'existence de son peuple choisi (les Autochtones) 
+      adore voler, voir le monde de haut et les coucher de Soleil : c'est tellement beau 
+      couleur preferee : le blanc (ce n'est pas une couleur!) 
+      lorsque vaincu, tente de maintenir sa fierte et va denoncer le voleur comme la source de tout les problemes 
+      possiblement (voir avec le designeur) un tatouage d'oiseau apparent sur le corps  
+      reference masculine : https://i.redd.it/ci693g7sczmy.jpg 
+      quelques plumes : https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Types_de_plumes._-_Larousse_pour_tous%2C_-1907-1910-.jpg/400px-Types_de_plumes._-_Larousse_pour_tous%2C_-1907-1910-.jpg 
