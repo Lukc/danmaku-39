@@ -38,6 +38,9 @@ boss = BossData {
 	x: 600 / 2
 	y: 800 / 5
 	name: "Mi~mi~midori"
+	description: [[Midori’s the cutest, Midori’s the strongest, Midori’s the bestest.
+
+If you don’t like Midori, your waifu is shit~]]
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}

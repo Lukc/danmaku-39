@@ -138,17 +138,17 @@ state.enter = (stage) =>
 state.draw = =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.rectangle
 
-	@descriptionsFont = fonts.get "miamanueva", 18 * sizemod
+	@descriptionsFont = fonts.get "Sniglet-Regular", 18 * sizemod
 
 	@playStageMenu.x = x + 10 * sizemod
 	@playStageMenu.y = y + 15 * sizemod
 	@playStageMenu.width = (vscreen.width - 20) * sizemod
-	@playStageMenu.font = fonts.get "miamanueva", 32 * sizemod
+	@playStageMenu.font = fonts.get "Sniglet-Regular", 32 * sizemod
 
 	@spellcardsMenu.x = x + 10 * sizemod
 	@spellcardsMenu.y = y + 100 * sizemod
-	@spellcardsMenu.font = fonts.get "miamanueva", 24 * sizemod
-	@spellcardsMenu.itemHeight = 48 * sizemod
+	@spellcardsMenu.font = fonts.get "Sniglet-Regular", 24 * sizemod
+	@spellcardsMenu.itemHeight = 36 * sizemod
 
 	@playStageMenu\draw!
 	@spellcardsMenu\draw!
@@ -171,12 +171,22 @@ state.draw = =>
 			love.graphics.printf text, x, y, 480 * sizemod, "left"
 
 		if hoveredBoss
+			fontHeight = @descriptionsFont\getHeight!
+
+			Y = h - fontHeight * 1.5
+
+			_, wrap = @descriptionsFont\getWrap hoveredBoss.description or "???",
+				380 * sizemod
+
 			-- FIXME: Add portrait or something.
-			@playStageMenu\print "#{hoveredBoss.description or "???"}",
-				x + (vscreen.width - 20 - 400) * sizemod,
-				y + 160 * sizemod,
-				{200, 200, 200},
-				@descriptionsFont
+
+			for i = 1, #wrap
+				@playStageMenu\print wrap[#wrap - i + 1],
+					x + (vscreen.width - 20 - 400) * sizemod,
+					Y,
+					{200, 200, 200},
+					@descriptionsFont
+				Y -= fontHeight
 		elseif hoveredSpellcard
 			-- FIXME: Drawing preview here
 			love.graphics.setColor 255, 255, 255
