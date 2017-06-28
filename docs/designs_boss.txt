@@ -1,6 +1,6 @@
 Fiche de reference pour le design des personnages 
 
-Boss/demiboss -> ont besoin d'un sprite et d'un full art (normal + vaincu) 
+Boss/demiboss -> ont besoin d'un sprite et d'un full art
  
 	- stage 1 
      
@@ -53,7 +53,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art (normal + vaincu)
       		version costume slutty d'halloween : http://www.costume-deguisement-sexy-pas-cher.com/427-581-thickbox/costume-panthere-noire-en-fourrure.jpg 
       		version plus serieuse et interessante : www.renders-graphiques.fr/image/upload/normal/R19.png 
    
-    		-- Teotlalco (boss) 
+    		-- Teotlaco (boss) 
 		     	"Proud and Mighty Chief"	
 
 		Archétype : dirigeante/reine maya
@@ -128,32 +128,42 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art (normal + vaincu)
        
   	- stage 5 
    
-    Demi-boss ? Aucune idee, Luka suggerait un garde de temple random.  
-    Idee rapide dans la droite de cette image : https://comps.canstockphoto.fr/can-stock-photo_csp2213521.jpg 
+    		-- Demi-boss ? Aucune idee, Luka suggerait un garde de temple random.  
+    		Idee rapide dans la droite de cette image : https://comps.canstockphoto.fr/can-stock-photo_csp2213521.jpg 
      
-    Xquic (boss) 
-      pretresse gardienne du monde divin 
-      est nommee apres la Deesse de l'Au-Dela, dont elle est en quelque sorte l'avatar ou l'incarnation 
-      elle reprend surtout les themes de barriere, de protection, de "porte vivante" de sa deesse-patronne 
-      a comme patronne Xquic, mais sert activement Kukulkan 
-      utilise une magie orientee vers le Sang, la Protection, les Barrieres et (un peu) le Vent 
-      femme amerindienne habillee de toile blanche et de bijous en Or 
-      cheveux bleus ou blancs et yeux bleu sombre 
-      peintures rouge sang sur le corps et maquillage  
-      je ne sais pas du tout ce qu'elle pourrait avoir aux pieds 
-      attitude calme mais tetue 
-      lorsque vaincue, a une attitude completement defaite. Elle est une moue d'enfant peut etre. 
-      possede un voile sur les cheveux 
-      un crane pleurant du sang, insigne de son lien avec la deesse Xquic, doit etre present : soit monte sur un baton sacre, soit tenu directement sans la main tendue 
-      elle a souvent l'impression d'etre une personne beaucoup trop morbide 
-      Son reve est d'avoir des enfants. Un jour. Peut etre. 
-      elle a servit d'interprete entre Kukulkan et Teotlalco, donnant l'ordre de faire payer les "envahisseurs" et de tout ramener a Kukulkan en tribu. 
-      ref:  
-        https://s-media-cache-ak0.pinimg.com/736x/c7/0d/da/c70dda5013546b319481fc0e84c0f971--photography-of-women-fantasy-art-women.jpg 
-        http://img14.deviantart.net/e72c/i/2009/088/7/a/mayan_princess_by_ryougirl.png 
-        https://journeyingtothegoddess.files.wordpress.com/2012/08/270346_10150253840031962_4650077_n.jpg?w=350&h=457 
+    		-- Xquic (boss)
+			"Grim Priestress barring the Door"
+      		Archétype : Prêtresse-Gardienne du monde Divin
+		Caractéristiques physiques :
+			femme amerindienne habillee de toile blanche et de bijous en Argent
+			cheveux bleus ou blancs et yeux bleu sombre	
+      			ref:  
+        			https://s-media-cache-ak0.pinimg.com/736x/c7/0d/da/c70dda5013546b319481fc0e84c0f971--photography-of-women-fantasy-art-women.jpg 
+        			http://img14.deviantart.net/e72c/i/2009/088/7/a/mayan_princess_by_ryougirl.png 
+        			https://journeyingtothegoddess.files.wordpress.com/2012/08/270346_10150253840031962_4650077_n.jpg?w=350&h=457 
+		Accessoires ou outils majeurs :
+			un crâne pleurant du sang, insigne de son lien avec la deesse Xquic : 
+			- soit monté sur un baton sacre
+			- soit tenu directement dans la main tendue
+			possède un voile sur les cheveux
+		Détails :
+			utilise une magie orientée vers le Sang, la Protection, les Barrieres et (un peu) le Vent
+			peintures rouge sang sur le corps et maquillage or/argent autour des yeux
+      			je ne sais pas du tout ce qu'elle pourrait avoir aux pieds 
+		Personalité :
+      			attitude calme mais tetue 
+      			lorsque vaincue, a une attitude completement defaite. Elle est une moue d'enfant peut etre. 
+      			elle a souvent l'impression d'etre une personne beaucoup trop morbide 
+      			Son reve est d'avoir des enfants. Un jour. Peut etre. (référence au mythe des Héros Jumeaux mayas)
+		Dans l'histoire : 
+      			est nommée après la Déesse de l'Au-Dela, dont elle est en quelque sorte l'avatar ou l'incarnation 
+      			elle reprend surtout les themes de barriere, de protection, de "porte vivante" de sa deesse-patronne 
+      			a comme patronne Xquic, mais sert activement Kukulkan 
+      			elle a servit d'interprete entre Kukulkan et Teotlalco, donnant l'ordre de faire payer les "envahisseurs" et de tout ramener a Kukulkan en tribu.
        
-  stage 6 
+  	- stage 6 
+
+	Xquic (le retour, demi-boss)
    
     Kukulkan (boss) 
       deesse des cieux, du paradis, de la meteo, du vent et des tempetes 
