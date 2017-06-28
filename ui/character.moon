@@ -7,7 +7,8 @@ vscreen = require "vscreen"
 fonts = require "fonts"
 
 state = {
-	font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
+	font: love.graphics.newFont "data/fonts/Sniglet-Regular.otf", 24
+	namesFont: love.graphics.newFont "data/fonts/Sniglet-Regular.otf", 24
 }
 
 goToGame = ->
@@ -108,14 +109,24 @@ state.enter = (options, multiplayer, noReset) =>
 		@grid.rows *= 2
 
 	@variantMenus = [Menu {
-		font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
+		font: love.graphics.newFont "data/fonts/Sniglet-Regular.otf", 24
 		w: (1024 - 30) / 2
 		h: (800 - 30 - @grid.height) / 2
 		{
 			label: ""
 			type: "selector"
+			align: "center"
 			values: [variant.name for variant in *data.characterVariants]
 			value: data.characterVariants[1].name
+			draw: =>
+				r = @\getRectangle!
+				font = state.namesFont
+
+				@menu\print @value,
+					r.x + (r.w - font\getWidth @value) / 2,
+					r.y,
+					{255, 255, 255, @\getDefaultAlpha!},
+					font
 			onSelection: (item) =>
 				print "Variant selected for player #{i}."
 				state.selectedVariants[i] = do
@@ -136,7 +147,8 @@ state.update = (dt) =>
 
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.fullRectangle
 
-	@font = fonts.get "miamanueva", 24 * sizemod
+	@font = fonts.get "Sniglet-Regular", 24 * sizemod
+	@namesFont = fonts.get "Sniglet-Regular", 32 * sizemod
 
 	if @multiplayer
 		@grid.width = love.graphics.getWidth!
@@ -151,6 +163,10 @@ state.update = (dt) =>
 
 		character = @grid.cursors[1].selectedCell
 		index = @grid.cursors[1].index
+
+		@variantMenus[1].width = (@grid.width / #@grid.cells)
+		@variantMenus[1].items[1].x = (@grid.width / #@grid.cells) * (@grid.cursors[1].index - 1)
+		@variantMenus[1].items[1].y = @grid.height - 80 * sizemod
 
 		@grid.cursors[1].color = switch index
 			when 1
@@ -167,14 +183,15 @@ state.update = (dt) =>
 				{191, 255, 63, 191}
 
 	for i, cursor in ipairs @grid.cursors
-		@variantMenus[i].font = fonts.get "miamanueva", 24 * sizemod
+		@variantMenus[i].font = fonts.get "Sniglet-Regular", 24 * sizemod
 		if @selectedCharacters[i]
 			@variantMenus[i]\update dt
 
 state.draw = =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.fullRectangle
 
-	love.graphics.setFont @variantMenus[1].font
+	font = @variantMenus[1].font
+	love.graphics.setFont font
 
 	@selectedCharacter = nil
 
@@ -216,10 +233,53 @@ state.draw = =>
 
 					\draw!
 		else
-			love.graphics.setColor 255, 255, 255
 			hoveredCharacter = @grid.cells[cursor.index]
-			love.graphics.print hoveredCharacter.name,
-				X, Y
+
+			do
+				text = hoveredCharacter.name or "???"
+				font = @namesFont
+
+				@variantMenus[1]\print text,
+					X + (width - font\getWidth text) / 2, Y,
+					{255, 255, 255},
+					font
+
+				Y += font\getHeight!
+
+			do
+				text = hoveredCharacter.title or "Undefined Fantastic Character"
+				font = @variantMenus[1].font
+
+				@variantMenus[1]\print text,
+					X + (width - font\getWidth text) / 2, Y,
+					{255, 255, 255, 223},
+					font
+
+				Y += font\getHeight!
+
+			Y += font\getHeight!
+
+			do
+				text = hoveredCharacter.mainAttackName or "???"
+				font = @variantMenus[1].font
+
+				@variantMenus[1]\print text,
+					X + (width - font\getWidth text) / 2, Y,
+					{255, 255, 255, 223},
+					font
+
+				Y += font\getHeight!
+
+			do
+				text = hoveredCharacter.bombsName or "???"
+				font = @variantMenus[1].font
+
+				@variantMenus[1]\print text,
+					X + (width - font\getWidth text) / 2, Y,
+					{255, 255, 255, 223},
+					font
+
+				Y += font\getHeight!
 
 state.select = (i = 1) =>
 	if @selectedVariants[i]
