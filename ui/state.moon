@@ -42,13 +42,6 @@ Manager = ->
 						self\update frameDuration
 
 						time -= frameDuration
-			elseif event == "keypressed"
-				table.keypressed = (key, sc, ir) ->
-					-- Compatibility with Löve 0.9+.
-					if ir == nil
-						self\keypressed key, key, sc
-					else
-						self\keypressed key, sc, ir
 			else
 				table[event] = (...) ->
 					self[event] self, ...
