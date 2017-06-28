@@ -47,25 +47,25 @@ drawSelector = (x, y) =>
 
 	value = tostring @value
 
-	bigFont = fonts.get "miamanueva", 72 * vscreen.sizeModifier
+	bigFont = fonts.get "Sniglet-Regular", 72 * vscreen.sizeModifier
 
 	w = bigFont\getWidth value
 	h = bigFont\getHeight value
 
-	@menu\print value, r.x + (r.w - w) / 2, r.y + (r.h - h ) / 2 - 14 * vscreen.sizeModifier,
+	@menu\print value, r.x + (r.w - w) / 2, r.y + (r.h - h) / 2,
 		{255, 255, 255}, bigFont
 
 	love.graphics.setFont bigFont
 
-	love.graphics.print "<", r.x - 72 * vscreen.sizeModifier, r.y + (r.h - h - 10) / 2
-	love.graphics.print ">", r.x + r.w, r.y + (r.h - h - 10) / 2
+	love.graphics.print "<", r.x - 36 * vscreen.sizeModifier, r.y + (r.h - h - 10) / 2
+	love.graphics.print ">", r.x + 6 * vscreen.sizeModifier + r.w, r.y + (r.h - h - 10) / 2
 
 drawCheck = (x, y) =>
 	{:sizeModifier} = vscreen.rectangle
 
 	@height = sizeModifier * @baseHeight
 
-	font = fonts.get "miamanueva", 32 * sizeModifier
+	font = fonts.get "Sniglet-Regular", 36 * sizeModifier
 
 	r = @\getRectangle x, y
 
@@ -83,8 +83,10 @@ drawCheck = (x, y) =>
 
 	with w = font\getWidth @label
 		y = r.y + r.h / 2
+		love.graphics.setLineWidth 2 * sizeModifier
 		love.graphics.line r.x + w + 48 * sizeModifier, y,
 			r.x + r.w - (96 + 16) * sizeModifier, y
+		love.graphics.setLineWidth 1
 
 	love.graphics.rectangle "fill",
 		r.x + r.w - 96 * sizeModifier,
@@ -96,7 +98,7 @@ drawCheck = (x, y) =>
 		r.x + r.w - 96 * sizeModifier, r.y + 16 * sizeModifier,
 		64 * sizeModifier, 64 * sizeModifier
 
-	@menu\print @label, r.x + 32, r.y, color, font
+	@menu\print @label, r.x + 32, r.y + 20 * sizeModifier, color, font
 
 play = =>
 	options = {
@@ -123,7 +125,7 @@ state.enter = (stage, noReset) =>
 	@difficulty = Danmaku.getDifficultyString(stage.difficulties[1])
 
 	@menu = Menu {
-		font: fonts.get "miamanueva", 32
+		font: fonts.get "Sniglet-Regular", 32
 
 		x: 150
 		y: 200
