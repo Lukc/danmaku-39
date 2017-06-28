@@ -82,7 +82,7 @@ MenuItem = class
 
 		if @rlabel
 			@menu\print @rlabel,
-				r.x - 12 + 600 - @menu.font\getWidth(@rlabel),
+				r.x - 12 + @menu.width - @menu.font\getWidth(@rlabel),
 				r.y - 20,
 				color
 
