@@ -92,6 +92,10 @@ setmetatable {
 	load: ->
 		cache = {}
 
+		if not filesystem.exists scoresFile
+			print "No previous scoresfile."
+			return
+
 		success, value = pcall ->
 			moon.loadfile(scoresFile)!
 
