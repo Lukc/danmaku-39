@@ -34,6 +34,9 @@ class extends Enemy
 		@grazeDelay = arg.grazeDelay or 60
 		@graze = 0
 
+		@interCollisionDuration = arg.interCollisionDuration or 60
+		@entitiesCollidedWith = {}
+
 		@score = 0
 
 		@power = arg.power or 0
@@ -114,6 +117,12 @@ class extends Enemy
 			else
 				@grazedBullets[bullet] = nil
 
+		for enemy, delay in pairs @entitiesCollidedWith
+			if delay > 1
+				@entitiesCollidedWith[enemy] -= 1
+			else
+				@entitiesCollidedWith[enemy] = nil
+
 		speed = if @focusing
 			@focusSpeed
 		else
@@ -122,22 +131,21 @@ class extends Enemy
 		dx, dy = 0, 0
 
 		if @movement.left
-			dx -= 1
+			dx -= @movement.left
 		if @movement.right
-			dx += 1
+			dx += @movement.right
 		if @movement.up
-			dy -= 1
+			dy -= @movement.up
 		if @movement.down
-			dy += 1
+			dy += @movement.down
 
-		dx = speed * dx
-		dy = speed * dy
+		dist = math.sqrt(dx^2 + dy^2)
 
-		if dx != 0 and dy != 0
-			hsr2 = math.sqrt(2) / 2
+		if dist != 0
+			angle = math.atan2 dy, dx
 
-			dx *= hsr2
-			dy *= hsr2
+			dx = speed * math.cos angle
+			dy = speed * math.sin angle
 
 		bombsAllowed = not @game.noBombs and not @game.pacific
 		if @bombing and @bombs >= 1 and bombsAllowed
@@ -145,9 +153,13 @@ class extends Enemy
 				-- FIXME: The player should be invulnerable during bombs.
 				--        … or should it?
 				@bombingFrame = 0
-				@bombs -= 1
+
+				unless @game.training
+					@bombs -= 1
 
 				if @onBomb
+					@game\failSpellcard!
+
 					@\onBomb!
 			else
 				@bombingFrame += 1
@@ -169,8 +181,9 @@ class extends Enemy
 			@dyingFrame += 1
 
 			if @dyingFrame >= @dyingTime
-				@lives -= 1
-				@bombs = @bombsPerLife
+				unless @game.training
+					@lives -= 1
+					@bombs = @bombsPerLife
 
 				if @lives <= 0
 					-- FIXME: We may want to trigger.
@@ -200,6 +213,17 @@ class extends Enemy
 		else
 			@grazedBullets[bullet] = @grazeDelay
 			@graze += 1
+
+	collides: (entity) =>
+		if @entitiesCollidedWith[entity]
+			return false
+
+		super\collides entity
+
+	die: =>
+		@game\failSpellcard!
+
+		super\die!
 
 	__tostring: => "<Player: frame #{@frame}, [#{@x}:#{@y}]>"
 

@@ -2,7 +2,10 @@
 {
 	:Entity,
 	:Spellcard
+	:Danmaku
 } = require "danmaku"
+
+{:Difficulties} = Danmaku
 
 {:BigBullet, :SmallBullet, :MiniBullet} = require "data.bullets"
 
@@ -10,7 +13,10 @@
 
 s5 = Spellcard {
 	name: "Rosace multiple"
-	health: 60
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
+	health: 3600
 	timeout: 30 * 60
 	update: =>
 		if @frame % 40 == 0
@@ -30,7 +36,10 @@ s5 = Spellcard {
 }
 s2 = Spellcard {
 	name: "Unnamed spellcard"
-	health: 60
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
+	health: 3600
 	timeout: 30 * 60
 	update: =>
 		if @frame % 5 == 0
@@ -51,7 +60,10 @@ s2 = Spellcard {
 }
 s1 = Spellcard {
 	name: "Flower spellcard"
-	health: 60
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
+	health: 3600
 	timeout: 30 * 60
 	update: =>
 		-- Flower spell card
@@ -89,8 +101,11 @@ s1 = Spellcard {
 
 
 s3 = Spellcard {
-	health: 60
+	health: 3600
 	timeout: 30 * 60
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
 	update: =>
 		if @frame % 40 == 0
 			bullet =
@@ -115,7 +130,11 @@ s3 = Spellcard {
 }
 s4 = Spellcard {
 	name: "Test sign - Named Spellcards test"
-	health: 60
+	difficulties: {
+		Difficulties["Extra Last Word"]
+	}
+	description: "A basically unwinable spellcard meant to be used for tests."
+	health: 60 * 60 * 60 * 60
 	timeout: 30 * 60
 	update: =>
 		if @frame % 10 == 0

@@ -8,9 +8,17 @@ radial = (arg) ->
 	arg or= {}
 
 	entity     = arg.from
-	radius     = arg.radius or entity.radius or math.max(entity.width, entity.height)
+	radius     = arg.radius
 	bulletData = arg.bullet or {}
 	bulletsPerCircle = arg.bullets or 6
+
+	if not radius
+		radius = entity.radius
+
+		if entity.width and entity.height
+			radius = math.max(entity.width, entity.height)
+
+		radius or= 1
 
 	unless entity
 		return ->
@@ -110,7 +118,50 @@ sinusoid = (arg) ->
 					else
 						@direction = angle + a * math.cos @frame / b
 
-laser = do
+column = (arg) ->
+	-- FIXME: Alternatively use bullet.speed as startSpeed..
+	arg or= {}
+
+	bullets    = arg.bullets or 3
+	startSpeed = arg.startSpeed or 2
+	endSpeed   = arg.endSpeed   or 3
+
+	bulletData = arg.bullet or {}
+
+	i = 0
+
+	->
+		i += 1
+
+		if i > bullets
+			return
+
+		with clone bulletData
+			.speed = startSpeed + (endSpeed - startSpeed) * (i - 1) / bullets
+
+row = (arg) ->
+	arg or= {}
+
+	bullets    = arg.bullets or 3
+	startAngle = arg.startAngle or -math.pi / 8
+	endAngle   = arg.endAngle   or  math.pi / 8
+
+	bulletData = arg.bullet or {}
+
+	i = 0
+
+	->
+		i += 1
+
+		if i > bullets
+			return
+
+		a = (endAngle - startAngle) / (bullets - 1)
+
+		with clone bulletData
+			.angle = (.angle or math.pi/2) - (bullets / 2 - i + 1/2) * a
+
+attachedLaser = do
 	update = (parent, duration, oldUpdate) ->
 		=>
 			if parent.readyForRemoval
@@ -161,11 +212,61 @@ laser = do
 			.hitbox = Entity.Rectangle
 			.damageable = damageable
 
+laser = do
+	(arg) ->
+		arg or= {}
+
+		entity = arg.from
+		bulletData = arg.bullet or {}
+
+		angle = bulletData.angle or math.pi / 2
+		w     = bulletData.w or 5
+		h     = bulletData.h or 25
+
+		origin =
+			x: entity.x
+			y: entity.y
+
+		speed = bulletData.speed or 3
+
+		oldUpdate = bulletData.update
+
+		damageable = if bulletData.damageable != nil
+			bulletData.damageable
+		else
+			false
+
+		with clone bulletData
+			.hitbox = Entity.Rectangle
+			.speed = 0
+			.damageable = damageable
+			.h = 0
+			.update = =>
+				if @height != h
+					@x = origin.x +
+						speed * @frame * math.cos angle
+					@y = origin.y +
+						speed * @frame * math.sin angle
+
+					@height = math.min h, speed * @frame * 2
+
+					if @height == h
+						@speed = speed
+
+				if oldUpdate
+					oldUpdate self
+
 {
 	:clone
 	:radial
 	:circle
 	:sinusoid
+
+	:column
+	:row
+
+	-- Move to data.bullets?
 	:laser
+	:attachedLaser
 }
 

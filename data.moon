@@ -22,7 +22,34 @@ importTable = (t) =>
 					@[k] = v
 
 defaultConfig = {
+	lastUsedName: ""
 	blockedMods: {}
+	menuInputs: {
+		down:   {"down",   "kp2"}
+		up:     {"up",     "kp8"}
+		left:   {"left",   "kp4"}
+		right:  {"right",  "kp6"}
+		select: {"return", "kp3"}
+		back:   {"escape", "kp9", "tab"}
+	}
+	menuGamepadInputs: {
+		down:   "dpdown"
+		up:     "dpup"
+		left:   "dpleft"
+		right:  "dpright"
+		select: "a"
+		back:   "b"
+	}
+	gamepadInputs: [{
+		firing:   "a"
+		bombing:  "b"
+		focusing: "rightshoulder"
+		down:     "dpdown"
+		up:       "dpup"
+		left:     "dpleft"
+		right:    "dpright"
+		gamepad:  i
+	} for i = 1, 4]
 	inputs: {
 		{
 			firing:   "z"
@@ -143,8 +170,6 @@ loadMod = (path) ->
 		mod
 
 	if ok
-		print "Loading #{path}"
-
 		table.insert cache.mods, result
 
 		unless result.name
@@ -159,8 +184,10 @@ loadMod = (path) ->
 			table.insert cache.bosses, boss
 		for stage in *result.stages or {}
 			table.insert cache.stages, stage
-		for player in *result.players or {}
-			table.insert cache.players, player
+		for character in *result.characters or {}
+			table.insert cache.characters, character
+		for variant in *result.characterVariants or {}
+			table.insert cache.characterVariants, variant
 	else
 		print "ERROR LOADING #{path}):", result
 
@@ -178,7 +205,8 @@ setmetatable {
 			stages:      {}
 			bosses:      {}
 			spellcards:  {}
-			players:     {}
+			characters:  {}
+			characterVariants: {}
 			config:      {}
 		}
 
@@ -193,6 +221,13 @@ setmetatable {
 
 		for modPath in *filesystem.getDirectoryItems path
 			loadMod modsPath! .. "/" .. modPath
+
+	isMenuInput: (key, input) ->
+		list = cache.config.menuInputs[input]
+		for i = 1, #list
+			if list[i] == key
+				return true
+		false
 }, {
 	__index: (key) =>
 		return cache[key]

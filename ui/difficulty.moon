@@ -1,19 +1,39 @@
 
 state = {}
 
+{:Danmaku} = require "danmaku"
+
+data = require "data"
+fonts = require "fonts"
+vscreen = require "vscreen"
+
 Menu = require "ui.tools.menu"
 
-bigFont = love.graphics.newFont "data/fonts/miamanueva.otf", 72
-
 drawSelector = (x, y) =>
+	@height = vscreen.rectangle.sizeModifier * @baseHeight
+
 	r = @\getRectangle x, y
-	color =switch @label
+	color = switch @value
+		when "Tutorial"
+			{63, 191, 255}
+		when "Easy"
+			{127, 255, 255}
 		when "Normal"
 			{127, 255, 127}
 		when "Hard"
 			{255, 191,  95}
 		when "Lunatic"
 			{255,  95, 191}
+		when "Ultra Lunatic"
+			{255, 31, 127}
+		when "Extra"
+			{255, 63, 63}
+		when "Ultra Extra"
+			{255, 31, 127}
+		when "Last Word"
+			{127, 127, 127}
+		when "Extra Last Word"
+			{63, 63, 63}
 		else
 			{255, 255, 255}
 
@@ -25,16 +45,28 @@ drawSelector = (x, y) =>
 	love.graphics.setColor color
 	love.graphics.rectangle "fill", r.x, r.y, r.w, r.h
 
-	w = bigFont\getWidth @label
-	h = bigFont\getHeight @label
+	value = tostring @value
 
-	@menu\print @label, r.x + (r.w - w) / 2, r.y + (r.h - h - 10) / 2 - 6,
+	bigFont = fonts.get "Sniglet-Regular", 72 * vscreen.sizeModifier
+
+	w = bigFont\getWidth value
+	h = bigFont\getHeight value
+
+	@menu\print value, r.x + (r.w - w) / 2, r.y + (r.h - h) / 2,
 		{255, 255, 255}, bigFont
 
-	love.graphics.print "<", r.x - 32,   r.y + (r.h - h - 10) / 2
-	love.graphics.print ">", r.x + r.w, r.y + (r.h - h - 10) / 2
+	love.graphics.setFont bigFont
+
+	love.graphics.print "<", r.x - 36 * vscreen.sizeModifier, r.y + (r.h - h - 10) / 2
+	love.graphics.print ">", r.x + 6 * vscreen.sizeModifier + r.w, r.y + (r.h - h - 10) / 2
 
 drawCheck = (x, y) =>
+	{:sizeModifier} = vscreen.rectangle
+
+	@height = sizeModifier * @baseHeight
+
+	font = fonts.get "Sniglet-Regular", 36 * sizeModifier
+
 	r = @\getRectangle x, y
 
 	color = if @value
@@ -49,74 +81,125 @@ drawCheck = (x, y) =>
 
 	love.graphics.setColor color
 
-	with w = @menu.font\getWidth @label
+	with w = font\getWidth @label
 		y = r.y + r.h / 2
-		love.graphics.line r.x + w + 48, y,
-			r.x + r.w - 96 - 16, y
+		love.graphics.setLineWidth 2 * sizeModifier
+		love.graphics.line r.x + w + 48 * sizeModifier, y,
+			r.x + r.w - (96 + 16) * sizeModifier, y
+		love.graphics.setLineWidth 1
 
-	love.graphics.rectangle "fill", r.x + r.w - 96, r.y + 16, 64, 64
+	love.graphics.rectangle "fill",
+		r.x + r.w - 96 * sizeModifier,
+		r.y + 16 * sizeModifier,
+		64 * sizeModifier, 64 * sizeModifier
 
 	love.graphics.setColor 127, 127, 127
-	love.graphics.rectangle "line", r.x + r.w - 96, r.y + 16, 64, 64
+	love.graphics.rectangle "line",
+		r.x + r.w - 96 * sizeModifier, r.y + 16 * sizeModifier,
+		64 * sizeModifier, 64 * sizeModifier
 
-	@menu\print @label, r.x + 32, r.y, color
+	@menu\print @label, r.x + 32, r.y + 20 * sizeModifier, color, font
 
-play = ->
-	=>
-		print "FIXME: Options and difficulty are not passed!"
-		state.manager\setState require("ui.game"), state.stage, state.players
+play = =>
+	options = {
+		stage: state.stage
+		noBombs: state.noBombs
+		pacific: state.pacific
+		training: state.training
+		difficulty: Danmaku.Difficulties[state.difficulty]
+	}
 
-state.enter = (stage, players) =>
+	state.manager\setState require("ui.character"), options, state.multiplayer
+
+state.enter = (stage, noReset) =>
+	if noReset
+		return
+
 	@stage = stage
-	@players = players
+	@multiplayer = false
+
+	@noBombs = false
+	@pacific = false
+	@training = false
+
+	@difficulty = Danmaku.getDifficultyString(stage.difficulties[1])
 
 	@menu = Menu {
-		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
+		font: fonts.get "Sniglet-Regular", 32
 
-		x: 200
+		x: 150
 		y: 200
 
 		{
 			type: "selector"
-			values: {"Normal", "Hard", "Lunatic"}
-			label: "Normal"
+			values: [Danmaku.getDifficultyString(d) for d in *stage.difficulties]
+			label: state.difficulty
 			noTransition: true
-			height: 128
+			baseHeight: 128
 			draw: drawSelector
-			onSelection: play!
+			onSelection: play
+			onValueChange: (item) =>
+				print item.value
+				state.difficulty = item.value
 		}
 		{height: 32}
 		{
 			type: "check"
-			label: "training"
-			onSelection: =>
-				print @selectedItem.value
+			label: "Training"
 			noTransition: true
-			height: 96
+			baseHeight: 96
 			draw: drawCheck
-			onSelection: play!
+			onSelection: play
+			onValueChange: (item) =>
+				state.training = item.value
 		}
 		{
 			type: "check"
-			label: "pacific"
-			onSelection: =>
+			label: "Pacific"
 			noTransition: true
-			height: 96
+			baseHeight: 96
 			draw: drawCheck
-			onSelection: play!
+			onSelection: play
+			onValueChange: (item) =>
+				state.pacific = item.value
+				state.noBombs = item.value
+		}
+		{
+			type: "check"
+			label: "Multiplayer"
+			noTransition: true
+			baseHeight: 96
+			draw: drawCheck
+			onSelection: play
+			onValueChange: (item) =>
+				print self, item, item.value
+				state.multiplayer = item.value
 		}
 	}
 
 state.keypressed = (key, scanCode, ...) =>
 	if key == "escape" or key == "tab"
-		return @manager\setState require("ui.character"), nil, nil, true
+		return @manager\setState require("ui.menu"), nil, nil, true
 
 	@menu\keypressed key, scanCode, ...
+
+state.gamepadpressed = (joystick, button) =>
+	if button == data.config.menuGamepadInputs.back
+		return @manager\setState require("ui.menu"), nil, nil, true
+
+	@menu\gamepadpressed joystick, button
 
 state.update = (dt) =>
 	@menu\update dt
 
 state.draw = =>
+	{:x, :y, sizeModifier: modifier, :w, :h} = vscreen\update!
+
+	@menu.x = x + 150 * modifier
+	@menu.y = y + 200 * modifier
+
+	@menu.width = w - (150 * 2) * modifier
+
 	@menu\draw!
 
 state

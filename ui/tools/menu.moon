@@ -1,14 +1,21 @@
 
+data = require "data"
+
 MenuItem = class
 	getRectangle: (x = 0, y = 0) =>
-		if @x or @y
-			print @x, @y
 		{
 			x: @x or x
 			y: @y or y
 			w: @width or @menu.width
-			h: @height or 65
+			h: @height or @menu.itemHeight or 65
 		}
+
+	init: (menu) =>
+		@menu = menu
+
+		if @type == "selector"
+			unless @value
+				@value = @values[1]
 
 	hovered: =>
 		itemsList = @menu.items
@@ -65,9 +72,15 @@ MenuItem = class
 			else
 				@menu\print @label, r.x + 12, r.y - 20, color
 
+			if @type == "selector"
+				label = tostring(@value)
+				@menu\print label, r.x - 12 + @menu.width - @menu.font\getWidth(label),
+					r.y - 20,
+					color
+
 		if @rlabel
 			@menu\print @rlabel,
-				r.x - 12 + 600 - @menu.font\getWidth(@rlabel),
+				r.x - 12 + @menu.width - @menu.font\getWidth(@rlabel),
 				r.y - 20,
 				color
 
@@ -94,6 +107,8 @@ class
 		for item in *arg
 			table.insert @items, item
 
+		@items.maxDisplayedItems = arg.maxDisplayedItems
+
 		@items.root = true
 
 		@\setItemsList @items
@@ -110,7 +125,8 @@ class
 
 		for item in *target
 			setmetatable item, MenuItem.__base
-			item.menu = self
+
+			item\init self
 
 		@items = target
 		@drawTime = 0
@@ -191,7 +207,7 @@ class
 			@selectedItem = nil
 			@selectionTime = nil
 
-	keypressed: (key, ...) =>
+	catchInput: (key, ...) =>
 		if @inputCatchMode
 			@inputCatchMode = false
 
@@ -199,79 +215,131 @@ class
 
 			@selectedItem = nil
 
-			return
+			return true
 
 		if @selectedItem
-			return
+			return true
 
-		if key == "return" or key == "kpenter" or key == "kp5"
-			item = @items[@items.selection]
+	select: =>
+		item = @items[@items.selection]
 
-			if item.onSelection
-				if item.onImmediateSelection
-					item.onImmediateSelection self
-				@selectedItem = item
-				@selectionTime = 0
+		if item.onSelection
+			if item.onImmediateSelection
+				item.onImmediateSelection self
+			@selectedItem = item
+			@selectionTime = 0
 
-				if item.noTransition
-					@selectionTime = math.huge
-			elseif item.onInputCatch
-				@inputCatchMode = true
-				@selectedItem = item
-			elseif item.type == "check"
-				item.value = not item.value
+			if item.noTransition
+				@selectionTime = math.huge
+		elseif item.onInputCatch
+			@inputCatchMode = true
+			@selectedItem = item
+		elseif item.type == "check"
+			item.value = not item.value
 
-		elseif key == "up" or key == "kp8"
+	up: =>
+		@items.selection = (@items.selection - 2) % #@items + 1
+
+		while not @\isSelectable @items[@items.selection]
 			@items.selection = (@items.selection - 2) % #@items + 1
 
-			while not @\isSelectable @items[@items.selection]
-				@items.selection = (@items.selection - 2) % #@items + 1
+		@\checkOverflows!
 
-			@\checkOverflows!
-		elseif key == "down" or key == "kp2"
+	down: =>
+		@items.selection = (@items.selection) % #@items + 1
+
+		while not @\isSelectable @items[@items.selection]
 			@items.selection = (@items.selection) % #@items + 1
 
-			while not @\isSelectable @items[@items.selection]
-				@items.selection = (@items.selection) % #@items + 1
+		@\checkOverflows!
 
-			@\checkOverflows!
-		elseif key == "right" or key == "kp6"
-			item = @items[@items.selection]
+	right: =>
+		item = @items[@items.selection]
 
-			if item.type == "check"
-				item.value = not item.value
-			elseif item.type == "selector"
-				currentIndex = 0
-				for i = 1, #item.values
-					if item.values[i] == item.label
-						currentIndex = i
+		if item.type == "check"
+			item.value = not item.value
 
-						break
+			if item.onValueChange
+				item.onValueChange self, item
+		elseif item.type == "selector"
+			currentIndex = 1
+			for i = 1, #item.values
+				if item.values[i] == item.value
+					currentIndex = i
 
-				item.label = item.values[currentIndex % #item.values + 1]
-		elseif key == "left" or key == "kp4"
-			item = @items[@items.selection]
+					break
 
-			if item.type == "check"
-				item.value = not item.value
-			elseif item.type == "selector"
-				currentIndex = 0
-				for i = 1, #item.values
-					if item.values[i] == item.label
-						currentIndex = i
+			item.value = item.values[currentIndex % #item.values + 1]
 
-						break
+			if item.onValueChange
+				item.onValueChange self, item
 
-				item.label = item.values[(currentIndex - 2) % #item.values + 1]
-		elseif key == "tab" or key == "escape"
-			if @items.parent
-				@selectionTime = 0
-				@selectedItem = {
-					onSelection: =>
-						@\setItemsList @items.parent
-				}
-			else
-				@items.selection = #@items
+	left: =>
+		item = @items[@items.selection]
+
+		if item.type == "check"
+			item.value = not item.value
+
+			if item.onValueChange
+				item.onValueChange self, item
+		elseif item.type == "selector"
+			currentIndex = 1
+			for i = 1, #item.values
+				if item.values[i] == item.value
+					currentIndex = i
+
+					break
+
+			item.value = item.values[(currentIndex - 2) % #item.values + 1]
+
+			if item.onValueChange
+				item.onValueChange self, item
+
+	back: =>
+		if @items.parent
+			@selectionTime = 0
+			@selectedItem = {
+				onSelection: =>
+					@\setItemsList @items.parent
+			}
+		else
+			@items.selection = #@items
+
+	gamepadpressed: (joystick, button) =>
+		config = data.config
+
+		if @\catchInput button
+			return
+
+		if button == config.menuGamepadInputs.select
+			@\select!
+		elseif button == config.menuGamepadInputs.down
+			@\down!
+		elseif button == config.menuGamepadInputs.up
+			@\up!
+		elseif button == config.menuGamepadInputs.right
+			@\right!
+		elseif button == config.menuGamepadInputs.left
+			@\left!
+		elseif button == config.menuGamepadInputs.back
+			@\back!
+
+	keypressed: (key, ...) =>
+		if @\catchInput key, ...
+			return
+
+		if data.isMenuInput key, "select"
+			@\select!
+		elseif data.isMenuInput key, "up"
+			@\up!
+		elseif data.isMenuInput key, "down"
+			@\down!
+		elseif data.isMenuInput key, "right"
+			@\right!
+		elseif data.isMenuInput key, "left"
+			@\left!
+		elseif data.isMenuInput key, "back"
+			@\back!
 
 	checkOverflows: =>
 		start = @items.startDisplayIndex or 1

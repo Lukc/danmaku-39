@@ -35,7 +35,10 @@ class
 		@y = arg.y or 0
 
 		@width = arg.width or 600
-		@height = arg.height or 800
+		@height = arg.height or 750
+
+		@drawWidth = arg.drawWidth or @width
+		@drawHeight = arg.drawHeight or @height
 
 		@players = {}
 		@enemies = {}
@@ -54,15 +57,19 @@ class
 
 		@frame = 0
 
+		-- For reference. Will be a reference to a Boss.
+		@boss = nil
+
 		@endReached = false
 
 		@difficulty = arg.difficulty or 2
 
 		@noBombs = arg.noBombs or false
 		@pacific = arg.pacific or false
+		@training = arg.training or false
 
 	@Difficulties: {
-		Tutoriel: 0
+		Tutorial: 0
 		Easy:     1
 		Normal:   2
 		Hard:     3
@@ -70,7 +77,25 @@ class
 		"Ultra Lunatic":  5
 		Extra:    10
 		"Ultra Extra":    11
+		"Last Word": 12
+		"Extra Last Word": 13
 	}
+
+	@getDifficultyString: (i) ->
+		for k,v in pairs @@Difficulties
+			if v == i
+				return k
+
+	@DifficultyStrings: do
+		t = {}
+
+		for i = 0, @@Difficulties["Extra Last Word"]
+			difficulty = @@.getDifficultyString i
+
+			if difficulty
+				table.insert t, difficulty
+
+		t
 
 	difficultyString: (difficulty = @difficulty) =>
 		for key, value in @@Difficulties
@@ -86,6 +111,7 @@ class
 		oldColor = {love.graphics.getColor!}
 		oldCanvas = love.graphics.getCanvas!
 		canvas = love.graphics.newCanvas @width, @height
+		canvas\setFilter "nearest", "nearest"
 		love.graphics.setCanvas canvas
 
 		love.graphics.rectangle "line", 0.5, 0.5, @width - 1, @height - 1
@@ -105,7 +131,8 @@ class
 		love.graphics.setCanvas oldCanvas
 
 		love.graphics.setColor oldColor
-		love.graphics.draw canvas, @x, @y
+		love.graphics.draw canvas, @x, @y, nil,
+			@drawWidth / @width, @drawHeight / @height
 
 	---
 	-- Updates the game.
@@ -125,11 +152,14 @@ class
 		for entity in *@entities
 			entity\update!
 
+		-- FIXME: This section is too procedural and not OO.
 		for player in *@players
 			for enemy in *@enemies
 				if player\collides enemy
 					player\inflictDamage 1, "collision"
 					enemy\inflictDamage 1, "collision"
+
+					player.entitiesCollidedWith[enemy] = player.interCollisionDuration
 
 			for item in *@items
 				if item\collides player
@@ -149,6 +179,8 @@ class
 					if player\collides bullet
 						player\inflictDamage 1, bullet.damageType
 						bullet\inflictDamage 1, "collision"
+
+						player.entitiesCollidedWith[bullet] = player.interCollisionDuration
 					else
 						player\grazeBullet bullet
 
@@ -216,6 +248,17 @@ class
 
 	endOfStage: =>
 		@endReached = true
+
+	-- Ain’t this a bit TOO stupid? Will we really have operations to add there?
+	setBoss: (boss) =>
+		@boss = boss
+
+		@bossSince = if boss
+			@frame
+
+	failSpellcard: =>
+		if @boss
+			@boss.spellSuccess = false
 
 	__tostring: => "<Danmaku: frame #{@frame}>"
 

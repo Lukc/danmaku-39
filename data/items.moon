@@ -12,6 +12,9 @@
 			player.score += 1000
 			@game.score += 1000
 
+			player.customData.points or= 0
+			player.customData.points += 1
+
 		(arg) -> Item with {
 				radius: 10
 				:draw
@@ -46,6 +49,7 @@
 			player\addFragment "life"
 
 		(arg) -> Item with {
+				important: true
 				radius: 18
 				:draw
 				:collection
@@ -61,6 +65,7 @@
 			player\addFragment "bomb"
 
 		(arg) -> Item with {
+				important: true
 				radius: 10
 				:draw
 				:collection

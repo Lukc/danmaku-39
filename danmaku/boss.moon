@@ -13,6 +13,8 @@ class extends Enemy
 		@name = arg.name or "???"
 		@touchable = arg.touchable or false
 
+		@onEndOfSpell = arg.endOfSpell or ->
+
 		-- Number of frames the boss should wait between two spellcards.
 		@interSpellDelay = arg.interSpellDelay or 180
 
@@ -23,19 +25,32 @@ class extends Enemy
 			if type(spell) == "table"
 				table.insert @spellcards, spell
 
+		@spellSuccess = true
+
 		@currentSpell = false
 		@currentSpellIndex = 0
 		@spellStartFrame = 0
 		@spellEndFrame = 0
 		@spellEndHealth = 0
 
-		@lives = 0
-		for spell in *@spellcards
-			if spell.endOfLife or spell == @spellcards[#@spellcards]
-				@lives += 1
-
 	update: =>
 		@\doUpdate =>
+			if @frame == 0
+				-- Recalculating lives and trimming incompatible spellcards.
+				@lives = 0
+				newSpellcards = {}
+				for spell in *@spellcards
+					unless spell\playableAtDifficulty @game.difficulty
+						print "Skipping #{spell} due to difficulty."
+						continue
+
+					if spell.endOfLife or spell == @spellcards[#@spellcards]
+						@lives += 1
+
+					table.insert newSpellcards, spell
+
+				@spellcards = newSpellcards
+
 			currentSpell = @spellcards[@currentSpellIndex]
 
 			if currentSpell
@@ -50,6 +65,10 @@ class extends Enemy
 						-- Fixes rounding errors.
 						{:x, :y} = currentSpell.position self
 						@x, @y = x, y
+				elseif @frame == @spellEndFrame
+					@spellSuccess = false
+
+					@\switchToNextSpell!
 				elseif @frame >= @spellStartFrame
 					currentSpell.update self
 			else
@@ -57,8 +76,7 @@ class extends Enemy
 					-- Before first spell…
 					-- FIXME: hardcoded value.
 					if @frame == 60
-						if @game.currentStage
-							@game.currentStage\setBoss self
+						@game\setBoss self
 
 						@\switchToNextSpell!
 
@@ -72,6 +90,10 @@ class extends Enemy
 					@\onUpdate!
 
 	switchToNextSpell: =>
+		if @currentSpell
+			if @onEndOfSpell
+				@\onEndOfSpell @currentSpell
+
 		@game\clearScreen!
 
 		if @currentSpellIndex > 0
@@ -83,8 +105,14 @@ class extends Enemy
 
 		oldSpell = @spellcards[@currentSpellIndex]
 
+
 		@currentSpellIndex += 1
 		@touchable = true
+
+		-- FIXME: WHY DOES IT HAVE TO TAKE TWO LINES? I hate you.
+		while @spellcards[@currentSpellIndex] and not @spellcards[@currentSpellIndex]\playableAtDifficulty @game.difficulty
+			print "Skipping #{@spellcards[@currentSpellIndex]}"
+			@currentSpellIndex += 1
 
 		spell = @spellcards[@currentSpellIndex]
 
@@ -124,11 +152,13 @@ class extends Enemy
 		else -- end of spellcards list
 			@health = 1
 
+		@spellSuccess = true
 		@currentSpell = spell
 
 	die: =>
 		if @spellcards[@currentSpellIndex]
 			@\switchToNextSpell!
 		else
+			@game\setBoss nil
 			super\die!
 

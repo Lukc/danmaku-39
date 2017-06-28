@@ -86,16 +86,13 @@ class
 	draw: =>
 		-- FIXME: There are constants that should be configurable, here…
 		if @frame <= 180
-			@\drawTitle!
+			@.drawTitle @game
 
-		if @boss
-			@\drawBossData!
+		if @game.boss
+			@.drawBossData @game
 
 		if @onDraw
 			@\onDraw!
-
-	setBoss: (data) =>
-		@boss = data
 
 	__tostring: => "<Stage: frame #{@frame}>"
 

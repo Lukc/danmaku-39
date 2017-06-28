@@ -64,6 +64,7 @@ class
 			true
 
 		@frame = 0
+		@spawnTime = arg.spawnTime or 20
 
 		@frameEvents = {}
 		for key, value in pairs arg
@@ -72,6 +73,7 @@ class
 
 		@onUpdate = arg.update
 		@onDraw = arg.draw
+		@onDeath = arg.death
 
 		@dx, @dy = 0, 0
 
@@ -81,7 +83,11 @@ class
 		@readyForRemoval = false
 
 		@outOfScreenTime = 0
+		@maxOutOfScreenTime = arg.outOfScreenTime or 30
 		@disableTimeoutRemoval = false
+
+		-- Generic storage area to be used by scripts.
+		@customData = {}
 
 	---
 	-- Draws the entity.
@@ -94,6 +100,8 @@ class
 		if @game.debug or not @onDraw
 			if @dying
 				love.graphics.setColor 255, 0, 0
+			elseif @spawning
+				love.graphics.setColor 255, 0, 255
 			else
 				love.graphics.setColor 255, 255, 255
 
@@ -134,10 +142,9 @@ class
 	--
 	-- Its purpose is to be used by children classes.
 	doUpdate: (onUpdate) =>
-		dx = @speed * math.cos @direction
-		dy = @speed * math.sin @direction
-
 		-- That time should be greated for bosses, maybe even disabled completely.
+		@spawning = @frame < @spawnTime
+
 		unless @disableTimeoutRemoval
 			if @frame >= 60 * 60 * 5 and not @isPlayer
 				@readyForRemoval = true
@@ -151,7 +158,10 @@ class
 			if @frameEvents[@frame]
 				@frameEvents[@frame] self
 
-			onUpdate self
+		onUpdate self
+
+		dx = @speed * math.cos @direction
+		dy = @speed * math.sin @direction
 
 		@x += dx
 		@y += dy
@@ -175,7 +185,7 @@ class
 			else
 				@outOfScreenTime = 0
 
-		if @outOfScreenTime >= 30
+		if @outOfScreenTime >= @maxOutOfScreenTime
 			@readyForRemoval = true
 
 		@frame += 1
@@ -187,6 +197,9 @@ class
 		unless @touchable
 			return false
 		unless x.touchable
+			return false
+
+		if @spawning or x.spawning
 			return false
 
 		if @hitboxType == @@Circle and x.hitboxType == @@Circle
@@ -267,6 +280,10 @@ class
 	-- Makes the entity untouchable and marks it as dying.
 	die: =>
 		@health = 0
+
+		if not @dying
+			if @onDeath
+				@.onDeath self
 
 		@dying = true
 		@touchable = false

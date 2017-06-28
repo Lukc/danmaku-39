@@ -1,12 +1,4 @@
 
-{
-	:Entity,
-	:Enemy,
-	:Bullet,
-	:Player,
-	:Stage
-} = require "danmaku"
-
 newBullet = (arg) ->
 	arg or= {}
 
@@ -18,22 +10,25 @@ newBullet = (arg) ->
 	oldDraw = arg.draw
 
 	arg.draw = =>
-		-- Setting custom properties, duh~
+		-- FIXME: Setting custom properties, duh~
 		unless @color
 			@color = color
 		unless @sprite
 			@sprite = sprite
 
-		x = @x - sprite\getWidth! / 2
-		y = @y - sprite\getWidth! / 2
+		sw, sh = sprite\getWidth!, sprite\getHeight!
+
+		currentColor = [c for c in *@color]
+		currentColor[4] or= 255
 
 		if @dying
-			color[4] = 255 - 255 * (@dyingFrame / @dyingTime)
-		elseif @frame <= 30
-			color[4] = 255 * @frame / 30
-		love.graphics.setColor @color
+			currentColor[4] = math.min(currentColor[4], 255 - 255 * (@dyingFrame / @dyingTime))
+		if @frame <= 20
+			currentColor[4] = math.min(currentColor[4], 255 * @frame / 20)
+
+		love.graphics.setColor currentColor
 		love.graphics.draw @sprite,
-			x, y
+			@x, @y, @angle, nil, nil, sw/2, sh/2
 
 		if oldDraw
 			oldDraw self
@@ -83,6 +78,15 @@ MiniBullet = do
 -- FIXME: SPRITELESS BULLETS FOLLOW --
 --------------------------------------
 
+SimpleBullet = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 12
+
+		arg
+
 HugeBullet = do
 	(arg) ->
 		arg or= {}
@@ -93,13 +97,18 @@ HugeBullet = do
 		arg
 
 ArrowHead = do
+	sprite = love.graphics.newImage "data/art/bullet_arrowhead.png"
+
 	(arg) ->
 		arg or= {}
+
+		unless arg.sprite
+			arg.sprite = sprite
 
 		unless arg.radius
 			arg.radius = 7
 
-		arg
+		newBullet arg
 
 BurningBullet = do
 	(arg) ->
@@ -110,13 +119,67 @@ BurningBullet = do
 
 		arg
 
+Diamond = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 8
+
+		arg
+
+DarkBullet = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 12
+
+		arg
+
+MiniDarkBullet = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 3
+
+		arg
+
+StarBullet = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 12
+
+		arg
+
+BigStarBullet = do
+	(arg) ->
+		arg or= {}
+
+		unless arg.radius
+			arg.radius = 21
+
+		arg
+
 {
 	:HugeBullet
 	:BigBullet
+	:SimpleBullet
 	:SmallBullet
 	:MiniBullet
 
 	:ArrowHead
+	:Diamond
+
 	:BurningBullet
+
+	:DarkBullet
+	:MiniDarkBullet
+
+	:StarBullet
+	:BigStarBullet
 }
 

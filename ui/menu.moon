@@ -1,9 +1,11 @@
 
-{:Stage} = require "danmaku"
+{:Stage, :Boss} = require "danmaku"
 
 state = {}
 
+vscreen = require "vscreen"
 data = require "data"
+fonts = require "fonts"
 
 -- TODO: We need textures for the background, and possibly for the menu items.
 
@@ -35,11 +37,15 @@ local menu
 
 state.enter = (noReset) =>
 	@drawTime  = 0
+	@transitionTime = nil
 
 	if noReset
 		return
 
 	data.load!
+
+	-- For development purposes.
+	love.graphics.setBackgroundColor {31, 31, 31}
 
 	menu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
@@ -48,113 +54,33 @@ state.enter = (noReset) =>
 
 		{
 			label: "Adventure"
+			onImmediateSelection: =>
+				state.transitionTime = 0
 			onSelection: =>
-				state.manager\setState require("ui.character"), data.stages[1], 1
+				state.manager\setState require("ui.difficulty"), data.stages[1]
 		}
 		{
 			label: "Extras"
 		}
 		{
-			label: "Multiplayer"
+			label: "Spellcards"
 			onSelection: =>
-				state.manager\setState require("ui.character"), data.stages[1], 4
-		}
-		{
-			label: "Training"
-			onSelection: {
-				{
-					label: "Stages"
-					onSelection: =>
-						list = [{
-							label: "#{stage.title}"
-							onSelection: =>
-								state.manager\setState require("ui.character"), stage
-						} for n, stage in ipairs data.stages]
-
-						list.maxDisplayedItems = 8
-
-						table.insert list, {
-							label: "Go back"
-							onSelection: => @\setItemsList @items.parent
-						}
-
-						@\setItemsList list
+				list = {
+					maxDisplayedItems: 8
 				}
-				{
-					label: "Boss"
-					onSelection: =>
-						list = {
-							maxDisplayedItems: 8
-						}
 
-						for boss in *data.bosses
-							table.insert list, {
-								label: "#{boss.name}"
-								onSelection: =>
-									newState = require "ui.character"
-									newStage = Stage{
-										drawBossData: data.stages[1].drawBossData
-										update: =>
-											if @frame > 60 and #@enemies == 0
-												@\endOfStage!
-										[1]: =>
-											@\addEntity boss
-									}
-									state.manager\setState newState,
-										newStage
-							}
+				for stage in *data.stages
+					table.insert list, {
+						label: stage.title
+						onImmediateSelection: =>
+							state.transitionTime = 0
+						onSelection: =>
+							state.manager\setState require("ui.spellcards"),
+								stage
+					}
 
-						table.insert list, {
-							label: "Go back"
-							onSelection: => @\setItemsList @items.parent
-						}
+				@\setItemsList list
 
-						@\setItemsList list
-				}
-				{
-					label: "Spellcards"
-					onSelection: =>
-						list = {
-							maxDisplayedItems: 8
-						}
-
-						for boss in *data.bosses
-							for spellcard in *boss.spellcards
-								unless spellcard.name
-									continue
-
-								table.insert list, {
-									label: "#{spellcard.name}"
-									onSelection: =>
-										newState = require "ui.character"
-										newStage = Stage{
-											drawBossData: data.stages[1].drawBossData
-											update: =>
-												if @frame > 60 and #@enemies == 0
-													@\endOfStage!
-											[1]: =>
-												@\addEntity with boss
-													.spellcards = {
-														spellcard
-													}
-										}
-										state.manager\setState newState,
-											newStage
-								}
-
-						table.insert list, {
-							label: "Go back"
-							onSelection: => @\setItemsList @items.parent
-						}
-
-						@\setItemsList list
-				}
-				{
-					label: "Go back"
-					onSelection: =>
-						@\setItemsList @items.parent
-				}
-			}
 		}
 		{
 			label: "Highscores"
@@ -219,25 +145,64 @@ state.enter = (noReset) =>
 state.keypressed = (...) =>
 	menu\keypressed ...
 
-state.draw = =>
-	with c = math.min 255, @drawTime * 511
-		love.graphics.setColor c, c, c
+state.gamepadpressed = (...) =>
+	menu\gamepadpressed ...
 
-	love.graphics.print "Press “Enter” to select…", 200, 160
+state.draw = =>
+	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.rectangle
+
+	alpha = menu.items[1]\getDefaultAlpha!
+	alpha = if @drawTime <= 0.25
+		255 * @drawTime / 0.25
+	elseif @transitionTime
+		255 * (0.5 - @transitionTime) / 0.25
+	else
+		255 -- Default formula will come here.
+
+	alpha = math.min 255, alpha
+
+	menu\print "Story",
+		x + 200 * sizemod, y + 4 * sizemod,
+		{255, 255, 255, alpha},
+		fonts.get "miamanueva", 72 * sizemod
+
+	menu\print "of the",
+		x + 400 * sizemod, y + (72 + 28 - 8) * sizemod,
+		{191, 223, 255, alpha},
+		fonts.get "miamanueva", 54 * sizemod
+
+	menu\print "New Wonderland",
+		x + 100 * sizemod, y + (72 + 54 + 28) * sizemod,
+		{255, 255, 255, alpha},
+		fonts.get "miamanueva", 72 * sizemod
 
 	menu\draw!
 
 state.update = (dt) =>
-	w, h = love.graphics.getWidth!, love.graphics.getHeight!
+	@drawTime += dt
 
-	x = (w - 1024) / 2
-	y = (h - 800) / 2
+	if @transitionTime
+		@transitionTime += dt
 
-	menu.x = x + 200
-	menu.y = y + 200
+	{:x, :y, :w, :h, :sizeModifier} = vscreen\update!
+
+	menu.x = x + 100 * sizeModifier
+	menu.y = y + 375 * sizeModifier
+
+	menu.width = w - (100 * 2) * sizeModifier
+	menu.itemHeight = 48 * sizeModifier
+
+	menu.font = fonts.get "Sniglet-Regular", 32 * sizeModifier
+
+	if menu.items.root
+		menu.items[1].x = x + 140 * sizeModifier
+		menu.items[3].x = x + 120 * sizeModifier
+		menu.items[4].x = x + 160 * sizeModifier
+		menu.items[5].x = x + 130 * sizeModifier
+		menu.items[6].x = x + 120 * sizeModifier
+		menu.items[7].x = x + 140 * sizeModifier
 
 	menu\update dt
 
 state
-
 

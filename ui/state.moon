@@ -3,8 +3,12 @@ events = {
 	"update", "draw",
 	"keypressed", "keyreleased",
 	"mousepressed", "mousemoved", "mousereleased",
+	"gamepadpressed", "gamepadreleased",
+	"joystickpressed", "joystickreleased",
 	"lowmemory"
 }
+
+frameDuration = 1 / 60
 
 Manager = ->
 	self = {}
@@ -26,9 +30,21 @@ Manager = ->
 			@currentState.enter @currentState, ...
 
 	self.bindEvents = (table) =>
+		time = 0
+		oldEvent = table[event]
+
 		for event in *events
-			table[event] = (...) ->
-				self[event] self, ...
+			if event == "update"
+				table.update = (dt) ->
+					time += dt
+
+					while time >= frameDuration
+						self\update frameDuration
+
+						time -= frameDuration
+			else
+				table[event] = (...) ->
+					self[event] self, ...
 
 	self
 

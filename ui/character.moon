@@ -1,48 +1,63 @@
 
 Grid = require "ui.tools.grid"
+Menu = require "ui.tools.menu"
 
 data = require "data"
+vscreen = require "vscreen"
+fonts = require "fonts"
 
 state = {
 	font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
-	gridWidth: 1
-	gridHeight: 3
 }
 
-state.enter = (stage, wantedPlayers = 1, noReset) =>
+goToGame = ->
+	characters = {}
+	for index, c in ipairs state.selectedCharacters
+		if c
+			character = {}
+
+			for key, value in pairs c
+				character[key] = value
+
+			for key, value in pairs state.selectedVariants[index]
+				character[key] = value
+
+			-- Eheh. We’ll have to force a few settings to not
+			-- be erased.
+			character.name = c.name
+			character.secondaryAttackName = state.selectedVariants[index].name
+
+			table.insert characters, character
+
+	nextState = require "ui.game"
+	state.manager\setState nextState,
+		state.options, characters
+
+state.enter = (options, multiplayer, noReset) =>
 	if noReset
 		return
 
-	-- This defines whether we’re doing single- or multiplayer.
-	@wantedPlayers = wantedPlayers
+	@multiplayer = multiplayer
 
-	@stage = stage
+	@options = options
 	@selection = 1
 
-	@selectedPlayers = [false for i = 1, wantedPlayers]
+	@selectedVariants = {}
+	@selectedCharacters = [false for i = 1, multiplayer and 4 or 1]
 
-	@grids = {}
-	for i = 1, wantedPlayers
-		local inputs, color
-		width  = 300
-		height = 780
-		x      = 10
-		y      = 10
+	local cursors
+	width  = 1024
+	height = 800
+	x      = 0
+	y      = 0
 
-		if wantedPlayers > 1
-			width = (1024 - 40) / 2
-			height = (800 - 40 - 120) / 2
+	if multiplayer
+		cursors = {}
+		width = 1024
+		height = (800 - 40 - 120) / 2
+		y = (800 - height - 20) / 2
 
-			x, y = switch i
-				when 1
-					10, 10
-				when 2
-					width + 20, 10
-				when 3
-					10, height + 20 + 120
-				when 4
-					width + 20, height + 20 + 120
-
+		for i = 1, 4
 			color = switch i
 				when 1
 					{255, 63,  63 }
@@ -61,102 +76,235 @@ state.enter = (stage, wantedPlayers = 1, noReset) =>
 				select: data.config.inputs[i].firing
 			}
 
-		@grids[i] = Grid
-			:x, :y, :width, :height, :inputs
-			cells: data.players
-			columns: 1
-			rows: #data.players
-			selectionColor: color
-			onSelection: =>
-				if @selectedCell
-					if wantedPlayers == 1
-						nextState = require "ui.difficulty"
-						state.manager\setState nextState,
-							state.stage, {@selectedCell}
+			table.insert cursors, {
+				:index
+				:color
+				:inputs
+			}
 
-					state.selectedPlayers[i] = @selectedCell
-			onEscape: =>
-				state.manager\setState require("ui.menu"), true
+	@grid = Grid
+		x: 0
+		y: 0
+		:width, :height, :cursors
+		cells: data.characters
+		columns: #data.characters
+		rows: 1
+		onSelection: (cursor) =>
+			for i = 1, #@cursors
+				if cursor != @cursors[i]
+					continue
 
-	while #data.players / @grids[1].columns > 4
-		@grids[1].rows = math.ceil(@grids[1].rows / 2)
-		@grids[1].columns *= 2
+				state.selectedCharacters[i] = cursor.selectedCell
 
-	for i = 2, #@grids
-		@grids[i].rows    = @grids[1].rows
-		@grids[i].columns = @grids[1].columns
+				for i = 1, 3
+					cursor.color[i] += 64
+
+				return
+		onEscape: =>
+			state.manager\setState require("ui.difficulty"), nil, true
+
+	while #data.characters / @grid.rows > 4
+		@grid.column = math.ceil(@grid.columns / 2)
+		@grid.rows *= 2
+
+	@variantMenus = [Menu {
+		font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
+		w: (1024 - 30) / 2
+		h: (800 - 30 - @grid.height) / 2
+		{
+			label: ""
+			type: "selector"
+			values: [variant.name for variant in *data.characterVariants]
+			value: data.characterVariants[1].name
+			onSelection: (item) =>
+				print "Variant selected for player #{i}."
+				state.selectedVariants[i] = do
+					variant = nil
+					for v in *data.characterVariants
+						if item.value == v.name
+							variant = v
+							break
+					variant
+
+				unless state.multiplayer
+					goToGame!
+		}
+	} for i = 1, 4]
+
+state.update = (dt) =>
+	vscreen\update!
+
+	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.fullRectangle
+
+	@font = fonts.get "miamanueva", 24 * sizemod
+
+	if @multiplayer
+		@grid.width = love.graphics.getWidth!
+		@grid.height = love.graphics.getHeight! - 320 * sizemod
+		@grid.x = 0
+		@grid.y = (h - @grid.height) / 2
+	else
+		@grid.width = love.graphics.getWidth!
+		@grid.height = love.graphics.getHeight!
+		@grid.x = 0
+		@grid.y = 0
+
+		character = @grid.cursors[1].selectedCell
+		index = @grid.cursors[1].index
+
+		@grid.cursors[1].color = switch index
+			when 1
+				{255, 63, 63, 191}
+			when 2
+				{63, 255, 63, 191}
+			when 3
+				{63, 191, 255, 191}
+			when 4
+				{255, 255, 63, 191}
+			when 5
+				{255, 63, 191, 191}
+			when 6
+				{191, 255, 63, 191}
+
+	for i, cursor in ipairs @grid.cursors
+		@variantMenus[i].font = fonts.get "miamanueva", 24 * sizemod
+		if @selectedCharacters[i]
+			@variantMenus[i]\update dt
 
 state.draw = =>
-	love.graphics.setFont @font
+	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.fullRectangle
 
-	x = (love.graphics.getWidth! - 1024) / 2
-	y = (love.graphics.getHeight! - 800) / 2
+	love.graphics.setFont @variantMenus[1].font
 
 	@selectedCharacter = nil
 
-	for i = 1, #@grids
-		if @selectedPlayers[i]
-			love.graphics.print "#{@selectedPlayers[i].name}", @grids[i].x, @grids[i].y
+	@grid\draw!
+
+	-- FIXME: Rename this shit.
+	width = @grid.width / 2 + 10 * sizemod
+	height = @grid.y + @grid.height + 10 * sizemod
+
+	for i, cursor in ipairs @grid.cursors
+		X, Y = if @multiplayer
+			switch i
+				when 1
+					10 * sizemod, 10 * sizemod
+				when 2
+					width, 10 * sizemod
+				when 3
+					10 * sizemod, height
+				when 4
+					width, height
 		else
-			@grids[i]\draw!
+			r = @grid\getCellRectangle cursor.index
+			width = r.w - 20
 
-	if @wantedPlayers == 1
-		-- The character that has focus within the grid.
-		character = @grids[1].selectedCell
+			r.x, r.y + @grid.height - 400 - 10
 
-		if character
+		if @selectedCharacters[i]
+			if @selectedVariants[i]
+				key = data.config.inputs[i].firing
+				love.graphics.setColor 255, 255, 255
+				love.graphics.print "Press #{key} to start playing.",
+					X, Y
+			else
+				with @variantMenus[i]
+					.x = X
+					.y = Y
+					.width = width - 10 * sizemod
+					.height = height
+
+					\draw!
+		else
 			love.graphics.setColor 255, 255, 255
+			hoveredCharacter = @grid.cells[cursor.index]
+			love.graphics.print hoveredCharacter.name,
+				X, Y
 
-			love.graphics.rectangle "line",
-				x + 1024 - 320 - 10, y + 10, 320, 780
+state.select = (i = 1) =>
+	if @selectedVariants[i]
+		goToGame!
+	elseif @selectedCharacters[i]
+		if @variantMenus[i].selectedItem
+			return
 
-			love.graphics.print "#{character.name}",
-				x + 1024 - 320 + (320 - @font\getWidth character.name) / 2, y + 10
-			love.graphics.print "#{character.title}",
-				x + 1024 - 320 + (320 - @font\getWidth character.title) / 2, y + 50
-
-			love.graphics.print "#{character.mainAttackName}",
-				x + 1024 - 320, y + 120
-			love.graphics.print "#{character.secondaryAttackName}",
-				x + 1024 - 320, y + 160
+		@variantMenus[i]\select!
 	else
-		with y = y + @grids[1].height + 10
-			hasPlayer = false
-			for player in *@selectedPlayers
-				if player
-					hasPlayer = true
-					break
+		@grid\select i
 
-			if hasPlayer
-				inputsTable = {}
+state.back = (i = 1) =>
+	if @selectedVariants[i]
+		@selectedVariants[i] = nil
+	elseif @selectedCharacters[i]
+		if @variantMenus[i].selectedItem
+			-- Speeding things up.
+			@variantMenus[i].selectionTime = math.huge
+			return
 
-				for i = 1, 4
-					if @selectedPlayers[i]
-						table.insert inputsTable,
-							data.config.inputs[i].firing
+		cursor = @grid.cursors[i]
 
-				inputsString = table.concat inputsTable, ", "
-				text = "Press #{inputsString} to play"
-				love.graphics.print text,
-					x + (1024 - @font\getWidth text) / 2,
-					y + (120 - @font\getHeight text) / 2 - 8
+		-- FIXME: Breach of OOP.
+		@variantMenus[i].selectionTime = 0
+		@variantMenus[i].selectedItem = {
+			onSelection: =>
+				state.selectedCharacters[i] = nil
+
+				for i = 1, 3
+					cursor.color[i] -= 64
+		}
+	else
+		@grid\back!
+
+state.direction = (direction, i = 1) =>
+	if @selectedVariants[i]
+		false -- ignoring
+	elseif @selectedCharacters[i]
+		if @variantMenus[i].selectedItem
+			return
+
+		@variantMenus[i][direction] @variantMenus[i]
+	else
+		@grid[direction] @grid, i
 
 state.keypressed = (key, scanCode, ...) =>
-	for i, grid in ipairs @grids
-		unless @selectedPlayers[i]
-			grid\keypressed key, scanCode, ...
+	if #@grid.cursors == 1
+		if data.isMenuInput scanCode, "select"
+			@\select!
+		elseif data.isMenuInput scanCode, "back"
+			@\back!
+		else
+			for direction in *{"left", "up", "right", "down"}
+				if menuInput = data.isMenuInput scanCode, direction
+					@\direction direction, i
+	else
+		for i, cursor in ipairs @grid.cursors
+			inputs = data.config.inputs[i]
+
+			if scanCode == inputs.firing
+				@\select i
+			elseif scanCode == inputs.bombing
+				@\back i
+			else
+				for direction in *{"left", "up", "right", "down"}
+					if inputs[direction] == scanCode
+						@\direction direction, i
+
+state.gamepadpressed = (joystick, button) =>
+	for i, cursor in ipairs @grid.cursors
+		inputs = data.config.gamepadInputs[i]
+		id = joystick\getID!
+		
+		unless inputs.gamepad == id
 			continue
 
-		if scanCode == data.config.inputs[i].firing
-			players = {}
-
-			for i = 1, 4
-				if @selectedPlayers[i]
-					table.insert players, @selectedPlayers[i]
-
-			nextState = require "ui.difficulty"
-			state.manager\setState nextState,
-				state.stage, players
+		if button == inputs.firing
+			@\select i
+		elseif button == inputs.bombing
+			@\back i
+		else
+			for direction in *{"left", "up", "right", "down"}
+				if inputs[direction] == button
+					@\direction direction, i
 
 state
 
