@@ -87,36 +87,46 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art (normal + vaincu)
       			lors de sa defaite, est au bord des larmes (ses doutes internes surgissent) 
       
        
-  stage 3 
+	- stage 3 
      
-    a l'appreciation de Gris 
+    		a l'appreciation de Gris 
      
-  stage 4 
+  	- stage 4 
    
-    Zipacna (demi-boss & boss) 
-      deesse faconneuse de montages et vallees 
-      a pour theme le caiman ou le crocodile 
-      affectionne les canyons escarpes, les grottes, les rivieres rapides et les crables (son met favori) 
-      femme ou loli au cheveux verts, au yeaux ors (peut etre avec des pupilles de reptiles) 
-      peau a l'appreciation du designeur : soit completement noire (pour le contraste avec des bijous d'ecaille clairs), soit en faire une peau d'ecaille de reptile (comme pour une femme-serpent) 
-        -> ref possible : http://statics.lesinrocks.com/content/thumbnails/uploads/2010/09/thehisss6042-tt-width-604-height-474-fill-0-crop-0-bgcolor-eeeeee.jpg 
-      jambes normales et pieds nus (toujours en contact avec le sol) 
-      faconne et maintient la Cite d'Or, une ville pour les esprits et les dieux de la region 
-      griffes de crocodile au bout des doigts 
-      bijous et colliers en or 
-      attitude colerique, arrogante, asociale, prompte a suivre ses envies et instincts 
-      fiere de son travail et des oeuvres qu'elle taille 
-      sculpteuse a ses heures perdues 
-      utilie une magie en rapport avec ses themes : Terre et Eau 
-      lorsque vaincue, elle exprime sa colere impuissante  
-      tente de rediriger le personnage principal en dehors de la Cite, mais est une tres mauvaise menteuse 
-      pour le fun et pour la reference stupide : son chapeau peut etre celui de Crocodile Dundee (https://glassy.ch/mag/wp-content/uploads/2012/06/Titel_2083835Nr1ze7vsXPICTg0DE-Kopie.jpg) 
-      chaussures en crocodile ? 
-      quelques images-references pour la source : http://pre00.deviantart.net/1a9f/th/pre/i/2013/174/b/9/zipacna__herald_of_corrupton_by_toxiccalico-d61wkpy.jpg 
-                            https://s-media-cache-ak0.pinimg.com/564x/de/64/ef/de64ef1c8b210e45df6f97c0bc38374b.jpg 
-      (autre referense stupide : son sigle dans la serie Stargate est https://upload.wikimedia.org/wikipedia/commons/e/e9/Zipacna_%28Stargate%29.svg ) 
-   
-  stage 5 
+     		-- Zipacna (demi-boss & boss)
+			"Architecture-Loving Crocodile"
+      		
+		Archétype : Déesse façonneuse de montages et vallées
+		Caractéristiques physiques : 
+     			à pour thème le caïman ou le crocodile 
+      			femme ou loli au cheveux verts, au yeaux ors (peut-être avec des pupilles de reptiles) 
+			peau a l'appreciation du designeur : 
+			- soit completement noire (pour le contraste avec des bijous d'écaille clairs)
+			- soit en faire une peau d'écaille de reptile (comme pour une femme-serpent) 
+			ref possible : http://statics.lesinrocks.com/content/thumbnails/uploads/2010/09/thehisss6042-tt-width-604-height-474-fill-0-crop-0-bgcolor-eeeeee.jpg
+		Accessoires ou outils majeurs :
+			griffes de crocodile au bout des doigts
+			bijous et colliers en or
+		Détails :
+      			jambes normales et pieds nus (toujours en contact avec le sol)
+			utilise une magie en rapport avec ses thèmes : Terre et Eau
+			quelques images-references pour la source : 
+			- http://pre00.deviantart.net/1a9f/th/pre/i/2013/174/b/9/zipacna__herald_of_corrupton_by_toxiccalico-d61wkpy.jpg 
+                        - https://s-media-cache-ak0.pinimg.com/564x/de/64/ef/de64ef1c8b210e45df6f97c0bc38374b.jpg 
+			pour le fun et pour la reference stupide : son chapeau peut etre celui de Crocodile Dundee (https://glassy.ch/mag/wp-content/uploads/2012/06/Titel_2083835Nr1ze7vsXPICTg0DE-Kopie.jpg)
+      			autre referense stupide : son sigle dans la serie Stargate est https://upload.wikimedia.org/wikipedia/commons/e/e9/Zipacna_%28Stargate%29.svg
+		Personalité :
+			affectionne les canyons escarpes, les grottes, les rivieres rapides et les crabes (son repas favori)
+			attitude colerique, arrogante, asociale, prompte a suivre ses envies et instincts 
+      			fière de son travail et des oeuvres qu'elle taille 
+      			sculpteuse a ses heures perdues 
+			lorsque vaincue, elle exprime sa colère impuissante  
+		Dans l'histoire : 
+      			faconne et maintient la Cite d'Or, une ville pour les esprits et les dieux de la region
+			protège la Cité d'Or des intrus
+      			tente de rediriger le personnage principal en dehors de la Cite, mais est une tres mauvaise menteuse 
+       
+  	- stage 5 
    
     Demi-boss ? Aucune idee, Luka suggerait un garde de temple random.  
     Idee rapide dans la droite de cette image : https://comps.canstockphoto.fr/can-stock-photo_csp2213521.jpg 
