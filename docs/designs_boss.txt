@@ -1,37 +1,46 @@
 Fiche de reference pour le design des personnages 
- 
-/!\ tres important: tout les personnages feminins doivent avoir un chapeau/couvre-chef/decoration dans les cheveux 
-(ceci est une reference au meme des chapeaux de Touhou) 
- 
+
 Boss/demiboss -> ont besoin d'un sprite et d'un full art (normal + vaincu) 
-  stage 1 
+ 
+	- stage 1 
      
-    Xuhe (demi boss) 
+    		--Xuhe (demi boss) 
+			"Wise Familiar"
      
-      hibou/chouette multicoloree 
-      est le familier de Coactlicue, devrait posseder les memes tons de couleurs 
-      ref:  http://p6.storage.canalblog.com/67/68/388712/71660566.png 
-          http://media.gettyimages.com/vectors/patterned-owl-vector-id533403091?s=170667a&w=1007 
+      			Hibou ou chouette au plumage multicolore. 
+      			Il est le familier de Coactlicue et devrait posseder les memes tons de couleurs.
+      			ref:  	http://p6.storage.canalblog.com/67/68/388712/71660566.png 
+          			http://media.gettyimages.com/vectors/patterned-owl-vector-id533403091?s=170667a&w=1007 
      
-    Coactlicue (boss) 
-     
-      femme ou loli sud-americaine (peau brune/bronze), apparence plutot garconne 
-      cheveux et yeux a l'appreciation du designeur, mais possiblement cheveux courts et noirs et yeux verts 
-      jupe de serpents (inactifs ? une abstraction peut etre ?) 
-      sandales de tissu 
-      porte une lance de feu/lance enflammee 
-      attitude plutot enthousiaste, une posture plutot enjouee 
-      brassards de tissus avec des motifs maya (ref: https://s-media-cache-ak0.pinimg.com/originals/92/c8/c3/92c8c353b2991ab4a50b266243f2e8a0.jpg) 
-      haut de tissu colore 
-      couleurs dominantes : vert, rouge, bronze (prendre des teintes differentes des Quetzal) 
-      peut etre des bijous et decoration en metal (en rapport avec les Magiciens) 
-      dans l'histoire : dirige la force d'attaque sur la colonie avec des mages et shamans autochtones. Elle est une shaman-guerriere reputee, aimant simplement explorer et se balader 
-      est sous les ordres de Teotlalco et est sa confidante 
-      couleur preferee: le rouge 
-      elle a confectionnee elle meme sa jupe de serpents 
-      la lance de feu est un artefact divin recu au terme de son initiation en temps que Shaman de Guerre 
-      possede une fleur dans les cheveux attachee a un ruban (ref: https://deavita.fr/wp-content/uploads/2015/12/coiffure-hiver-2015-2016-cheveux-longs-brushing-ondul%C3%A9.jpg) 
-      lors de sa defaite, est plutot nonchalante 
+    		-- Coactlicue (boss) 
+			"Matrone du Feu et des Serpents"
+
+		Archétype : Shaman-Guerrière
+		Caractéristiques physiques :
+      			femme ou loli sud-americaine (peau brune/bronze), apparence plutot garconne 
+			cheveux et yeux a l'appreciation du designeur, mais possiblement cheveux courts et noirs et yeux verts
+		Accessoires ou outils majeurs :
+			jupe de serpents (inactifs ? une abstraction peut etre ?)
+			porte une lance de feu/lance enflammée
+		Details :
+			sandales de tissu
+     			attitude plutot enthousiaste, une posture plutot enjouée
+       			brassards de tissus avec des motifs maya (ref: https://s-media-cache-ak0.pinimg.com/originals/92/c8/c3/92c8c353b2991ab4a50b266243f2e8a0.jpg)
+       			haut de tissu coloré
+       			couleurs dominantes : vert, rouge, bronze (prendre des teintes differentes des Quetzal)
+ 			peut etre des bijous et decoration en metal
+			possede une fleur dans les cheveux attachee a un ruban 
+				ref: https://deavita.fr/wp-content/uploads/2015/12/coiffure-hiver-2015-2016-cheveux-longs-brushing-ondul%C3%A9.jpg
+		Personalité :
+			Elle est une shaman-guerriere reputée
+			a des désirs simples : explorer la jungle et se balader
+			couleur preferée: le rouge
+			elle a confectionnée elle meme sa jupe de serpents
+			la lance de feu est un artefact divin recu au terme de son initiation en temps que Shaman de Guerre  
+       		Dans l'histoire : 
+			dirige la force d'attaque sur la colonie avec des mages et shamans autochtones
+			est sous les ordres de Teotlalco et est sa confidante
+			lors de sa defaite, est plutot nonchalante 
        
   stage 2 
    
