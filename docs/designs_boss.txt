@@ -96,10 +96,10 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
       		
 		Archétype : Déesse façonneuse de montages et vallées
 		Caractéristiques physiques : 
-     			à pour thème le caïman ou le crocodile 
-      			femme au cheveux verts, au yeaux ors (peut-être avec des pupilles de reptiles) 
-			peau a l'appreciation du designeur : 
-			- soit completement noire (pour le contraste avec des bijous d'écaille clairs)
+     			a pour thème le caïman ou le crocodile 
+      			femme au cheveux verts, au yeux ors (peut-être avec des pupilles de reptile) 
+			peau à l'appreciation du designeur : 
+			- soit completement noire (pour le contraste avec des bijous)
 			- soit en faire une peau d'écaille de reptile (comme pour une femme-serpent) 
 			ref possible : http://statics.lesinrocks.com/content/thumbnails/uploads/2010/09/thehisss6042-tt-width-604-height-474-fill-0-crop-0-bgcolor-eeeeee.jpg
 		Accessoires ou outils majeurs :

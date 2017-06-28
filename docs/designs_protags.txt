@@ -5,13 +5,29 @@ Protagonistes -> full arts et sprites
 	"Ordinary Explorer"
 
 Archétype : Exploratrice des Grandes Découvertes
+Caractéristiques physiques :
+	 
+Accessoires ou outils majeurs :
+Détails :
+Personnalité :
+Dans l'histoire : 
 
 -
 	"Friendly Tribal"
 
 Archétype : Guide et Commerçante Autochtone
+Caractéristiques physiques : 
+Accessoires ou outils majeurs :
+Détails :
+Personnalité :
+Dans l'histoire : 
 
 - 
 	"Greatest Mind of our Generation"
 
 Archétype : Inventrice des Lumières
+Caractéristiques physiques : 
+Accessoires ou outils majeurs :
+Détails :
+Personnalité :
+Dans l'histoire : 
