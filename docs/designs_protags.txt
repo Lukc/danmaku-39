@@ -1,0 +1,17 @@
+
+Protagonistes -> full arts et sprites
+
+-
+	"Ordinary Explorer"
+
+Archétype : Exploratrice des Grandes Découvertes
+
+-
+	"Friendly Tribal"
+
+Archétype : Guide et Commerçante Autochtone
+
+- 
+	"Greatest Mind of our Generation"
+
+Archétype : Inventrice des Lumières

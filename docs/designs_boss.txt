@@ -28,7 +28,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
        			brassards de tissu avec des motifs maya (ref: https://s-media-cache-ak0.pinimg.com/originals/92/c8/c3/92c8c353b2991ab4a50b266243f2e8a0.jpg)
        			haut de tissu coloré
        			couleurs dominantes : vert, rouge, bronze (prendre des teintes differentes des Quetzal)
- 			peut etre des bijous et decoration en metal
+ 			peut etre des bijoux et decoration en metal
 			possede une fleur dans les cheveux attachee a un ruban 
 				ref: https://deavita.fr/wp-content/uploads/2015/12/coiffure-hiver-2015-2016-cheveux-longs-brushing-ondul%C3%A9.jpg
 		Personnalité :
@@ -47,11 +47,9 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
     		-- Panthere d'Ombre (demi boss)
 			"Jungle Predator" 
      
-      		Soit l'animal, soit une femme panthere noire 
+      		Soit l'animal, soit une loli panthere noire 
       		pas important pour le plot, je voulais juste mettre une panthere noire dans le jeu 
-      		recherche google rapide : https://www.google.fr/search?q=panth%C3%A8re+noire&client=firefox-b&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjw4c7B4-DUAhWJzRoKHZ2NAP4Q_AUIBigB&biw=1920&bih=947 
-      		version costume slutty d'halloween : http://www.costume-deguisement-sexy-pas-cher.com/427-581-thickbox/costume-panthere-noire-en-fourrure.jpg 
-      		version plus serieuse et interessante : www.renders-graphiques.fr/image/upload/normal/R19.png 
+      		version interessante : www.renders-graphiques.fr/image/upload/normal/R19.png 
    
     		-- Teotlaco (boss) 
 		     	"Proud and Mighty Chief"	
@@ -66,8 +64,8 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
 		Accessoires ou outils majeurs :
 			grande coiffe maya elaborée 
 				possible ref: https://us.123rf.com/450wm/v0v/v0v1212/v0v121200029/16765687-statue-de-pierre-m-soam-ricain-pr-colombienne-repr-sentant-un-guerrier-avec-une-coiffe-de-plumes-lab.jpg?ver=6
-			nombreux bijous et decoration de metal (bronze, fer ? couleur plutot terrienne) 
-        			ref de bijous : http://mayaetinca.com/files/BraceletTurquoieetTopazInde[1].jpg 
+			nombreux bijoux et decoration de metal (bronze, fer ? couleur plutot terrienne) 
+        			ref de bijoux : http://mayaetinca.com/files/BraceletTurquoieetTopazInde[1].jpg 
                 				http://p1.storage.canalblog.com/18/11/136803/21310415_p.jpg 
                 				http://www.museedelhistoire.ca/cmc/exhibitions/civil/maya/images/mayre25b.gif 
                 				http://i60.servimg.com/u/f60/11/20/39/39/img_3727.jpg 
@@ -78,7 +76,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
       		Personnalité :
       			attitude dominante, c'est une chef de ville ou de gros village autochtone (il y aura une ziggourat en background de stage a ce moment) 
       			attitude pragmatique en general 
-      			envers ses amis (et sa confidente Coactlicue), elle est connue comme une personne peu sure d'elle, car pouvant douter fortement de ses competences 
+      			envers ses amis (et sa confidente Coactlicue), elle est connue comme une personne peu sûre d'elle, car pouvant douter fortement de ses compétences 
       			fruit preferée : la papaye 
 			couleur preferée : le vert
       			(remarque : j'ai pas fait expres mais la couleur preferee de Teotlalco est la couleur de yeux de Coactlicue et inversement) 
@@ -106,7 +104,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
 			ref possible : http://statics.lesinrocks.com/content/thumbnails/uploads/2010/09/thehisss6042-tt-width-604-height-474-fill-0-crop-0-bgcolor-eeeeee.jpg
 		Accessoires ou outils majeurs :
 			griffes de crocodile au bout des doigts
-			bijous et colliers en or
+			bijoux et colliers en roche polie
 		Détails :
       			jambes normales et pieds nus (toujours en contact avec le sol)
 			utilise une magie en rapport avec ses thèmes : Terre et Eau
