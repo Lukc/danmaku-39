@@ -17,7 +17,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
 
 		Archétype : Shaman-Guerrière
 		Caractéristiques physiques :
-      			femme ou loli sud-americaine (peau brune/bronze), apparence plutot garconne 
+      			loli sud-americaine (peau brune/bronze), apparence plutot garconne 
 			cheveux et yeux a l'appreciation du designeur, mais possiblement cheveux courts et noirs et yeux verts
 		Accessoires ou outils majeurs :
 			jupe de serpents (inactifs ? une abstraction peut etre ?)
@@ -25,7 +25,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
 		Details :
 			sandales de tissu
      			attitude plutot enthousiaste, une posture plutot enjouée
-       			brassards de tissus avec des motifs maya (ref: https://s-media-cache-ak0.pinimg.com/originals/92/c8/c3/92c8c353b2991ab4a50b266243f2e8a0.jpg)
+       			brassards de tissu avec des motifs maya (ref: https://s-media-cache-ak0.pinimg.com/originals/92/c8/c3/92c8c353b2991ab4a50b266243f2e8a0.jpg)
        			haut de tissu coloré
        			couleurs dominantes : vert, rouge, bronze (prendre des teintes differentes des Quetzal)
  			peut etre des bijous et decoration en metal
@@ -58,7 +58,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
 
 		Archétype : dirigeante/reine maya
 		Caractéristiques physiques :
-      			femme ou loli sud-americaine (peau brune/bronze)
+      			loli sud-americaine (peau brune/bronze)
 			meme age environ que Coactlicue mais plus ronde (possiblement quelques kilos en trop ?) 
       			recouverte de penture evoquant un predateur de la jungle/ocelot/panthere (https://s-media-cache-ak0.pinimg.com/originals/2e/30/42/2e3042529b0d564ce56a6657b46fb271.jpg) 
       			cheveux teints dans les memes couleurs que sa peinture de corps, couleur originale de ceux-ci a l'appreciation du designeur 
@@ -99,7 +99,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
 		Archétype : Déesse façonneuse de montages et vallées
 		Caractéristiques physiques : 
      			à pour thème le caïman ou le crocodile 
-      			femme ou loli au cheveux verts, au yeaux ors (peut-être avec des pupilles de reptiles) 
+      			femme au cheveux verts, au yeaux ors (peut-être avec des pupilles de reptiles) 
 			peau a l'appreciation du designeur : 
 			- soit completement noire (pour le contraste avec des bijous d'écaille clairs)
 			- soit en faire une peau d'écaille de reptile (comme pour une femme-serpent) 
@@ -135,7 +135,7 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
 			"Grim Priestress barring the Door"
       		Archétype : Prêtresse-Gardienne du monde Divin
 		Caractéristiques physiques :
-			femme amerindienne habillee de toile blanche et de bijous en Argent
+			femme amérindienne habillee de toile blanche et de bijous en Argent
 			cheveux bleus ou blancs et yeux bleu sombre	
       			ref:  
         			https://s-media-cache-ak0.pinimg.com/736x/c7/0d/da/c70dda5013546b319481fc0e84c0f971--photography-of-women-fantasy-art-women.jpg 
