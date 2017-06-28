@@ -7,13 +7,13 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art (normal + vaincu)
     		--Xuhe (demi boss) 
 			"Wise Familiar"
      
-      			Hibou ou chouette au plumage multicolore. 
-      			Il est le familier de Coactlicue et devrait posseder les memes tons de couleurs.
-      			ref:  	http://p6.storage.canalblog.com/67/68/388712/71660566.png 
-          			http://media.gettyimages.com/vectors/patterned-owl-vector-id533403091?s=170667a&w=1007 
+      		Hibou ou chouette au plumage multicolore. 
+      		Il est le familier de Coactlicue et devrait posseder les memes tons de couleurs.
+      		ref:  	http://p6.storage.canalblog.com/67/68/388712/71660566.png 
+       			http://media.gettyimages.com/vectors/patterned-owl-vector-id533403091?s=170667a&w=1007 
      
     		-- Coactlicue (boss) 
-			"Matrone du Feu et des Serpents"
+			"Snakes and Fire Matron"
 
 		Archétype : Shaman-Guerrière
 		Caractéristiques physiques :
@@ -42,39 +42,50 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art (normal + vaincu)
 			est sous les ordres de Teotlalco et est sa confidante
 			lors de sa defaite, est plutot nonchalante 
        
-  stage 2 
+  	- stage 2 
    
-    Panthere d'Ombre (demi boss) 
+    		-- Panthere d'Ombre (demi boss)
+			"Jungle Predator" 
      
-      soit l'animal, soit une femme panthere noire 
-      pas important pour le plot, je voulais juste mettre une panthere noire dans le jeu 
-      recherche google rapide : https://www.google.fr/search?q=panth%C3%A8re+noire&client=firefox-b&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjw4c7B4-DUAhWJzRoKHZ2NAP4Q_AUIBigB&biw=1920&bih=947 
-      version costume slutty d'halloween : http://www.costume-deguisement-sexy-pas-cher.com/427-581-thickbox/costume-panthere-noire-en-fourrure.jpg 
-      version plus serieuse et interessante : www.renders-graphiques.fr/image/upload/normal/R19.png 
+      		Soit l'animal, soit une femme panthere noire 
+      		pas important pour le plot, je voulais juste mettre une panthere noire dans le jeu 
+      		recherche google rapide : https://www.google.fr/search?q=panth%C3%A8re+noire&client=firefox-b&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjw4c7B4-DUAhWJzRoKHZ2NAP4Q_AUIBigB&biw=1920&bih=947 
+      		version costume slutty d'halloween : http://www.costume-deguisement-sexy-pas-cher.com/427-581-thickbox/costume-panthere-noire-en-fourrure.jpg 
+      		version plus serieuse et interessante : www.renders-graphiques.fr/image/upload/normal/R19.png 
    
-    Teotlalco (boss) 
-     
-      femme ou loli sud-americaine (peau brune/bronze), meme age environ que Coactlicue mais plus ronde (possiblement quelques kilos en trop ?) 
-      recouverte de penture evoquant un predateur de la jungle/ocelot/panthere (https://s-media-cache-ak0.pinimg.com/originals/2e/30/42/2e3042529b0d564ce56a6657b46fb271.jpg) 
-      cheveux teints dans les memes couleurs que sa peinture de corps, couleur originale a l'appreciation du designeur 
-      yeux rouges ou roses 
-      sandales decorees 
-      nombreux bijous et decoration de metal (bronze, fer ? couleur plutot terrienne) 
-        ref de bijous :  http://mayaetinca.com/files/BraceletTurquoieetTopazInde[1].jpg 
-                http://p1.storage.canalblog.com/18/11/136803/21310415_p.jpg 
-                http://www.museedelhistoire.ca/cmc/exhibitions/civil/maya/images/mayre25b.gif 
-                http://i60.servimg.com/u/f60/11/20/39/39/img_3727.jpg 
-      possiblement nue avec la decence protegee par les bijoux et decorations de metal 
-      grande coiffe maya elaboree (possible ref: https://us.123rf.com/450wm/v0v/v0v1212/v0v121200029/16765687-statue-de-pierre-m-soam-ricain-pr-colombienne-repr-sentant-un-guerrier-avec-une-coiffe-de-plumes-lab.jpg?ver=6) 
-      attitude dominante, c'est une chef de ville ou de gros village autochtone (il y aura une ziggourat en background de stage a ce moment) 
-      attitude pragmatique en general 
-      envers ses amis (et sa confidente Coactlicue), elle est connue comme une personne peu sure d'elle, car pouvant douter fortement de ses competences 
-      a ete ordonnee par la Cite d'Or, capitale sainte et cite divine de leur peuple, de piller les cites et forts des "envahisseurs" et de tout ramener en tribu a la Cite d'Or 
-      utilise une magie plutot orientee vers des motifs  
-      lors de sa defaite, est au bord des larmes (ses doutes internes surgissent) 
-      couleur preferee : le vert 
-      fruit prefere : la papaye 
-      (remarque : j'ai pas fait expres mais la couleur preferee de Teotlalco est la couleur de yeux de Coactlicue et inversement) 
+    		-- Teotlalco (boss) 
+		     	"Proud and Mighty Chief"	
+
+		Archétype : dirigeante/reine maya
+		Caractéristiques physiques :
+      			femme ou loli sud-americaine (peau brune/bronze)
+			meme age environ que Coactlicue mais plus ronde (possiblement quelques kilos en trop ?) 
+      			recouverte de penture evoquant un predateur de la jungle/ocelot/panthere (https://s-media-cache-ak0.pinimg.com/originals/2e/30/42/2e3042529b0d564ce56a6657b46fb271.jpg) 
+      			cheveux teints dans les memes couleurs que sa peinture de corps, couleur originale de ceux-ci a l'appreciation du designeur 
+      			yeux rouges ou roses
+		Accessoires ou outils majeurs :
+			grande coiffe maya elaborée 
+				possible ref: https://us.123rf.com/450wm/v0v/v0v1212/v0v121200029/16765687-statue-de-pierre-m-soam-ricain-pr-colombienne-repr-sentant-un-guerrier-avec-une-coiffe-de-plumes-lab.jpg?ver=6
+			nombreux bijous et decoration de metal (bronze, fer ? couleur plutot terrienne) 
+        			ref de bijous : http://mayaetinca.com/files/BraceletTurquoieetTopazInde[1].jpg 
+                				http://p1.storage.canalblog.com/18/11/136803/21310415_p.jpg 
+                				http://www.museedelhistoire.ca/cmc/exhibitions/civil/maya/images/mayre25b.gif 
+                				http://i60.servimg.com/u/f60/11/20/39/39/img_3727.jpg 
+      			possiblement nue avec la décence protegée par les bijoux et decorations de metal 
+		Details :
+      			sandales decorées
+      			utilise une magie plutot orientee vers des motifs 
+      		Personalité :
+      			attitude dominante, c'est une chef de ville ou de gros village autochtone (il y aura une ziggourat en background de stage a ce moment) 
+      			attitude pragmatique en general 
+      			envers ses amis (et sa confidente Coactlicue), elle est connue comme une personne peu sure d'elle, car pouvant douter fortement de ses competences 
+      			fruit preferée : la papaye 
+			couleur preferée : le vert
+      			(remarque : j'ai pas fait expres mais la couleur preferee de Teotlalco est la couleur de yeux de Coactlicue et inversement) 
+		Dans l'histoire : 
+      			a ete ordonnee par la Cite d'Or, capitale sainte et cite divine de leur peuple, de piller les cites et forts des "envahisseurs" et de tout ramener en tribu a la Cite d'Or 
+      			lors de sa defaite, est au bord des larmes (ses doutes internes surgissent) 
+      
        
   stage 3 
      
