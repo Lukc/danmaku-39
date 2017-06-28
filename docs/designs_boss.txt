@@ -163,26 +163,35 @@ Boss/demiboss -> ont besoin d'un sprite et d'un full art
        
   	- stage 6 
 
-	Xquic (le retour, demi-boss)
+		-- Xquic (le retour, demi-boss)
    
-    Kukulkan (boss) 
-      deesse des cieux, du paradis, de la meteo, du vent et des tempetes 
-      sous sa forme animale, est un serpent a plume 
-      ses themes en apparence sont : les plumes, le vent et les cieux 
-      boss final du jeu, elle a pique une terrible colere puisqu'un des "etrangers" lui a vole quelque chose  
-        (je propose que la chose volee est son coeur et en faire une histoire d'amour, ou alors un medaillon divin qui est la cle des royaumes celestes) 
-      aura de tempete et d'orage 
-      ailes de plumes multi-colore 
-      coiffe ressemblant a une tiare/couronne decoree de plumes 
-      habit en une longue robe composee -encore une fois- de plumes 
-      cheuveux mauves et yeux vert clair (ce sont des couleurs complementaires) 
-      attitude demandant l'obeissance ; les sacrifices de mortels sont attendus 
-      position corporelle fiere et digne 
-      en realite est une bonne personne (si on oublie c'est histoire de sacrifices et de colere divine suite a un vol) 
-      veut maintenir l'existence de son peuple choisi (les Autochtones) 
-      adore voler, voir le monde de haut et les coucher de Soleil : c'est tellement beau 
-      couleur preferee : le blanc (ce n'est pas une couleur!) 
-      lorsque vaincu, tente de maintenir sa fierte et va denoncer le voleur comme la source de tout les problemes 
-      possiblement (voir avec le designeur) un tatouage d'oiseau apparent sur le corps  
-      reference masculine : https://i.redd.it/ci693g7sczmy.jpg 
-      quelques plumes : https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Types_de_plumes._-_Larousse_pour_tous%2C_-1907-1910-.jpg/400px-Types_de_plumes._-_Larousse_pour_tous%2C_-1907-1910-.jpg 
+    		-- Kukulkan (boss)
+			"Goddess of the Heavens"
+      		Archétype : Déesse des Cieux, du Paradis, de la Méteo, du Vent et des Tempêtes
+		Caractéristiques physiques :
+			ses themes en apparence sont : les plumes, le vent et les cieux 	
+ 		     	cheveux mauves et yeux vert clair (ce sont des couleurs complémentaires)
+		Accessoires ou outils majeurs :
+			aura de tempête et d'orage
+			ailes de plumes multi-colore
+			coiffe ressemblant a une tiare/couronne decorée de plumes
+			quelques plumes : https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Types_de_plumes._-_Larousse_pour_tous%2C_-1907-1910-.jpg/400px-Types_de_plumes._-_Larousse_pour_tous%2C_-1907-1910-.jpg 
+		Détails :
+			sous sa forme animale, est un serpent a plume
+			habit en une longue robe composee -encore une fois- de plumes
+			possiblement (voir avec le designeur) un tatouage d'oiseau apparent sur le corps
+			reférence masculine : https://i.redd.it/ci693g7sczmy.jpg 
+		Personalité :
+		      	attitude demandant l'obeissance ; les sacrifices de mortels sont attendus 
+		  	position corporelle fière et digne 
+		  	en realité, elle est une bonne personne (si on oublie c'est histoire de sacrifices et de colère divine suite a un vol) 
+			veut maintenir l'existence de son peuple choisi (les Autochtones) 
+      			adore voler, voir le monde de haut et les coucher de Soleil : c'est tellement beau
+			couleur preferée : le blanc (ce n'est pas une couleur!)
+		Dans l'histoire :
+			boss final du jeu, elle a pique une terrible colere puisqu'un des "etrangers" lui a vole quelque chose  
+        			je propose que la chose volée est son coeur et en faire une histoire d'amour
+				ou alors un medaillon divin qui est la cle des royaumes celestes
+			lorsque vaincu, tente de maintenir sa fierté et va denoncer le voleur comme la source de tout les problemes 
+      
+      
