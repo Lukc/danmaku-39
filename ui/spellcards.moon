@@ -134,6 +134,10 @@ updateSpellcardsList = ->
 					state.stage = stage
 					state.playStageMenu.drawTime = 0
 
+					if #stageMenuItems == 0
+						state.playStageMenu.items.selection = 1
+						state.spellcardsMenu.items.selection = 0
+
 					@\setItemsList stageMenuItems
 			}
 
@@ -143,7 +147,6 @@ updateSpellcardsList = ->
 	state.playStageMenu.items.selection = 0
 
 state.enter = (stage) =>
-	-- FIXME: fix that button.
 	@playStageMenu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
 		{
@@ -262,8 +265,9 @@ state.down = =>
 		return
 
 	if @playStageMenu.items.selection == 1
-		@playStageMenu.items.selection = 0
-		@spellcardsMenu.items.selection = 1
+		if #@spellcardsMenu.items != 0
+			@playStageMenu.items.selection = 0
+			@spellcardsMenu.items.selection = 1
 	else
 		items = @spellcardsMenu.items
 
@@ -280,8 +284,9 @@ state.up = =>
 	items = @spellcardsMenu.items
 
 	if @playStageMenu.items.selection == 1
-		@playStageMenu.items.selection = 0
-		items.selection = #items
+		if #@spellcardsMenu.items != 0
+			@playStageMenu.items.selection = 0
+			items.selection = #items
 	else
 		if items.selection == 1 and state.stage
 			items.selection = 0
