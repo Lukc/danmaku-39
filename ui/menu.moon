@@ -40,6 +40,8 @@ state.enter = (noReset) =>
 	@transitionTime = nil
 
 	if noReset
+		menu.drawTime = 0
+
 		return
 
 	data.load!
@@ -64,6 +66,8 @@ state.enter = (noReset) =>
 		}
 		{
 			label: "Stories & Spells"
+			onImmediateSelection: =>
+				state.transitionTime = 0
 			onSelection: =>
 				state.manager\setState require("ui.spellcards")
 
