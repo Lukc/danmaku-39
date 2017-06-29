@@ -248,6 +248,14 @@ ModData {
 	stages: {
 		stage1
 	}
+	stories: {
+		{
+			name: "Story of the New Wonderland"
+			stages: {
+				stage1
+			}
+		}
+	}
 	spellcards: spellcards
 	:characters
 	characterVariants: characters.variants

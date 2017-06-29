@@ -178,6 +178,8 @@ loadMod = (path) ->
 		if cache.config.blockedMods[result.name]
 			return nil, "mod is user-blocked"
 
+		for story in *result.stories or {}
+			table.insert cache.stories, story
 		for spellcard in *result.spellcards or {}
 			table.insert cache.spellcards, spellcard
 		for boss in *result.bosses or {}
@@ -202,6 +204,7 @@ setmetatable {
 	load: ->
 		cache = {
 			mods:        {}
+			stories:     {}
 			stages:      {}
 			bosses:      {}
 			spellcards:  {}

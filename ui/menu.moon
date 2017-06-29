@@ -63,23 +63,9 @@ state.enter = (noReset) =>
 			label: "Extras"
 		}
 		{
-			label: "Spellcards"
+			label: "Stories & Spells"
 			onSelection: =>
-				list = {
-					maxDisplayedItems: 8
-				}
-
-				for stage in *data.stages
-					table.insert list, {
-						label: stage.title
-						onImmediateSelection: =>
-							state.transitionTime = 0
-						onSelection: =>
-							state.manager\setState require("ui.spellcards"),
-								stage
-					}
-
-				@\setItemsList list
+				state.manager\setState require("ui.spellcards")
 
 		}
 		{

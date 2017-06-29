@@ -9,117 +9,141 @@ fonts = require "fonts"
 
 state = {}
 
+bossMenuItem = (boss) -> {
+	label: boss.name
+	:boss
+	onSelection: =>
+		newState = require "ui.difficulty"
+		newStage = {
+			name: "Boss - " .. boss.name
+			difficulties: boss.difficulties
+			drawBossData: data.stages[1].drawBossData
+
+			update: =>
+				if @frame > 60 and #@enemies == 0
+					@\endOfStage!
+
+			[1]: =>
+				@\addEntity Boss boss
+		}
+
+		state.manager\setState newState, newStage
+
+}
+
+spellcardMenuItem = (stage, boss, spellcard) -> {
+	label: spellcard.name
+	:spellcard
+	draw: (x, y) =>
+		r = @\getRectangle x, y
+		defaultColor = @\getDefaultColor!
+
+		sameDifficulty = false
+
+		for stageDifficulty in *(stage.difficulties or {})
+			for spellDifficulty in *(spellcard.difficulties or {})
+				if stageDifficulty == spellDifficulty
+					sameDifficulty = true
+					break
+
+		color = if sameDifficulty
+			defaultColor
+		else
+			o = if @\hovered!
+				math.sin @menu.drawTime * 5
+			else
+				0
+
+			{255, 127 + 64 * o, 127 + 64 * o, @\getDefaultAlpha!}
+
+		@menu\print @label,
+			r.x + 48 * vscreen.rectangle.sizeModifier,
+			r.y - 20,
+			color
+	onSelection: =>
+		newState = require "ui.difficulty"
+		newStage = {
+			name: "Spellcard - " .. spellcard.name
+			difficulties: spellcard.difficulties
+			drawBossData: data.stages[1].drawBossData
+
+			update: =>
+				if @frame > 60 and #@enemies == 0
+					@\endOfStage!
+
+			[1]: =>
+				boss = {k,v for k,v in pairs boss}
+
+				boss[1] = spellcard
+
+				for i = 2, #boss
+					boss[i] = nil
+
+				for i = 1, #boss
+					print i, boss[i]
+
+				@\addEntity Boss boss
+		}
+
+		state.manager\setState newState, newStage
+}
+
 updateSpellcardsList = ->
 	newValues = {
 		maxDisplayedItems: 15
 		itemHeight: 48
+		root: true
 	}
 
 	state.playableSpellcard = false
 
-	for boss in *(state.stage.bosses or {})
-		insertedBossItem = false
+	for story in *data.stories
+		table.insert newValues, {
+			label: story.name
+			onSelection: =>
+				print "Play the whole story, maybe?"
+		}
 
-		for spellcard in *boss
-			unless spellcard.name
-				continue
+		for stage in *story.stages or {}
+			stageMenuItems = {}
 
-			unless insertedBossItem
-				insertedBossItem = true
+			for boss in *(stage.bosses or {})
+				insertedBossItem = false
 
-				table.insert newValues, {
-					label: boss.name
-					:boss
-					onSelection: =>
-						newState = require "ui.difficulty"
-						newStage = {
-							name: "Boss - " .. boss.name
-							difficulties: boss.difficulties
-							drawBossData: data.stages[1].drawBossData
+				for spellcard in *boss
+					unless spellcard.name
+						continue
 
-							update: =>
-								if @frame > 60 and #@enemies == 0
-									@\endOfStage!
+					unless insertedBossItem
+						insertedBossItem = true
 
-							[1]: =>
-								@\addEntity Boss boss
-						}
+						table.insert stageMenuItems, bossMenuItem boss
 
-						state.manager\setState newState, newStage
+					table.insert stageMenuItems, spellcardMenuItem stage, boss, spellcard
 
+					state.playableSpellcard = true
+
+			unless state.playableSpellcard
+				table.insert stageMenuItems, {
+					label: "No playable spellcards."
 				}
 
 			table.insert newValues, {
-				label: spellcard.name
-				:spellcard
-				draw: (x, y) =>
-					r = @\getRectangle x, y
-					defaultColor = @\getDefaultColor!
-
-					sameDifficulty = false
-
-					for stageDifficulty in *(state.stage.difficulties or {})
-						for spellDifficulty in *(spellcard.difficulties or {})
-							if stageDifficulty == spellDifficulty
-								sameDifficulty = true
-								break
-
-					color = if sameDifficulty
-						defaultColor
-					else
-						o = if @\hovered!
-							math.sin @menu.drawTime * 5
-						else
-							0
-
-						{255, 127 + 64 * o, 127 + 64 * o, @\getDefaultAlpha!}
-
-					@menu\print @label,
-						r.x + 48 * vscreen.rectangle.sizeModifier,
-						r.y - 20,
-						color
+				label: "    " .. (stage.title or "???")
 				onSelection: =>
-					newState = require "ui.difficulty"
-					newStage = {
-						name: "Spellcard - " .. spellcard.name
-						difficulties: spellcard.difficulties
-						drawBossData: data.stages[1].drawBossData
+					state.stage = stage
+					state.playStageMenu.drawTime = 0
 
-						update: =>
-							if @frame > 60 and #@enemies == 0
-								@\endOfStage!
-
-						[1]: =>
-							boss = {k,v for k,v in pairs boss}
-
-							boss[1] = spellcard
-
-							for i = 2, #boss
-								boss[i] = nil
-
-							for i = 1, #boss
-								print i, boss[i]
-
-							@\addEntity Boss boss
-					}
-
-					state.manager\setState newState, newStage
+					@\setItemsList stageMenuItems
 			}
-
-			state.playableSpellcard = true
-
-	unless state.playableSpellcard
-		table.insert newValues, {
-			label: "No playable spellcards."
-		}
 
 	state.spellcardsMenu\setItemsList newValues
 
-	state.spellcardsMenu.items.selection = 0
-	state.playStageMenu.items.selection = 1
+	state.spellcardsMenu.items.selection = 1
+	state.playStageMenu.items.selection = 0
 
 state.enter = (stage) =>
-	@stage = stage
+	-- FIXME: fix that button.
 	@playStageMenu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 32
 		{
@@ -139,16 +163,24 @@ state.draw = =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.rectangle
 	screenWidth = love.graphics.getWidth!
 
-	@playStageMenu\draw!
+	if state.stage
+		@playStageMenu\draw!
+
 	@spellcardsMenu\draw!
 
-	hoveredBoss = do
+	hoveredStage = do
+		menuItem = @spellcardsMenu.items[@spellcardsMenu.items.selection]
+
+		if menuItem
+			menuItem.stage
+
+	hoveredBoss = unless hoveredStage
 		menuItem = @spellcardsMenu.items[@spellcardsMenu.items.selection]
 
 		if menuItem
 			menuItem.boss
 
-	hoveredSpellcard = unless hoveredBoss
+	hoveredSpellcard = unless hoveredBoss or hoveredStage
 		menuItem = @spellcardsMenu.items[@spellcardsMenu.items.selection]
 
 		if menuItem
@@ -189,9 +221,9 @@ state.draw = =>
 				y + (vscreen.height - 80 - 20) * sizemod,
 				{200, 200, 200},
 				@descriptionsFont
-		else
+		elseif hoveredStage
 			-- FIXME: Add background or something.
-			@playStageMenu\print "#{state.stage.description or "???"}",
+			@playStageMenu\print "#{hoveredStage.description or "???"}",
 				screenWidth - (20 + 400) * sizemod,
 				y + 160 * sizemod,
 				{200, 200, 200},
@@ -235,7 +267,7 @@ state.down = =>
 	else
 		items = @spellcardsMenu.items
 
-		if items.selection == #items
+		if items.selection == #items and state.stage
 			items.selection = 0
 			@playStageMenu.items.selection = 1
 		else
@@ -251,7 +283,7 @@ state.up = =>
 		@playStageMenu.items.selection = 0
 		items.selection = #items
 	else
-		if items.selection == 1
+		if items.selection == 1 and state.stage
 			items.selection = 0
 			@playStageMenu.items.selection = 1
 		else
@@ -259,7 +291,26 @@ state.up = =>
 
 state.back = =>
 	-- FIXME: Force a transition.
-	state.manager\setState require("ui.menu"), true
+	if @spellcardsMenu.items.root
+		@spellcardsMenu.selectionTime = 0.25
+		@spellcardsMenu.selectedItem = {
+			onSelection: =>
+				state.manager\setState require("ui.menu"), true
+		}
+
+		-- Forcing an empty selection to get a transition.
+		@playStageMenu.selectionTime = 0.25
+		@playStageMenu.selectedItem = {
+			onSelection: =>
+		}
+	else
+		@playStageMenu.selectionTime = 0
+		@playStageMenu.selectedItem = {
+			onSelection: =>
+				state.stage = nil
+		}
+
+		@spellcardsMenu\back!
 
 state.keypressed = (key, ...) =>
 	if data.isMenuInput(key, "select")
@@ -271,8 +322,9 @@ state.keypressed = (key, ...) =>
 	elseif data.isMenuInput key, "back"
 		return @\back!
 
-	if #@spellcardsMenu.items > 0
-		@spellcardsMenu\keypressed key, ...
+	if @spellcardsMenu.items.selection > 0
+		if #@spellcardsMenu.items > 0
+			@spellcardsMenu\keypressed key, ...
 
 state.gamepadpressed = (joystick, button) =>
 	config = data.config
