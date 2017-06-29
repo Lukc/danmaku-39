@@ -307,6 +307,7 @@ state.back = =>
 		@playStageMenu.selectionTime = 0
 		@playStageMenu.selectedItem = {
 			onSelection: =>
+				@items.selection = 0
 				state.stage = nil
 		}
 
