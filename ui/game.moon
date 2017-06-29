@@ -422,7 +422,7 @@ state.update = (dt) =>
 	if state.awaitingPlayerName
 		@nameGrid.width = 520 * danmakuSizemod
 		@nameGrid.height = 300 * danmakuSizemod
-		@nameGrid.x = x + 25 * sizemod
+		@nameGrid.x = x + 25 * sizemod + 25 * danmakuSizemod
 		@nameGrid.y = y + vscreen.height - @nameGrid.height - 25 * danmakuSizemod
 
 		return
