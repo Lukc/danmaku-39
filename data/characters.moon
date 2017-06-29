@@ -196,7 +196,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 		CharacterVariantData {
 			name: "Missiles"
 			description: "Big, slow, and dangerous."
-			maxPower: 50
+			maxPower: 5 * 5
 			update: =>
 				-- damage estimation: 10 * 2 / 8 + powerLevel * 6 / 48
 				if @firingFrame and @firingFrame % 8 == 0
@@ -211,7 +211,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 							damage: 10
 
 				if @firingFrame and @firingFrame % 48 == 0
-					powerLevel = math.floor(@power / 10)
+					powerLevel = math.floor(@power / 5)
 
 					for i = 1, powerLevel
 						@\fire
@@ -227,7 +227,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 		CharacterVariantData {
 			name: "Sword and rifle"
 			description: "Bullets, bullets everywhere."
-			maxPower: 50
+			maxPower: 5 * 5
 			update: =>
 				-- Damage estimation: 10 * 2 / 8 + powerLevel * 1 / 8
 				if @firingFrame and @firingFrame % 8 == 0
@@ -241,7 +241,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 							radius: 3
 							damage: 10
 
-					powerLevel = math.floor(@power / 10)
+					powerLevel = math.floor(@power / 5)
 
 					radius = 32
 					for i = 1, powerLevel
@@ -261,7 +261,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 		CharacterVariantData {
 			name: "Flamethrower"
 			description: "Burning flames of love!"
-			maxPower: 50
+			maxPower: 5 * 5
 			update: =>
 				-- Damage estimation: 10 * 2 / 8 + 1 * powerLevel / 8
 				if @firingFrame and @firingFrame % 8 == 0
@@ -275,7 +275,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 							radius: 3
 							damage: 10
 
-					powerLevel = math.floor(@power / 10)
+					powerLevel = math.floor(@power / 5)
 
 					radius = 48
 					for i = 1, powerLevel
