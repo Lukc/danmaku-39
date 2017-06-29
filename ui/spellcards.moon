@@ -137,18 +137,7 @@ state.enter = (stage) =>
 
 state.draw = =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.rectangle
-
-	@descriptionsFont = fonts.get "Sniglet-Regular", 18 * sizemod
-
-	@playStageMenu.x = x + 10 * sizemod
-	@playStageMenu.y = y + 15 * sizemod
-	@playStageMenu.width = (vscreen.width - 20) * sizemod
-	@playStageMenu.font = fonts.get "Sniglet-Regular", 32 * sizemod
-
-	@spellcardsMenu.x = x + 10 * sizemod
-	@spellcardsMenu.y = y + 100 * sizemod
-	@spellcardsMenu.font = fonts.get "Sniglet-Regular", 24 * sizemod
-	@spellcardsMenu.itemHeight = 36 * sizemod
+	screenWidth = love.graphics.getWidth!
 
 	@playStageMenu\draw!
 	@spellcardsMenu\draw!
@@ -182,7 +171,7 @@ state.draw = =>
 
 			for i = 1, #wrap
 				@playStageMenu\print wrap[#wrap - i + 1],
-					x + (vscreen.width - 20 - 400) * sizemod,
+					screenWidth - (20 + 400) * sizemod,
 					Y,
 					{200, 200, 200},
 					@descriptionsFont
@@ -191,19 +180,19 @@ state.draw = =>
 			-- FIXME: Drawing preview here
 			love.graphics.setColor 255, 255, 255
 			love.graphics.rectangle "line",
-				x + (vscreen.width - 20 - 480) * sizemod,
+				screenWidth - (20 + 480) * sizemod,
 				y + (vscreen.height - 680 - 20) * sizemod,
 				480 * sizemod, 600 * sizemod
 
 			@spellcardsMenu\print "#{hoveredSpellcard.description or "???"}",
-				x + (vscreen.width - 20 - 480) * sizemod,
+				screenWidth - (20 + 480) * sizemod,
 				y + (vscreen.height - 80 - 20) * sizemod,
 				{200, 200, 200},
 				@descriptionsFont
 		else
 			-- FIXME: Add background or something.
 			@playStageMenu\print "#{state.stage.description or "???"}",
-				x + (vscreen.width - 20 - 400) * sizemod,
+				screenWidth - (20 + 400) * sizemod,
 				y + 160 * sizemod,
 				{200, 200, 200},
 				@descriptionsFont
@@ -212,6 +201,20 @@ state.draw = =>
 
 state.update = (dt) =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen\update!
+	screenWidth = love.graphics.getWidth!
+
+	@descriptionsFont = fonts.get "Sniglet-Regular", 18 * sizemod
+
+	@playStageMenu.x = 15 * sizemod
+	@playStageMenu.y = y + 35 * sizemod
+	@playStageMenu.width = screenWidth - 20 * sizemod
+	@playStageMenu.font = fonts.get "Sniglet-Regular", 32 * sizemod
+
+	@spellcardsMenu.x = 15 * sizemod
+	@spellcardsMenu.y = y + 100 * sizemod
+	@spellcardsMenu.width = screenWidth - (20 + 400) * sizemod
+	@spellcardsMenu.font = fonts.get "Sniglet-Regular", 24 * sizemod
+	@spellcardsMenu.itemHeight = 36 * sizemod
 
 	@playStageMenu\update dt
 	@spellcardsMenu\update dt
