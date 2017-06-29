@@ -203,7 +203,6 @@ state.enter = (options, players) =>
 
 		table.insert @players, @danmaku\addEntity Player player
 
-	print stage.name, players[1].name, players[1].secondaryAttackName, options
 	@highscore = do
 		if #players == 1
 			highscores.get stage, players[1], options
@@ -429,7 +428,6 @@ state.update = (dt) =>
 		return
 	elseif state.paused
 		state.paused += dt
-		print danmakuSizemod
 
 		@menu.width = 400 * danmakuSizemod
 		@menu.itemHeight = 64 * danmakuSizemod
