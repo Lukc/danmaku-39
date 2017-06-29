@@ -34,7 +34,7 @@ updateSpellcardsList = ->
 						newState = require "ui.difficulty"
 						newStage = {
 							name: "Boss - " .. boss.name
-							difficulties: boss.difficulties -- XXX check
+							difficulties: boss.difficulties
 							drawBossData: data.stages[1].drawBossData
 
 							update: =>
@@ -72,7 +72,7 @@ updateSpellcardsList = ->
 						else
 							0
 
-						{255, 127 + 64 * o, 127 + 64 * o}
+						{255, 127 + 64 * o, 127 + 64 * o, @\getDefaultAlpha!}
 
 					@menu\print @label,
 						r.x + 48 * vscreen.rectangle.sizeModifier,
