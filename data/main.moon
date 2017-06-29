@@ -20,6 +20,8 @@ characters = require "data.characters"
 
 {:StageData, :ModData, :BossData} = require "data.checks"
 
+fonts = require "fonts"
+
 titleFont = love.graphics.newFont 42
 subtitleFont = love.graphics.newFont 24
 
@@ -113,9 +115,6 @@ stage1 = StageData {
 			-- No background for now.
 
 	drawBossData: =>
-		love.graphics.setColor 255, 255, 255
-		love.graphics.print "#{@boss.name}, #{@boss.health}/#{@boss.maxHealth}", 20, 20
-
 		with x, y = @boss.x, @boss.y
 			f = @boss.frame - @bossSince
 			fm = math.min 1, f / 60 -- frame modifier, for starting animations.
@@ -124,8 +123,6 @@ stage1 = StageData {
 			width = 7
 
 			alpha = 191 * fm
-
-			print radius, alpha
 
 			love.graphics.setColor 255, 255, 255, alpha
 			love.graphics.setLineWidth width
@@ -153,18 +150,29 @@ stage1 = StageData {
 
 			love.graphics.setLineWidth 1
 
+		font = fonts.get "miamanueva", 24
+		love.graphics.setFont font
+
+		love.graphics.setColor 255, 255, 255
+		with x = @width - 40 - font\getWidth tostring @boss.name
+			love.graphics.print "#{@boss.name}", x, 20
+
 		spell = @boss.currentSpell
 		if spell and spell.name
-			love.graphics.print "#{spell.name}", 40,60
+			font = fonts.get "miamanueva", 18
+			love.graphics.setFont font
+
+			with x = @width - 40 - font\getWidth tostring spell.name
+				love.graphics.print "#{spell.name}", x, 70
 
 			if @boss.frame >= @boss.spellStartFrame
 				timeout = math.floor (@boss.spellEndFrame - @boss.frame) / 60
 				timeout = tostring timeout
 
-				font = love.graphics.getFont!
+				font = fonts.get "miamanueva", 32
 
-				love.graphics.print timeout,
-					@width - font\getWidth(timeout) - 20, 20
+				love.graphics.setFont font
+				love.graphics.print timeout, 32, 20
 
 	update: =>
 		if @frame % 4 == 0
