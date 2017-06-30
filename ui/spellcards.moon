@@ -58,7 +58,7 @@ spellcardMenuItem = (stage, boss, spellcard) -> {
 
 		@menu\print @label,
 			r.x + 48 * vscreen.rectangle.sizeModifier,
-			r.y - 20,
+			r.y - 2,
 			color
 	onSelection: =>
 		newState = require "ui.difficulty"
