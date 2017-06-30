@@ -74,6 +74,10 @@ state.enter = (noReset) =>
 		}
 		{
 			label: "Highscores"
+			onImmediateSelection: =>
+				state.transitionTime = 0
+			onSelection: =>
+				state.manager\setState require("ui.highscores")
 		}
 		{
 			label: "Replays"

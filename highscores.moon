@@ -32,67 +32,41 @@ dump = (t, n = 0) ->
 
 	return r .. "\n"
 
-loadMod = (path) ->
-	mainMoon = path .. "/main.moon"
-	oldMoonpath = package.moonpath
+scoreMatches = (score, stage, players, options) ->
+	if stage.name and score.stage != stage.name
+		print "Stage mismatch."
+		return false
 
-	ok, result = pcall ->
-		oldEnv = getfenv!
+	for i, player in ipairs players
+		character = score.characters[i]
 
-		chunk, err = moon.loadfile mainMoon
+		unless character
+			print "Character mismatch."
+			return false
 
-		unless chunk
-			error "could not load the file"
+		unless character.name == player.name
+			print "Character mismatch."
+			return false
 
-		mod = (->
-			package.moonpath = "#{path}/?.moon;" .. "#{filesystem.getSaveDirectory!}/mods/?.moon;" .. oldMoonpath
+		unless character.variant == player.secondaryAttackName
+			print "Variant mismatch (#{character.variant}, #{player.secondaryAttackName})."
+			return false
 
-			-- FIXME: We should add require, but ONLY after having cleaned
-			--        package.path and package.cpath.
-			setfenv 1,
-				:moon
-				:math
-				:package
-				:require
-				:tostring
+	for option, value in pairs options
+		if type(value) == "table"
+			continue
 
-			chunk!
-		)!
+		if score.options[option] != value
+			print "Option (#{option}) mismatch."
+			return false
 
-		setfenv 1, oldEnv
-		package.moonpath = oldMoonpath
-
-		mod
-
-	if ok
-		table.insert cache.mods, result
-
-		unless result.name
-			return nil, "mod is invalid (no name: field)"
-
-		if cache.config.blockedMods[result.name]
-			return nil, "mod is user-blocked"
-
-		for spellcard in *result.spellcards or {}
-			table.insert cache.spellcards, spellcard
-		for boss in *result.bosses or {}
-			table.insert cache.bosses, boss
-		for stage in *result.stages or {}
-			table.insert cache.stages, stage
-		for character in *result.characters or {}
-			table.insert cache.characters, character
-		for variant in *result.characterVariants or {}
-			table.insert cache.characterVariants, variant
-	else
-		print "ERROR LOADING #{path}):", result
-
-	return result
+	return true
 
 setmetatable {
 	load: ->
 		cache = {}
 
-		if not filesystem.exists scoresFile
+		if not filesystem.exists "scores.moon"
 			print "No previous scoresfile."
 			return
 
@@ -100,6 +74,7 @@ setmetatable {
 			moon.loadfile(scoresFile)!
 
 		if success
+			print "Highscores loaded."
 			cache = value
 
 			value
@@ -109,43 +84,22 @@ setmetatable {
 
 	get: (stage, players, options) ->
 		for score in *cache
-			unless score.stage == stage.name
-				continue
-
-			print "stage name is ok"
-
-			for i, player in ipairs players
-				character = score.characters[i]
-
-				unless character
-					continue
-
-				unless character.name == player.name
-					continue
-
-				unless character.variant == player.secondaryAttackName
-					continue
-
-			print "characters are ok"
-
-			mismatchingOption = false
-			for option, value in pairs options
-				if type(value) == "table"
-					continue
-
-				if score.options[option] != value
-					print "#{option} mismatch!"
-					mismatchingOption = true
-					break
-
-			if mismatchingOption
-				continue
-
-			print "options are ok"
-
-			return score.score
+			if scoreMatches score, stage, players, options
+				return score.score
 
 		return 0
+
+	get10: (stage, players, options) ->
+		scores = {}
+
+		for score in *cache
+			if scoreMatches score, stage, players, options
+				table.insert scores, score
+
+				if #scores >= 10
+					return scores
+
+		scores
 
 	save: (stage, players, options, score, name) ->
 		score = {
