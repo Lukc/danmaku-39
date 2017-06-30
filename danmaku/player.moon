@@ -42,8 +42,9 @@ class extends Enemy
 		@power = arg.power or 0
 		@maxPower = arg.maxPower or @power
 
+		-- Invulnerability times and cooldowns for specific events.
 		@dyingTime = arg.dyingTime or 60 * 3
-		@bombingTime = arg.bombingTime or 60
+		@bombingTime = arg.bombingTime or 60 * 5
 
 		@firingFrame = false -- boolean or positive integer
 		@bombingFrame = false -- boolean or positive integer
@@ -161,13 +162,12 @@ class extends Enemy
 					@game\failSpellcard!
 
 					@\onBomb!
-			else
-				@bombingFrame += 1
-		else
-			@bombingFrame = false
 
-		if @bombingFrame and @bombingFrame >= @bombingTime
-			@bombingFrame = false
+		if @bombingFrame
+			@bombingFrame += 1
+
+			if @bombingFrame >= @bombingTime
+				@bombingFrame = false
 
 		if @firing and not @game.pacific
 			if @firingFrame == false
@@ -219,6 +219,12 @@ class extends Enemy
 			return false
 
 		super\collides entity
+
+	inflictDamage: (...) =>
+		if @bombingFrame or @dyingFrame != 0
+			return false
+
+		super\inflictDamage ...
 
 	die: =>
 		@game\failSpellcard!
