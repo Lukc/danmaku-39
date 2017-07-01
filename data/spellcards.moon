@@ -7,7 +7,7 @@
 
 {:Difficulties} = Danmaku
 
-{:BigBullet, :SmallBullet, :MiniBullet} = require "data.bullets"
+{:BigBullet, :SmallBullet, :MiniBullet, :SpecialStrangeBullet} = require "data.bullets"
 
 {:radial, :circle, :sinusoid} = require "data.helpers"
 
@@ -25,7 +25,7 @@ s5 = Spellcard {
 			for bullet in radial {from: self, bullets: 8}
 				for bullet in sinusoid {from: self, bullets: 1, :bullet}
 					for bullet in circle {from: self, :angle, :bullet}
-						@\fire BigBullet with bullet
+						@\fire SpecialStrangeBullet with bullet
 							.direction = 1
 							.speed = 5
 							.color = {

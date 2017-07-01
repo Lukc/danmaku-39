@@ -164,6 +164,18 @@ BigStarBullet = do
 
 		arg
 
+SpecialStrangeBullet = do 
+	sprite = love.graphics.newImage "data/art/special_strange_bullet.png"
+
+	(arg) ->
+		arg or= {}
+
+		unless arg.sprite
+			arg.sprite = sprite
+		unless arg.radius
+			arg.radius = 5
+
+		newBullet arg
 {
 	:HugeBullet
 	:BigBullet
@@ -181,5 +193,6 @@ BigStarBullet = do
 
 	:StarBullet
 	:BigStarBullet
+	:SpecialStrangeBullet
 }
 
