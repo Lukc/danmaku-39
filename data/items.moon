@@ -34,6 +34,7 @@
 				@game.score += 100
 
 		(arg) -> Item with {
+				important: true
 				radius: 10
 				:draw
 				:collection

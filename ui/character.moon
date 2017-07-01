@@ -218,20 +218,26 @@ state.draw = =>
 
 			r.x, r.y + @grid.height - 400 - 10
 
-		if @selectedCharacters[i]
-			if @selectedVariants[i]
-				key = data.config.inputs[i].firing
-				love.graphics.setColor 255, 255, 255
-				love.graphics.print "Press #{key} to start playing.",
-					X, Y
-			else
-				with @variantMenus[i]
-					.x = X
-					.y = Y
-					.width = width - 10 * sizemod
-					.height = height
+		if @selectedVariants[i]
+			-- That state exists only during multiplayer.
+			key = data.config.inputs[i].firing
+			love.graphics.setColor 255, 255, 255
+			love.graphics.print "Press #{key} to start playing.",
+				X, Y + 50 * sizemod
+		elseif @selectedCharacters[i]
+			with @variantMenus[i]
+				.x = X
+				.y = Y
+				.width = width - 10 * sizemod
+				.height = height
 
-					\draw!
+				if @multiplayer
+					.y += 50 * sizemod
+
+				-- Oops. Our Menu API is obviously bugged.
+				.items[1].y = .y
+
+				\draw!
 		else
 			hoveredCharacter = @grid.cells[cursor.index]
 
@@ -257,7 +263,7 @@ state.draw = =>
 
 				Y += font\getHeight!
 
-			Y += font\getHeight!
+			Y += font\getHeight! / 2
 
 			do
 				text = hoveredCharacter.mainAttackName or "???"

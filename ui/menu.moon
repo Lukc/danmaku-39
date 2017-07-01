@@ -40,6 +40,8 @@ state.enter = (noReset) =>
 	@transitionTime = nil
 
 	if noReset
+		menu.drawTime = 0
+
 		return
 
 	data.load!
@@ -63,27 +65,19 @@ state.enter = (noReset) =>
 			label: "Extras"
 		}
 		{
-			label: "Spellcards"
+			label: "Stories & Spells"
+			onImmediateSelection: =>
+				state.transitionTime = 0
 			onSelection: =>
-				list = {
-					maxDisplayedItems: 8
-				}
-
-				for stage in *data.stages
-					table.insert list, {
-						label: stage.title
-						onImmediateSelection: =>
-							state.transitionTime = 0
-						onSelection: =>
-							state.manager\setState require("ui.spellcards"),
-								stage
-					}
-
-				@\setItemsList list
+				state.manager\setState require("ui.spellcards")
 
 		}
 		{
 			label: "Highscores"
+			onImmediateSelection: =>
+				state.transitionTime = 0
+			onSelection: =>
+				state.manager\setState require("ui.highscores")
 		}
 		{
 			label: "Replays"

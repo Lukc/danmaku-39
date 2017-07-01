@@ -126,16 +126,16 @@ state.enter = (options, players) =>
 			"a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
 			"k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
 
-			"u", "v", "w", "x", "y", "z", " ", " ", " ", " ",
-			" ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+			"u", "v", "w", "x", "y", "z", "é", "è", "ê", "à",
+			" ", " ", "*", "/", "+", "-", "<", ">", "[", "]",
 
 			"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
 			"K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
 
-			"U", "V", "W", "X", "Y", "Z", " ", " ", " ", " ",
-			".", ",", "’", ":", ";", "@", "#", "(", ")", "[",
+			"U", "V", "W", "X", "Y", "Z", "É", "È", "Ê", "À",
+			".", ",", "’", ":", ";", "@", "#", "~", "(", ")",
 
-			" ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+			"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 
 			" ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
 
@@ -203,7 +203,6 @@ state.enter = (options, players) =>
 
 		table.insert @players, @danmaku\addEntity Player player
 
-	print stage.name, players[1].name, players[1].secondaryAttackName, options
 	@highscore = do
 		if #players == 1
 			highscores.get stage, players[1], options
@@ -423,13 +422,12 @@ state.update = (dt) =>
 	if state.awaitingPlayerName
 		@nameGrid.width = 520 * danmakuSizemod
 		@nameGrid.height = 300 * danmakuSizemod
-		@nameGrid.x = x + 25 * sizemod
+		@nameGrid.x = x + 25 * sizemod + 25 * danmakuSizemod
 		@nameGrid.y = y + vscreen.height - @nameGrid.height - 25 * danmakuSizemod
 
 		return
 	elseif state.paused
 		state.paused += dt
-		print danmakuSizemod
 
 		@menu.width = 400 * danmakuSizemod
 		@menu.itemHeight = 64 * danmakuSizemod

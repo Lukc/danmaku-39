@@ -57,31 +57,32 @@ MenuItem = class
 		color = @\getDefaultColor!
 
 		if @type == "check"
+			love.graphics.setColor color
 			love.graphics.rectangle "line",
 				r.x + 7, r.y + 5,
-				24, 24
+				r.h - 14, r.h - 14
 			if @value
-				@menu\print "x", r.x + 12, r.y - 20, color
+				@menu\print "x", r.x + 14 + 4, r.y - 2, color
 
-			@menu\print @label, r.x + 47, r.y - 20, color
+			@menu\print @label, r.x + r.h - 14 + 14, r.y, color
 		else
 			if @align == "center"
 				@menu\print @label,
 					r.x + (r.w - @menu.font\getWidth @label) / 2,
 					r.y - 20, color
 			else
-				@menu\print @label, r.x + 12, r.y - 20, color
+				@menu\print @label, r.x + 12, r.y - 2, color
 
 			if @type == "selector"
 				label = tostring(@value)
 				@menu\print label, r.x - 12 + @menu.width - @menu.font\getWidth(label),
-					r.y - 20,
+					r.y - 2,
 					color
 
 		if @rlabel
 			@menu\print @rlabel,
 				r.x - 12 + @menu.width - @menu.font\getWidth(@rlabel),
-				r.y - 20,
+				r.y - 2,
 				color
 
 	__tostring: => "<MenuItem: \"#{@label}\">"

@@ -18,7 +18,10 @@ characters = require "data.characters"
 
 {:circle, :laser} = require "data.helpers"
 
+Wave = require "data.wave"
 {:StageData, :ModData, :BossData} = require "data.checks"
+
+fonts = require "fonts"
 
 titleFont = love.graphics.newFont 42
 subtitleFont = love.graphics.newFont 24
@@ -113,9 +116,6 @@ stage1 = StageData {
 			-- No background for now.
 
 	drawBossData: =>
-		love.graphics.setColor 255, 255, 255
-		love.graphics.print "#{@boss.name}, #{@boss.health}/#{@boss.maxHealth}", 20, 20
-
 		with x, y = @boss.x, @boss.y
 			f = @boss.frame - @bossSince
 			fm = math.min 1, f / 60 -- frame modifier, for starting animations.
@@ -124,8 +124,6 @@ stage1 = StageData {
 			width = 7
 
 			alpha = 191 * fm
-
-			print radius, alpha
 
 			love.graphics.setColor 255, 255, 255, alpha
 			love.graphics.setLineWidth width
@@ -153,91 +151,79 @@ stage1 = StageData {
 
 			love.graphics.setLineWidth 1
 
+		font = fonts.get "miamanueva", 24
+		love.graphics.setFont font
+
+		love.graphics.setColor 255, 255, 255
+		with x = @width - 40 - font\getWidth tostring @boss.name
+			love.graphics.print "#{@boss.name}", x, 20
+
 		spell = @boss.currentSpell
 		if spell and spell.name
-			love.graphics.print "#{spell.name}", 40,60
+			font = fonts.get "miamanueva", 18
+			love.graphics.setFont font
+
+			with x = @width - 40 - font\getWidth tostring spell.name
+				love.graphics.print "#{spell.name}", x, 70
 
 			if @boss.frame >= @boss.spellStartFrame
 				timeout = math.floor (@boss.spellEndFrame - @boss.frame) / 60
 				timeout = tostring timeout
 
-				font = love.graphics.getFont!
+				font = fonts.get "miamanueva", 32
 
-				love.graphics.print timeout,
-					@width - font\getWidth(timeout) - 20, 20
+				love.graphics.setFont font
+				love.graphics.print timeout, 32, 20
 
-	update: =>
-		if @frame % 4 == 0
-			@\addEntity Bullet SmallBullet
-				x: 0
-				y: 0
-				angle: math.pi / 3
-				speed: 10
-				color: {255, 0, 0}
+	update: Wave.toUpdate {
+		Wave {
+			start: 60
+			interval: 30
+			count: 10
+			(n) =>
+				x = 0 + @width / 10 * (n - 0.5)
+				y = 30
 
-				update: =>
-					@\die! if @frame > 20
+				@\addEntity Bullet SmallBullet
+					:x, :y
+					y: 0
+					spawnTime: 40
+					speed: 7
+					color: {255, 0, 0}
 
-	[1]: =>
-		@\addEntity Bullet
-			hitbox: Entity.Rectangle
-			w: 130
-			h: 50
-			x: @width * 4 / 5
-			y: @height / 2
-			angle: math.pi * 2 / 3
-			speed: 0
-			update: =>
-				@angle += math.pi / 2400
-
-		for i = -9, 9, 1
-			@\addEntity items.point
-				x: @width / 2 + 25 * i
-				y: @height / 9 - 50
-
-		for i = -16, 16, 1
-			@\addEntity items.power
-				x: @width / 2 + 25 * i
-				y: @height / 9 + 50
-
-		for i = 1, 9
-			@\addEntity items.lifeFragment
-				x: @width / 2 + 25 * i
-				y: @height / 9 - 10 * i
-
-		for i = 1, 9
-			@\addEntity items.bombFragment
-				x: @width / 2 - 25 * i
-				y: @height / 9 - 10 * i
-
-	[30]: =>
-		lasers = {}
-
-		@\addEntity Enemy {
-			x: -30
-			y: @height / 8
-			angle: 0
-			speed: 1.6
-			radius: 20
-			update: =>
-				if @frame == 60
-					bullet = laser {
-						from: self,
-						bullet: {
-							w: 15
-							h: 80
-							update: =>
-								@angle += math.pi / 256
-						}
-						duration: 240
-					}
-
-					for bullet in circle {from: self, :bullet, bullets: 5}
-						table.insert lasers, @\fire bullet
+					update: =>
+						if @frame == 0
+							@angle = @\angleToPlayer!
 		}
+		Wave {
+			start: 0
+			interval: 20
+			count: 9
+			(n) =>
+				for i = -1, 1, 2
+					@\addEntity items.power
+						x: @width / 2 + 25 * i * n
+						y: @height / 9 - 50
 
-	[180]: =>
-		@\addEntity Boss boss
+					@\addEntity items.lifeFragment
+						x: @width / 2 + 25 * i * n
+						y: @height / 9 - 10
+
+					@\addEntity items.bombFragment
+						x: @width / 2 + 25 * i * n
+						y: @height / 9 + 30
+
+					@\addEntity items.point
+						x: @width / 2 + 25 * i * n
+						y: @height / 90
+		}
+		Wave {
+			name: "Boss wave"
+			start: 180
+			=>
+				@\addEntity Boss boss
+		}
+	}
 }
 
 ModData {
@@ -247,6 +233,14 @@ ModData {
 	}
 	stages: {
 		stage1
+	}
+	stories: {
+		{
+			name: "Story of the New Wonderland"
+			stages: {
+				stage1
+			}
+		}
 	}
 	spellcards: spellcards
 	:characters
