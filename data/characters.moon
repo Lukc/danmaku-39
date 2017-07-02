@@ -37,6 +37,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 		name: "Best gurl"
 		title: "Ordinary explorer"
 		mainAttackName: "Quick bullets"
+		bombsName: "Flying charms"
 		secondaryAttackName: "FIXME: REMOVE"
 		radius: 3
 		itemAttractionRadius: 64
@@ -95,6 +96,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 		name: "Second best gurl"
 		title: "Friendly tribal warrior"
 		mainAttackName: "Quick bullets"
+		bombsName: "Ancient spirits"
 		secondaryAttackName: "FIXME: REMOVE"
 		radius: 3
 		itemAttractionRadius: 64
@@ -156,6 +158,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 		name: "Needs-more-love gurl"
 		title: "Simple navigator"
 		mainAttackName: "Quick bullets"
+		bombsName: "Fire bombs"
 		secondaryAttackName: "FIXME: REMOVE"
 		radius: 3
 		itemAttractionRadius: 64
@@ -194,10 +197,11 @@ flameUpdate = (growthTime, radiusVariation) ->
 	}
 	variants: {
 		CharacterVariantData {
-			name: "Missiles"
-			description: "Big, slow, and dangerous."
+			name: "Magic Missiles"
+			description: "Big, slow, and explosive. Explosions are simply the best."
 			maxPower: 5 * 5
 			update: =>
+				-- FIXME: Make them *actually* explode.
 				-- damage estimation: 10 * 2 / 8 + powerLevel * 6 / 48
 				if @firingFrame and @firingFrame % 8 == 0
 					for i = -1, 1, 2
@@ -225,7 +229,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 							update: missileUpdate
 		}
 		CharacterVariantData {
-			name: "Sword and rifle"
+			name: "Rifle"
 			description: "Bullets, bullets everywhere."
 			maxPower: 5 * 5
 			update: =>
@@ -260,7 +264,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 		}
 		CharacterVariantData {
 			name: "Flamethrower"
-			description: "Burning flames of love!"
+			description: "Burning flames of love! The hotter it is, the less enemies you have!"
 			maxPower: 5 * 5
 			update: =>
 				-- Damage estimation: 10 * 2 / 8 + 1 * powerLevel / 8

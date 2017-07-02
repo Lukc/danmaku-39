@@ -120,13 +120,38 @@ state.enter = (options, multiplayer, noReset) =>
 			value: data.characterVariants[1].name
 			draw: =>
 				r = @\getRectangle!
-				font = state.namesFont
 
-				@menu\print @value,
-					r.x + (r.w - font\getWidth @value) / 2,
-					r.y,
-					{255, 255, 255, @\getDefaultAlpha!},
-					font
+				alpha = @\getDefaultAlpha!
+
+				variant = nil
+				for v in *data.characterVariants
+					if @value == v.name
+						variant = v
+						break
+
+				do
+					font = state.namesFont
+
+					@menu\print @value,
+						r.x + (r.w - font\getWidth @value) / 2,
+						r.y,
+						{255, 255, 255, alpha},
+						font
+
+				do
+					font = @menu.font
+					y = r.y + state.namesFont\getHeight!
+
+					_, wrap = @menu.font\getWrap variant.description, @menu.width
+
+					for line in *wrap
+						@menu\print line,
+							r.x + (r.w - font\getWidth line) / 2,
+							y,
+							{255, 255, 255, alpha},
+							font
+
+						y += font\getHeight!
 			onSelection: (item) =>
 				print "Variant selected for player #{i}."
 				state.selectedVariants[i] = do
@@ -230,9 +255,6 @@ state.draw = =>
 				.y = Y
 				.width = width - 10 * sizemod
 				.height = height
-
-				if @multiplayer
-					.y += 50 * sizemod
 
 				-- Oops. Our Menu API is obviously bugged.
 				.items[1].y = .y
