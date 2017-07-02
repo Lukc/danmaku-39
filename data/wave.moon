@@ -22,7 +22,7 @@ Wave =
 					eventsByFrame[frame] = {}
 
 				table.insert eventsByFrame[frame], =>
-					wave.doThings self, i
+					wave.doThings self, i, wave
 
 		=>
 			for event in *eventsByFrame[@frame] or {}
