@@ -156,7 +156,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 	}
 	CharacterData {
 		name: "Needs-more-love gurl"
-		title: "Simple navigator"
+		title: "Dreaming inventor"
 		mainAttackName: "Quick bullets"
 		bombsName: "Fire bombs"
 		secondaryAttackName: "FIXME: REMOVE"
