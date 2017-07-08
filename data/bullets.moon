@@ -2,19 +2,31 @@
 newBullet = (arg) ->
 	arg or= {}
 
-	sprite = arg.sprite
-	color = arg.color or {255, 255, 255, 255}
+	backgroundSprite = arg.backgroundSprite
+	overlaySprite = arg.overlaySprite
+	defaultRadius = arg.defaultRadius or 1
+
+	color = arg.color or {127, 127, 127, 255}
 
 	arg.speed or= 2.5
 
 	oldDraw = arg.draw
 
 	arg.draw = =>
-		-- FIXME: Setting custom properties, duh~
+		-- FIXME: Sprites should be builtin. We may need them for
+		--        spritebatches in the future.
 		unless @color
 			@color = color
-		unless @sprite
-			@sprite = sprite
+
+		unless @backgroundSprite
+			@backgroundSprite = backgroundSprite
+		unless @overlaySprite
+			@overlaySprite = overlaySprite
+
+		sprite = @backgroundSprite or @overlaySprite
+
+		unless sprite
+			return
 
 		sw, sh = sprite\getWidth!, sprite\getHeight!
 
@@ -26,9 +38,17 @@ newBullet = (arg) ->
 		if @frame <= 20
 			currentColor[4] = math.min(currentColor[4], 255 * @frame / 20)
 
-		love.graphics.setColor currentColor
-		love.graphics.draw @sprite,
-			@x, @y, @angle, nil, nil, sw/2, sh/2
+		sizeRatio = @radius / defaultRadius
+
+		if @backgroundSprite
+			love.graphics.setColor 255, 255, 255, currentColor[4]
+			love.graphics.draw @backgroundSprite,
+				@x, @y, @angle + math.pi/2, sizeRatio, sizeRatio, sw/2, sh/2
+
+		if @overlaySprite
+			love.graphics.setColor currentColor
+			love.graphics.draw @overlaySprite,
+				@x, @y, @angle + math.pi/2, sizeRatio, sizeRatio, sw/2, sh/2
 
 		if oldDraw
 			oldDraw self
@@ -36,41 +56,106 @@ newBullet = (arg) ->
 	arg
 
 BigBullet = do
-	sprite = love.graphics.newImage "data/art/bullet_test.png"
+	-- FIXME: Cache those.
+	bg = love.graphics.newImage "data/art/bullet_1_bg.png"
+	overlay = love.graphics.newImage "data/art/bullet_1_overlay.png"
 
 	(arg) ->
 		arg or= {}
 
-		unless arg.sprite
-			arg.sprite = sprite
-		unless arg.radius
-			arg.radius = 21
+		arg.backgroundSprite or= bg
+		arg.overlaySprite    or= overlay
+
+		arg.defaultRadius or= 64
+		arg.radius        or= 21
 
 		newBullet arg
 
 SmallBullet = do
-	sprite = love.graphics.newImage "data/art/bullet_test2.png"
+	bg = love.graphics.newImage "data/art/bullet_1_bg.png"
+	overlay = love.graphics.newImage "data/art/bullet_1_overlay.png"
 
 	(arg) ->
 		arg or= {}
 
-		unless arg.sprite
-			arg.sprite = sprite
-		unless arg.radius
-			arg.radius = 5
+		arg.overlaySprite    or= overlay
+		arg.backgroundSprite or= bg
+
+		arg.defaultRadius or= 64
+		arg.radius        or= 7
 
 		newBullet arg
 
 MiniBullet = do
-	sprite = love.graphics.newImage "data/art/bullet_test3.png"
+	bg = love.graphics.newImage "data/art/bullet_1_bg.png"
+	overlay = love.graphics.newImage "data/art/bullet_1_overlay.png"
 
 	(arg) ->
 		arg or= {}
 
-		unless arg.sprite
-			arg.sprite = sprite
-		unless arg.radius
-			arg.radius = 3
+		arg.overlaySprite    or= overlay
+		arg.backgroundSprite or= bg
+
+		arg.defaultRadius or= 64
+		arg.radius        or= 3
+
+		newBullet arg
+
+SimpleBullet = do
+	bg = love.graphics.newImage "data/art/bullet_1_bg.png"
+	overlay = love.graphics.newImage "data/art/bullet_1_overlay.png"
+
+	(arg) ->
+		arg or= {}
+
+		arg.overlaySprite    or= overlay
+		arg.backgroundSprite or= bg
+
+		arg.defaultRadius or= 64
+		arg.radius        or= 12
+
+		newBullet arg
+
+HugeBullet = do
+	overlay = love.graphics.newImage "data/art/bullet_1_overlay.png"
+
+	(arg) ->
+		arg or= {}
+
+		arg.overlaySprite    or= overlay
+
+		arg.defaultRadius or= 64
+		arg.radius        or= 26
+
+		newBullet arg
+
+StarBullet = do
+	bg = love.graphics.newImage "data/art/bullet_star_bg.png"
+	overlay = love.graphics.newImage "data/art/bullet_star_overlay.png"
+
+	(arg) ->
+		arg or= {}
+
+		arg.overlaySprite    or= overlay
+		arg.backgroundSprite or= bg
+
+		arg.defaultRadius or= 48
+		arg.radius        or= 12
+
+		newBullet arg
+
+BigStarBullet = do
+	bg = love.graphics.newImage "data/art/bullet_star_bg.png"
+	overlay = love.graphics.newImage "data/art/bullet_star_overlay.png"
+
+	(arg) ->
+		arg or= {}
+
+		arg.overlaySprite    or= overlay
+		arg.backgroundSprite or= bg
+
+		arg.defaultRadius or= 48
+		arg.radius        or= 21
 
 		newBullet arg
 
@@ -78,35 +163,16 @@ MiniBullet = do
 -- FIXME: SPRITELESS BULLETS FOLLOW --
 --------------------------------------
 
-SimpleBullet = do
-	(arg) ->
-		arg or= {}
-
-		unless arg.radius
-			arg.radius = 12
-
-		arg
-
-HugeBullet = do
-	(arg) ->
-		arg or= {}
-
-		unless arg.radius
-			arg.radius = 26
-
-		arg
-
 ArrowHead = do
-	sprite = love.graphics.newImage "data/art/bullet_arrowhead.png"
+	overlay = love.graphics.newImage "data/art/bullet_arrowhead.png"
 
 	(arg) ->
 		arg or= {}
 
-		unless arg.sprite
-			arg.sprite = sprite
+		arg.overlaySprite or= overlay
 
-		unless arg.radius
-			arg.radius = 7
+		arg.defaultRadius or= 7
+		arg.radius or= 7
 
 		newBullet arg
 
@@ -146,25 +212,7 @@ MiniDarkBullet = do
 
 		arg
 
-StarBullet = do
-	(arg) ->
-		arg or= {}
-
-		unless arg.radius
-			arg.radius = 12
-
-		arg
-
-BigStarBullet = do
-	(arg) ->
-		arg or= {}
-
-		unless arg.radius
-			arg.radius = 21
-
-		arg
-
-SpecialStrangeBullet = do 
+SpecialStrangeBullet = do
 	sprite = love.graphics.newImage "data/art/special_strange_bullet.png"
 
 	(arg) ->
