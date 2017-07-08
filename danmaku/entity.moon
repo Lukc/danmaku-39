@@ -97,6 +97,9 @@ class
 		x = @x
 		y = @y
 
+		if @onDraw
+			@\onDraw!
+
 		if @game.debug or not @onDraw
 			if @dying
 				love.graphics.setColor 255, 0, 0
@@ -122,9 +125,6 @@ class
 					x + d * math.cos(a2), y + d * math.sin(a2),
 					x + d * math.cos(a3), y + d * math.sin(a3),
 					x + d * math.cos(a4), y + d * math.sin(a4)
-
-		if @onDraw
-			@\onDraw!
 
 	---
 	-- Updates the entity.
