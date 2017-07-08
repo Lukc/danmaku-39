@@ -1,4 +1,6 @@
 
+images = require "images"
+
 newBullet = (arg) ->
 	arg or= {}
 
@@ -57,8 +59,8 @@ newBullet = (arg) ->
 
 BigBullet = do
 	-- FIXME: Cache those.
-	bg = love.graphics.newImage "data/art/bullet_1_bg.png"
-	overlay = love.graphics.newImage "data/art/bullet_1_overlay.png"
+	bg = images.get "bullet_1_bg.png"
+	overlay = images.get "bullet_1_overlay.png"
 
 	(arg) ->
 		arg or= {}
@@ -72,8 +74,8 @@ BigBullet = do
 		newBullet arg
 
 SmallBullet = do
-	bg = love.graphics.newImage "data/art/bullet_1_bg.png"
-	overlay = love.graphics.newImage "data/art/bullet_1_overlay.png"
+	bg = images.get "bullet_1_bg.png"
+	overlay = images.get "bullet_1_overlay.png"
 
 	(arg) ->
 		arg or= {}
@@ -87,8 +89,8 @@ SmallBullet = do
 		newBullet arg
 
 MiniBullet = do
-	bg = love.graphics.newImage "data/art/bullet_1_bg.png"
-	overlay = love.graphics.newImage "data/art/bullet_1_overlay.png"
+	bg = images.get "bullet_1_bg.png"
+	overlay = images.get "bullet_1_overlay.png"
 
 	(arg) ->
 		arg or= {}
@@ -102,8 +104,8 @@ MiniBullet = do
 		newBullet arg
 
 SimpleBullet = do
-	bg = love.graphics.newImage "data/art/bullet_1_bg.png"
-	overlay = love.graphics.newImage "data/art/bullet_1_overlay.png"
+	bg = images.get "bullet_1_bg.png"
+	overlay = images.get "bullet_1_overlay.png"
 
 	(arg) ->
 		arg or= {}
@@ -117,7 +119,7 @@ SimpleBullet = do
 		newBullet arg
 
 HugeBullet = do
-	overlay = love.graphics.newImage "data/art/bullet_1_overlay.png"
+	overlay = images.get "bullet_1_overlay.png"
 
 	(arg) ->
 		arg or= {}
@@ -130,8 +132,8 @@ HugeBullet = do
 		newBullet arg
 
 StarBullet = do
-	bg = love.graphics.newImage "data/art/bullet_star_bg.png"
-	overlay = love.graphics.newImage "data/art/bullet_star_overlay.png"
+	bg = images.get "bullet_star_bg.png"
+	overlay = images.get "bullet_star_overlay.png"
 
 	(arg) ->
 		arg or= {}
@@ -145,8 +147,8 @@ StarBullet = do
 		newBullet arg
 
 BigStarBullet = do
-	bg = love.graphics.newImage "data/art/bullet_star_bg.png"
-	overlay = love.graphics.newImage "data/art/bullet_star_overlay.png"
+	bg = images.get "bullet_star_bg.png"
+	overlay = images.get "bullet_star_overlay.png"
 
 	(arg) ->
 		arg or= {}
@@ -164,7 +166,7 @@ BigStarBullet = do
 --------------------------------------
 
 ArrowHead = do
-	overlay = love.graphics.newImage "data/art/bullet_arrowhead.png"
+	overlay = images.get "bullet_arrowhead.png"
 
 	(arg) ->
 		arg or= {}
@@ -213,7 +215,7 @@ MiniDarkBullet = do
 		arg
 
 SpecialStrangeBullet = do
-	sprite = love.graphics.newImage "data/art/special_strange_bullet.png"
+	sprite = images.get "special_strange_bullet.png"
 
 	(arg) ->
 		arg or= {}
