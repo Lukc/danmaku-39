@@ -148,6 +148,8 @@ row = (arg) ->
 
 	bulletData = arg.bullet or {}
 
+	a = (endAngle - startAngle) / (bullets - 1)
+
 	i = 0
 
 	->
@@ -156,10 +158,8 @@ row = (arg) ->
 		if i > bullets
 			return
 
-		a = (endAngle - startAngle) / (bullets - 1)
-
 		with clone bulletData
-			.angle = (.angle or math.pi/2) - (bullets / 2 - i + 1/2) * a
+			.angle = (.angle or 0) + startAngle + (i - 1) * a
 
 attachedLaser = do
 	update = (parent, duration, oldUpdate) ->
