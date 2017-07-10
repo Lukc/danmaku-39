@@ -1,33 +1,85 @@
 
 Protagonistes -> full arts et sprites
 
--
+- Cassandre
 	"Ordinary Explorer"
 
 Archétype : Exploratrice des Grandes Découvertes
+
 Caractéristiques physiques :
-	 
+	 Cheveux roux et courts, décoiffés par la vent
+	 Adolescente
+	 Yeux bleus pétillants
+	 Toujours un sourire
+	 Peau tannée méditerranéenne
 Accessoires ou outils majeurs :
+	chapeau de Christoph Colomb : tricorne noir avec des lignes argentés le long des bords
+		ref :	https://www.brainpop.com/socialstudies/famoushistoricalfigures/christophercolumbus/icon.png
+				http://jewishcurrents.org/wp-content/uploads/2015/01/Christopher_Columbus.png
+
 Détails :
 Personnalité :
+	Toujours de bonne humeur, toujours prête à mordre le monde à pleine dents.
+	Cassandre doit son succés comme navigatrice à son optimisme indécrotable, son charisme évident, et son envie terrible de pouvoir découvrir au dela de l'horizon.
 Dans l'histoire : 
+	Fondatrice de la colonie du nouveau monde, une grande magicienne qui a conquis les océans, combattus des tritons et vaincu des titans !
+	Bon, peut être tout ce qu'elle raconte n'est pas vrai, mais Cassandre est malgré tout une jeune femme sur laquelle nous pouvons compter.
+	Cette jeune femme a survécu aux intrigues de la coronne pour s'exiler volontairement dans ce monde à la recherche de richesse, gloire et aventure.
+	Maintenant que la colonie tourne, il est peut être temps de laisser ça derrière soit et de partir vers de nouveaux horizons.
+	Surtout que depuis quelques temps, ses pouvoirs magiques déraillent un peu et induisent des rêves étranges et dérangeants. Ils semblent prophétiques,
+	mais elle préfère se dire que ce ne sont que des rêves. Elle ne croit pas au destin.
+	Oui, Cassandre est une prophétesse qui ignore son potentiel.
+	Mais qu'est ce ? Une attaque ?
 
--
+- Hunahp
 	"Friendly Tribal"
 
-Archétype : Guide et Commerçante Autochtone
-Caractéristiques physiques : 
-Accessoires ou outils majeurs :
-Détails :
-Personnalité :
-Dans l'histoire : 
+Archétype : Guide Autochtone ayant un certain vécu.
 
+Caractéristiques physiques : 
+	Cheveux brun sombre descendants dans le dos et se réunissant dans une attache de tissu blanc au niveau de la taille (ne sera pas forcément vu dans le dessin)
+	Yeux rouges avec des petites étoiles blanches dans la pupille
+	Peau brune comme les autochtones
+	Adolescente
+Accessoires ou outils majeurs :
+	Habits de guerrière à dominance rouge et ocre
+	Armes de chasseur : sarbacane, filet, couteau
+	Tatouage évoquant d'une griffure sur le bras gauche : signe restant de la blessure infligée par Huracan, c'est en quelque sorte une malédiction (le tatouage ne peut être enlevé et la rend facilement abrassive).
+Détails :
+	Gouttes noire sur les joues.
+Personnalité :
+	Jumelle de Bali, personnage non présent dans ce jeu.
+	Héroïque mais abrassive, elle connait sa destinée et est une demi-déesse de surcoi.
+	Sympathique envers autrui malgré sa personalité abrassive. 
+	A un sentiment de complétude avec sa jumelle : 
+		Hunahp est la chasseresse, la dirigeante d'hommes, celle qui regarde vers les cieux.
+		Bali est la traqueuse, celle proche de la nature et des animaux, celle qui regarde vers la terre.
+	Sans sa jummelle, elle se sent perpetuellement seule et vide. Elle a perdue la personne envers elle a le plus confiance.
+Dans l'histoire : 
+	(inspirée par l'histoire des héros-jumeaux mayas, Hunahpu et Xbalanque.)
+	Hunahp et Bali, jumelles nées de la déesse Xquic (la vraie déesse, pas son incarnation qui est boss du stage 5) et d'un père mortel, sont des demi-déesse destinées à de grande choses.
+	Du moins, c'est ce que leur disent tout les autres membres de leur peuple, et elles étaient bien décidée à prouver leur valeur. Alors encore jeunes et innexpérimentée, elles allèrent défier Huracan,
+	un dieu arrogant qui osait prétendre être la Lune, domaine de leur mère. Elles approchèrent en secret et tentèrent de l'assomer avec du poison soporiphique tiré d'une sarbacane.
+	La bataille tourna en la dévaveur des jumelles héroïque, un dieu n'est pas à prendre à la légère. Hunahp réussit à s'enfuir en subissant une blessure grave au bras gauche. Quant à Bali, elle chuta
+	dans un chasme et se retrouva dans l'au-dela, une vivante parmis les morts.
+	Quelques mois plus tard, Hunahp recherche un moyen d'être réunie avec sa soeur et n'hésite pas à voyager loin pour découvrir les mystères du monde. Elle a rencontrée ces gens étranges venant d'un
+	autre monde, leurs méthodes et mythes l'intriguant. Voulant en savoir plus, elle s'intégre dans leur société comme intermédiaire avec les tribus locales : commerçante, interprète, guide...
+	Lorsque les autochtones locaux attaquent la colonie des étrangers, Hunahp sent sa destinée se manifester : qui d'autre qu'une des Jumelles-Héroïques pourrait aider à réconcillier deux peuples en guerre ?
+	
 - 
 	"Greatest Mind of our Generation"
 
 Archétype : Inventrice des Lumières
+
 Caractéristiques physiques : 
+	Cheveux bleu (anime!)
+	Loli
+	Yeux bleus (comme ses cheveux!)
 Accessoires ou outils majeurs :
+	robe inspirée de : https://s-media-cache-ak0.pinimg.com/originals/d5/e2/80/d5e280bc05c9c0da0df3544883645578.jpg
 Détails :
+
 Personnalité :
+
 Dans l'histoire : 
+
