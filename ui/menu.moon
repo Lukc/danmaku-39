@@ -155,18 +155,23 @@ state.draw = =>
 
 	alpha = math.min 255, alpha
 
-	menu\print "Story",
-		x + 200 * sizemod, y + 4 * sizemod,
+	menu\print "Mystical",
+		x + 100 * sizemod, y + 4 * sizemod,
 		{255, 255, 255, alpha},
 		fonts.get "miamanueva", 72 * sizemod
 
-	menu\print "of the",
-		x + 400 * sizemod, y + (72 + 28 - 8) * sizemod,
+	menu\print "Lands",
+		x + 225 * sizemod, y + (72 + 24 - 8) * sizemod,
+		{255, 255, 255, alpha},
+		fonts.get "miamanueva", 72 * sizemod
+
+	menu\print "of",
+		x + 465 * sizemod, y + (72 + 56 - 8) * sizemod,
 		{191, 223, 255, alpha},
 		fonts.get "miamanueva", 54 * sizemod
 
-	menu\print "New Wonderland",
-		x + 100 * sizemod, y + (72 + 54 + 28) * sizemod,
+	menu\print "Sunset",
+		x + 300 * sizemod, y + (72 + 60 + 28) * sizemod,
 		{255, 255, 255, alpha},
 		fonts.get "miamanueva", 72 * sizemod
 
