@@ -20,14 +20,48 @@ characters = require "data.characters"
 Wave = require "data.wave"
 {:StageData, :ModData, :BossData} = require "data.checks"
 
-boss1 = BossData {
+midboss2 = BossData {
 	radius: 32
 	x: 600 / 2
 	y: 800 / 5
-	name: "Mi~mi~midori"
-	description: [[Midori’s the cutest, Midori’s the strongest, Midori’s the bestest.
+	name: "Shadow Panther"
+	description: "Wild animal"
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
 
-	If you don’t like Midori, your waifu is shit~]]
+	endOfSpell: (spell) =>
+		local pointItems, powerItems
+
+		if @spellSuccess
+			@game\addEntity items.lifeFragment
+				x: @x
+				y: @y
+			pointItems = 12
+			powerItems = 8
+		else
+			@game\addEntity items.bombFragment
+				x: @x
+				y: @y
+			pointItems = 8
+			powerItems = 6
+
+		circularDrop self, pointItems, 48, items.point
+		circularDrop self, powerItems, 30, items.power
+
+	spellcards[1]
+	spellcards[2]
+	spellcards[3]
+	spellcards[4]
+	spellcards[5]
+}
+
+boss2 = BossData {
+	radius: 32
+	x: 600 / 2
+	y: 800 / 5
+	name: "Teotlaco"
+	description: "Proud and mighty Chief"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
@@ -59,13 +93,15 @@ boss1 = BossData {
 }
 
 StageData {
-	title: "Stage 1: Defend the colony!"
-	subtitle: "Fires roar and bullets fly."
+	title: "Stage 2 : Into the jungle."
+	subtitle: "Beware of ambushes!"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 
-	bosses: {boss1}
+	
+
+	bosses: {midboss2, boss2}
 
 	drawTitle: =>
 		{:title, :subtitle} = @currentStage
@@ -205,7 +241,7 @@ StageData {
 			name: "Boss wave"
 			start: 180
 			=>
-				@\addEntity Boss boss1
+				@\addEntity Boss boss2
 		}
 	}
 }

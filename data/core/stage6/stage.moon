@@ -20,14 +20,48 @@ characters = require "data.characters"
 Wave = require "data.wave"
 {:StageData, :ModData, :BossData} = require "data.checks"
 
-boss5 = BossData {
+midboss6 = BossData {
 	radius: 32
 	x: 600 / 2
 	y: 800 / 5
-	name: "Mi~mi~midori"
-	description: [[Midori’s the cutest, Midori’s the strongest, Midori’s the bestest.
+	name: "Xquic"
+	description: "Return of the priestress"
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
 
-	If you don’t like Midori, your waifu is shit~]]
+	endOfSpell: (spell) =>
+		local pointItems, powerItems
+
+		if @spellSuccess
+			@game\addEntity items.lifeFragment
+				x: @x
+				y: @y
+			pointItems = 12
+			powerItems = 8
+		else
+			@game\addEntity items.bombFragment
+				x: @x
+				y: @y
+			pointItems = 8
+			powerItems = 6
+
+		circularDrop self, pointItems, 48, items.point
+		circularDrop self, powerItems, 30, items.power
+
+	spellcards[1]
+	spellcards[2]
+	spellcards[3]
+	spellcards[4]
+	spellcards[5]
+}
+
+boss6 = BossData {
+	radius: 32
+	x: 600 / 2
+	y: 800 / 5
+	name: "Kukulkan"
+	description: "Goddess of the Heavens"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
@@ -59,15 +93,15 @@ boss5 = BossData {
 }
 
 StageData {
-	title: "Stage 5: Temple of Heavens"
-	subtitle: "Sacrosanct place in the hidden city."
+	title: "Stage 6: Divine Sunset Realm"
+	subtitle: "You should not be here."
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 
 	
 
-	bosses: {boss5}
+	bosses: {midboss6, boss6}
 
 	drawTitle: =>
 		{:title, :subtitle} = @currentStage
@@ -207,7 +241,7 @@ StageData {
 			name: "Boss wave"
 			start: 180
 			=>
-				@\addEntity Boss boss5
+				@\addEntity Boss boss6
 		}
 	}
 }

@@ -20,14 +20,48 @@ characters = require "data.characters"
 Wave = require "data.wave"
 {:StageData, :ModData, :BossData} = require "data.checks"
 
-boss3 = BossData {
+midboss7 = BossData {
 	radius: 32
 	x: 600 / 2
 	y: 800 / 5
-	name: "Mi~mi~midori"
-	description: [[Midori’s the cutest, Midori’s the strongest, Midori’s the bestest.
+	name: "Unicorn"
+	description: "Unicorn"
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
 
-	If you don’t like Midori, your waifu is shit~]]
+	endOfSpell: (spell) =>
+		local pointItems, powerItems
+
+		if @spellSuccess
+			@game\addEntity items.lifeFragment
+				x: @x
+				y: @y
+			pointItems = 12
+			powerItems = 8
+		else
+			@game\addEntity items.bombFragment
+				x: @x
+				y: @y
+			pointItems = 8
+			powerItems = 6
+
+		circularDrop self, pointItems, 48, items.point
+		circularDrop self, powerItems, 30, items.power
+
+	spellcards[1]
+	spellcards[2]
+	spellcards[3]
+	spellcards[4]
+	spellcards[5]
+}
+
+boss7 = BossData {
+	radius: 32
+	x: 600 / 2
+	y: 800 / 5
+	name: "The Thief"
+	description: "Spoiler"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
@@ -59,15 +93,15 @@ boss3 = BossData {
 }
 
 StageData {
-	title: "Stage 3: Lama party!"
-	subtitle: "They are cute and deadly."
+	title: "Extra Stage: Return to the Old World"
+	subtitle: "On the trace of the thief."
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 
 	
 
-	bosses: {boss3}
+	bosses: {midboss7, boss7}
 
 	drawTitle: =>
 		{:title, :subtitle} = @currentStage
@@ -207,7 +241,7 @@ StageData {
 			name: "Boss wave"
 			start: 180
 			=>
-				@\addEntity Boss boss3
+				@\addEntity Boss boss7
 		}
 	}
 }

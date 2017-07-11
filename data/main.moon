@@ -36,23 +36,30 @@ circularDrop = (entity, count, radius, constructor) ->
 		entity.game\addEntity constructor
 			:x, :y
 
-stage1 = require "data.core.stage1"
-stage2 = require "data.core.stage2"
-stage3 = require "data.core.stage3"
-stage4 = require "data.core.stage4"
-stage5 = require "data.core.stage5"
-stage6 = require "data.core.stage6"
-stage7 = require "data.core.stage7"
+stage1 = require "data.core.stage1.stage"
+stage2 = require "data.core.stage2.stage"
+stage3 = require "data.core.stage3.stage"
+stage4 = require "data.core.stage4.stage"
+stage5 = require "data.core.stage5.stage"
+stage6 = require "data.core.stage6.stage"
+stage7 = require "data.core.stage7.stage"
 
 ModData {
 	name: "Core Data"
 	bosses: {
+		midboss1
 		boss1
+		midboss2
 		boss2
+		midboss3
 		boss3
+		midboss4
 		boss4
+		midboss5
 		boss5
+		midboss6
 		boss6
+		midboss7
 		boss7
 	}
 	stages: {
