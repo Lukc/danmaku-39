@@ -20,77 +20,11 @@ characters = require "data.characters"
 Wave = require "data.wave"
 {:StageData, :ModData, :BossData} = require "data.checks"
 
-midboss2 = BossData {
-	radius: 32
-	x: 600 / 2
-	y: 800 / 5
-	name: "Shadow Panther"
-	description: "Wild animal"
-	difficulties: {
-		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
-	}
+fonts = require "fonts"
 
-	endOfSpell: (spell) =>
-		local pointItems, powerItems
+midboss2 = require "data.core.stage2.midboss"
 
-		if @spellSuccess
-			@game\addEntity items.lifeFragment
-				x: @x
-				y: @y
-			pointItems = 12
-			powerItems = 8
-		else
-			@game\addEntity items.bombFragment
-				x: @x
-				y: @y
-			pointItems = 8
-			powerItems = 6
-
-		circularDrop self, pointItems, 48, items.point
-		circularDrop self, powerItems, 30, items.power
-
-	spellcards[1]
-	spellcards[2]
-	spellcards[3]
-	spellcards[4]
-	spellcards[5]
-}
-
-boss2 = BossData {
-	radius: 32
-	x: 600 / 2
-	y: 800 / 5
-	name: "Teotlaco"
-	description: "Proud and mighty Chief"
-	difficulties: {
-		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
-	}
-
-	endOfSpell: (spell) =>
-		local pointItems, powerItems
-
-		if @spellSuccess
-			@game\addEntity items.lifeFragment
-				x: @x
-				y: @y
-			pointItems = 12
-			powerItems = 8
-		else
-			@game\addEntity items.bombFragment
-				x: @x
-				y: @y
-			pointItems = 8
-			powerItems = 6
-
-		circularDrop self, pointItems, 48, items.point
-		circularDrop self, powerItems, 30, items.power
-
-	spellcards[1]
-	spellcards[2]
-	spellcards[3]
-	spellcards[4]
-	spellcards[5]
-}
+boss2 = require "data.core.stage2.boss"
 
 StageData {
 	title: "Stage 2 : Into the jungle."

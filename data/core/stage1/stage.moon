@@ -20,6 +20,8 @@ characters = require "data.characters"
 Wave = require "data.wave"
 {:StageData, :ModData, :BossData} = require "data.checks"
 
+fonts = require "fonts"
+
 midboss1 = require "data.core.stage1.midboss"
 
 boss1 = require "data.core.stage1.boss"
