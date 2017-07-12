@@ -170,9 +170,15 @@ StageData {
 						x: @width / 2 + 25 * i * n
 						y: @height / 90
 		}
+
 		Wave {
 			name: "Boss wave"
-			start: 180
+			=>
+				@\addEntity Boss midboss1
+		}
+
+		Wave {
+			name: "Boss wave"
 			=>
 				@\addEntity Boss boss1
 		}

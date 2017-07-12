@@ -22,40 +22,19 @@ s1 = Spellcard {
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
-	health: 3600
+	health: 1800
 	timeout: 30 * 60
 	update: =>
-		-- Flower spell card
-		if @frame % 6 == 0
-			direction1 = math.pow(@frame, 2)*(math.pow(@x, 2) + math.pow(@y, 2))
-			direction2 = math.pow((math.pow(@x, 2)+math.pow(@y, 2) - @frame * @x),2)
-			direction3 = -(math.pow(@frame, 2)*(math.pow(@x, 2) + math.pow(@y, 2)))
-			direction4 = -(math.pow(@frame, 2)*(math.pow(@x, 2) + math.pow(@y, 2)))*2
+		if @frame % 60 == 0
+			bullet =
+   				angle: @\angleToPlayer! --+ 30
+   				speed: 1 + @game.difficulty
 
-			--green
-			for bullet in radial {from: self, bullets: 5, :bullet}
-				@\fire BigBullet with bullet
-					.color = {204, 0, 0}
-					.speed = 8
-					.direction = direction1
-			-- red
-			for bullet in radial {from: self, bullets: 5, :bullet}
-				@\fire BigBullet with bullet
-					.color = {0, 255, 0}
-					.speed = 6
-					.direction = direction2
-			-- blue
-			for bullet in radial {from: self, bullets: 5, :bullet}
-				@\fire BigBullet with bullet
-					.color = {51, 255, 255}
-					.speed = 6
-					.direction = direction3
-			-- purple
-			for bullet in radial {from: self, bullets: 5, :bullet}
-				@\fire BigBullet with bullet
-					.color = {102, 0, 102}
-					.speed = 7
-					.direction = direction4
+			
+			@\fire SmallBullet bullet
+			bullet.angle -= 1
+			@\fire SmallBullet bullet
+				
 }
 
 s2 = Spellcard {
@@ -69,7 +48,7 @@ s2 = Spellcard {
 		if @frame % 5 == 0
 			bullet =
 				speed: 5
-				direction:  @frame / 2 * math.pi / 8
+				angle: @\angleToPlayer!
 				--green
 				color: { 0,255,127 }
 			for bullet in radial {from: self, bullets: 8, :bullet}
@@ -91,7 +70,7 @@ s3 = Spellcard {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 
-	health: 3600
+	health: 1800
 	timeout: 30 * 60
 
 	update: =>
@@ -120,7 +99,7 @@ s3 = Spellcard {
 s4 = Spellcard {
 	name: "[Owl Sign] Eye of the Night"
 	difficulties: {
-		Difficulties.Lunatic
+		Difficulties.Hard, Difficulties.Lunatic
 	}
 	health: 3600
 	timeout: 30 * 60
@@ -155,7 +134,7 @@ s5 = Spellcard {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 
-	health: 3600
+	health: 1800
 	timeout: 30 * 60
 
 	update: =>
@@ -219,7 +198,7 @@ s7 = Spellcard {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 
-	health: 3600
+	health: 1800
 	timeout: 30 * 60
 
 	update: =>
@@ -283,7 +262,7 @@ s9 = Spellcard {
 		Difficulties.Hard, Difficulties.Lunatic
 	}
 
-	health: 3600
+	health: 1800
 	timeout: 30 * 60
 
 	update: =>
