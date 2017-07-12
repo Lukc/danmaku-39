@@ -212,10 +212,12 @@ drawDifficulties = (thing) =>
 	{:y, sizeModifier: sizemod} = vscreen.rectangle
 	screenWidth = love.graphics.getWidth!
 
-	Y = y + (vscreen.height - 120) * sizemod -
-		#thing.difficulties * @descriptionsFont\getHeight!
+	difficulties = thing.difficulties or {}
 
-	for difficulty in *thing.difficulties
+	Y = y + (vscreen.height - 120) * sizemod -
+		#difficulties * @descriptionsFont\getHeight!
+
+	for difficulty in *difficulties
 		str = Danmaku.getDifficultyString difficulty
 
 		@spellcardsMenu\print str,
