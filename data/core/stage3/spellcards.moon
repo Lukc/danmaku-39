@@ -24,11 +24,13 @@ s1 = Spellcard {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 	update: =>
-		@x = @game.width/2
-		@y = @game.height/3
+		if not @first and (@frame %50) <12
+			@first = true
+			print @first
+			print (@frame %50)
 		anglec = 2*@frame/125
 		center = {x:@x,y:@y}
-		if @frame % 2 == 0 and @frame % 50 > 12
+		if @first and @frame % 2 == 0 and @frame % 50 > 12
 			portal = false
 			if @frame % 50 == 48 or @frame %50 == 14
 				portal = true
@@ -51,7 +53,7 @@ s1 = Spellcard {
 }
 
 s2 = Spellcard {
-	name: "Tiphon 2"
+	name: "Explosive Barrel"
 	difficulties: {
 		Difficulties.Normal
 	}
@@ -63,8 +65,6 @@ s2 = Spellcard {
 		y: @game.height/4
 	}
 	update: =>
-		@x = @game.width/2
-		@y = @game.height/3
 		anglec = math.pi/137 + @frame*math.pi/943
 		center = {x:@x,y:@y}
 		if @frame % 40 == 0
@@ -90,7 +90,6 @@ s2 = Spellcard {
 						@direction = @angle
 						if oldUpdate
 							oldUpdate self
-
 		if @frame %100 == 0
 			for bullet in radial {bullet: {angle: anglec, outOfScreenTime: 30*60}, bullets: 3,from: center, radius: 5}
 				@\fire SmallBullet with bullet
@@ -111,18 +110,19 @@ s2 = Spellcard {
 }
 
 s3 = Spellcard {
-	name: "Tiphon"
+	name: "Maelstromic circle of luv"
 	difficulties: {
-		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+		Difficulties.Normal
 	}
-	health: 3600
-	timeout: 30 * 60
+	description: "a spiral"
+	health: 1000
+	timeout: 60 * 60
 	position: => {
 		x: @game.width/2
 		y: @game.height/4
 	}
 	update: =>
-		center: {x:@game.width/2,y:@game.height/4}
+		center = {x:@game.width/2,y:@game.height/4}
 		anglec = math.pi/7 - 2*@frame/125
 		for i=1,5
 			if (@frame + i*20) % 200 == 0
@@ -137,6 +137,7 @@ s3 = Spellcard {
 							@direction = @angle
 							if oldUpdate
 								oldUpdate self
+				for bullet in radial {bullet: {angle:anglec, outOfScreenTime: 5}, bullets: 20,from: center, radius: 100}
 					@\fire SmallBullet with bullet
 						.color = {100, 100, 5*(@frame-i*20) % 256 +80}
 						.speed = 2
