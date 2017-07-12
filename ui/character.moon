@@ -28,6 +28,17 @@ goToGame = ->
 			character.name = c.name
 			character.secondaryAttackName = state.selectedVariants[index].name
 
+			character.update = do
+				a = c.update
+				b = state.selectedVariants[index].update
+
+				=>
+					if a
+						a self
+
+					if b
+						b self
+
 			table.insert characters, character
 
 	nextState = require "ui.game"
