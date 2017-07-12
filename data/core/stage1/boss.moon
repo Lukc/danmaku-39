@@ -27,6 +27,7 @@ BossData {
 	x: 600 / 2
 	y: 800 / 5
 	name: "Coactlicue"
+	title: "War Shaman"
 	description: "Shaman of War"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic

@@ -27,6 +27,7 @@ BossData {
 	x: 600 / 2
 	y: 800 / 5
 	name: "Xuhe"
+	title: "Familiar of Wisdom"
 	description: "Wise Familiar"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic

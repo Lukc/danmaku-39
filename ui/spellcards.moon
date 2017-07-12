@@ -12,6 +12,33 @@ state = {}
 bossMenuItem = (boss) -> {
 	label: boss.name
 	:boss
+	draw: (x, y) =>
+		r = @\getRectangle x, y
+		defaultColor = @\getDefaultColor!
+		sizemod = vscreen.rectangle.sizeModifier
+
+		color = do
+			o = if @\hovered!
+				math.sin @menu.drawTime * 5
+			else
+				0
+
+			{127 + 64 * o, 127 + 64 * o, 191 + 64 * o, @\getDefaultAlpha!}
+
+		@menu\print @label,
+			r.x + 12 * vscreen.rectangle.sizeModifier,
+			r.y - 2,
+			color,
+			fonts.get "Sniglet-Regular", 36 * sizemod
+
+		for i = 1, 3
+			color[i] *= 0.75
+
+		@menu\print boss.title or "---",
+			r.x + 12 * vscreen.rectangle.sizeModifier,
+			r.y - 2 + 30 * sizemod,
+			color,
+			fonts.get "Sniglet-Regular", 22 * sizemod
 	onSelection: =>
 		newState = require "ui.difficulty"
 		newStage = {
@@ -37,6 +64,7 @@ spellcardMenuItem = (stage, boss, spellcard) -> {
 	draw: (x, y) =>
 		r = @\getRectangle x, y
 		defaultColor = @\getDefaultColor!
+		sizemod = vscreen.rectangle.sizeModifier
 
 		sameDifficulty = false
 
@@ -57,9 +85,18 @@ spellcardMenuItem = (stage, boss, spellcard) -> {
 			{255, 127 + 64 * o, 127 + 64 * o, @\getDefaultAlpha!}
 
 		@menu\print @label,
-			r.x + 48 * vscreen.rectangle.sizeModifier,
+			r.x + 24 * vscreen.rectangle.sizeModifier,
 			r.y - 2,
 			color
+
+		for i = 1, 3
+			color[i] *= 0.75
+
+		@menu\print "Unknown sign",
+			r.x + 48 * sizemod,
+			r.y - 2 + 30 * sizemod,
+			color,
+			fonts.get "Sniglet-Regular", 22 * sizemod
 	onSelection: =>
 		newState = require "ui.difficulty"
 		newStage = {
@@ -90,7 +127,7 @@ spellcardMenuItem = (stage, boss, spellcard) -> {
 
 updateSpellcardsList = ->
 	newValues = {
-		maxDisplayedItems: 15
+		maxDisplayedItems: 10
 		itemHeight: 48
 		root: true
 	}
@@ -224,6 +261,19 @@ state.draw = =>
 				y + (vscreen.height - 80 - 20) * sizemod,
 				{200, 200, 200},
 				@descriptionsFont
+
+			y = (vscreen.height - 680) * sizemod
+
+			for difficulty in *hoveredSpellcard.difficulties
+				str = Danmaku.getDifficultyString difficulty
+
+				@spellcardsMenu\print str,
+					screenWidth - 40 * sizemod - @descriptionsFont\getWidth(str),
+					y,
+					{200, 200, 200},
+					@descriptionsFont
+
+				y += @descriptionsFont\getHeight!
 		elseif hoveredStage
 			-- FIXME: Add background or something.
 			@playStageMenu\print "#{hoveredStage.description or "???"}",
@@ -249,7 +299,7 @@ state.update = (dt) =>
 	@spellcardsMenu.y = y + 100 * sizemod
 	@spellcardsMenu.width = screenWidth - (20 + 400) * sizemod
 	@spellcardsMenu.font = fonts.get "Sniglet-Regular", 24 * sizemod
-	@spellcardsMenu.itemHeight = 36 * sizemod
+	@spellcardsMenu.itemHeight = 64 * sizemod
 
 	@playStageMenu\update dt
 	@spellcardsMenu\update dt

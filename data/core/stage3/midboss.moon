@@ -11,7 +11,7 @@
 {:Difficulties} = Danmaku
 
 {:BigBullet, :SmallBullet} = require "data.bullets"
-spellcards = require "data.spellcards"
+spellcards = require "data.core.stage3.spellcards"
 items = require "data.items"
 characters = require "data.characters"
 

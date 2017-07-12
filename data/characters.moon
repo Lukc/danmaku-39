@@ -5,6 +5,18 @@
 
 {:CharacterData, :CharacterVariantData} = require "data.checks"
 
+niceScreenCleaning = =>
+	if @dyingFrame > 0
+		radius = 8 * @dyingFrame
+		startRadius = radius - 115
+		endRadius = radius + 35
+
+		for bullet in *@game.bullets
+			d = Entity.distance bullet, self
+
+			if d >= startRadius and d <= endRadius
+				bullet\die!
+
 missileUpdate = =>
 	speedingSequence = 60 * 2
 
@@ -41,6 +53,8 @@ flameUpdate = (growthTime, radiusVariation) ->
 		secondaryAttackName: "FIXME: REMOVE"
 		radius: 3
 		itemAttractionRadius: 64
+		update: =>
+			niceScreenCleaning self
 		bomb: (game) =>
 			x, y = @x, @y
 			radius = 6
@@ -100,6 +114,8 @@ flameUpdate = (growthTime, radiusVariation) ->
 		secondaryAttackName: "FIXME: REMOVE"
 		radius: 3
 		itemAttractionRadius: 64
+		update: =>
+			niceScreenCleaning self
 		bomb: (game) =>
 			player = self
 
@@ -162,6 +178,8 @@ flameUpdate = (growthTime, radiusVariation) ->
 		secondaryAttackName: "FIXME: REMOVE"
 		radius: 3
 		itemAttractionRadius: 64
+		update: =>
+			niceScreenCleaning self
 		bomb: (game) =>
 			player = self
 
