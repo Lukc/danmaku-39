@@ -28,7 +28,7 @@ BossData {
 	y: 800 / 5
 	name: "Coactlicue"
 	title: "War Shaman"
-	description: "Shaman of War"
+	description: "Shaman of War and stuff.\nShe has a godly lance that spits fire. Beware its deadly burns."
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
