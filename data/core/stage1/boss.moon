@@ -20,6 +20,8 @@ characters = require "data.characters"
 Wave = require "data.wave"
 {:StageData, :ModData, :BossData} = require "data.checks"
 
+{:circularDrop} = require "data.core.common"
+
 BossData {
 	radius: 32
 	x: 600 / 2
@@ -49,10 +51,10 @@ BossData {
 		circularDrop self, pointItems, 48, items.point
 		circularDrop self, powerItems, 30, items.power
 
-	spellcards[5]
 	spellcards[6]
 	spellcards[7]
 	spellcards[8]
 	spellcards[9]
 	spellcards[10]
 }
+
