@@ -11,7 +11,7 @@
 {:Difficulties} = Danmaku
 
 {:BigBullet, :SmallBullet} = require "data.bullets"
-spellcards = require "data.core.stage3.spellcards"
+spellcards = require "data.spellcards"
 items = require "data.items"
 characters = require "data.characters"
 
@@ -25,7 +25,7 @@ Wave = require "data.wave"
 BossData {
 	radius: 32
 	x: 600 / 2
-	y: 800 / 4
+	y: 800 / 5
 	name: "The Lamhydra"
 	description: "River Monster"
 	difficulties: {
@@ -54,4 +54,6 @@ BossData {
 	spellcards[1]
 	spellcards[2]
 	spellcards[3]
+	spellcards[4]
+	spellcards[5]
 }
