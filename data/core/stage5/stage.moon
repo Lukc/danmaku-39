@@ -23,8 +23,9 @@ Wave = require "data.wave"
 fonts = require "fonts"
 
 midboss5 = require "data.core.stage5.midboss"
-
 boss5 = require "data.core.stage5.boss"
+
+{:titleFont, :subtitleFont} = require "data.core.common"
 
 StageData {
 	title: "Stage 5: Temple of Heavens"

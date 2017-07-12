@@ -20,6 +20,8 @@ characters = require "data.characters"
 Wave = require "data.wave"
 {:StageData, :ModData, :BossData} = require "data.checks"
 
+{:circularDrop} = require "data.core.common"
+
 BossData {
 	radius: 32
 	x: 600 / 2
