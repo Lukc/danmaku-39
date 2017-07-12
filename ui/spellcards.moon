@@ -96,7 +96,7 @@ spellcardMenuItem = (stage, boss, spellcard) -> {
 		for i = 1, 3
 			color[i] *= 0.75
 
-		@menu\print "Unknown sign",
+		@menu\print "#{spellcard.sign or "Unknown"} sign",
 			r.x + 48 * sizemod,
 			r.y - 2 + 30 * sizemod,
 			color,

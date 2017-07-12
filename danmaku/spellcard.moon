@@ -15,6 +15,7 @@ class
 		-- Only named spellcards are true spellcards.
 		@name = arg.name or nil
 		@description = arg.description or nil
+		@sign = arg.sign or nil
 
 		@difficulties = [difficulty for difficulty in *(arg.difficulties or {})]
 
