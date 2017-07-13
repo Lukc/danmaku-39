@@ -9,7 +9,7 @@
 
 {:BigBullet, :SmallBullet, :MiniBullet, :HugeBullet} = require "data.bullets"
 
-{:radial, :circle, :sinusoid} = require "data.helpers"
+{:radial, :circle, :sinusoid, :row} = require "data.helpers"
 
 -- Defining Xuhe SpellCards
 	-- s1: 1rst attack (N/H/L)
@@ -25,15 +25,12 @@ s1 = Spellcard {
 	health: 1800
 	timeout: 30 * 60
 	update: =>
-		if @frame % 60 == 0
-			bullet =
-   				angle: @\angleToPlayer! --+ 30
-   				speed: 1 + @game.difficulty
-
-			
-			@\fire SmallBullet bullet
-			bullet.angle -= 1
-			@\fire SmallBullet bullet
+		bullet =
+   			speed: 1 + @game.difficulty
+     
+		if (@frame%60 == 0) or (@frame%55 == 0)
+			for bullet in row {from: self, :bullet, bullets: 13, startAngle:  (@\angleToPlayer!)-math.pi/4, endAngle: (@\angleToPlayer!)+math.pi/4}
+				@\fire SmallBullet bullet
 				
 }
 
@@ -44,22 +41,8 @@ s2 = Spellcard {
 	}
 	health: 3600
 	timeout: 30 * 60
-	update: =>
-		if @frame % 5 == 0
-			bullet =
-				speed: 5
-				angle: @\angleToPlayer!
-				--green
-				color: { 0,255,127 }
-			for bullet in radial {from: self, bullets: 8, :bullet}
-				@\fire BigBullet bullet
-		if @frame % 3 == 0
-			bullet =
-				speed: 1.5
-				direction:  @frame / 2 * math.pi / 10
-				--white
-			for bullet in radial {from: self, bullets: 5, :bullet}
-				@\fire SmallBullet bullet
+	--update: =>
+		-- //TODO
 }
 
 
@@ -74,26 +57,14 @@ s3 = Spellcard {
 	timeout: 30 * 60
 
 	update: =>
-		if @frame % 40 == 0
-			bullet =
-				speed: 2.4
-				direction:  @frame / 60 * math.pi / 32
+		bullet = {
+			angle: @\angleToPlayer!,
+   			speed: 1 + @game.difficulty
+     	}
 
-			for bullet in radial {from: self, bullets: 32, :bullet}
+		if @frame % 30 == 0
+			for bullet in radial {from: self, bullets: 16, :bullet}
 				@\fire BigBullet bullet
-
-		if @frame % 12 == 0
-			bullet =
-				speed: 3.6
-				direction: math.sin((@frame - 60) / 90) * math.pi / 6 + @\angleToPlayer!
-				color: {
-					192 + 63 * math.sin(@frame / 60 + math.pi),
-					96 + 31 * math.sin(@frame / 60),
-					192 + 63 * math.sin(@frame / 60),
-				}
-
-			for bullet in radial {from: self, bullets: 8, :bullet}
-				@\fire SmallBullet bullet
 }
 
 s4 = Spellcard {
@@ -103,21 +74,8 @@ s4 = Spellcard {
 	}
 	health: 3600
 	timeout: 30 * 60
-	update: =>
-		if @frame % 40 == 0
-			nbPetal = 10
-			angle =  math.cos(nbPetal*@frame) + math.cos(nbPetal*@frame)--math.pi / 2 + math.pi / 6 * @frame / 10
-			for bullet in radial {from: self, bullets: 8}
-				for bullet in sinusoid {from: self, bullets: 1, :bullet}
-					for bullet in circle {from: self, :angle, :bullet}
-						@\fire HugeBullet with bullet
-							.direction = 1
-							.speed = 5
-							.color = {
-								192 + 63 * math.sin(@frame / 60 + math.pi),
-								96 + 31 * math.sin(@frame / 60),
-								192 + 63 * math.sin(@frame / 60),
-							}
+	--update: =>
+		--//TODO
 }
 
 -- Defining Coactlicue SpellCards
@@ -137,27 +95,8 @@ s5 = Spellcard {
 	health: 1800
 	timeout: 30 * 60
 
-	update: =>
-		if @frame % 40 == 0
-			bullet =
-				speed: 2.4
-				direction:  @frame / 60 * math.pi / 32
-
-			for bullet in radial {from: self, bullets: 32, :bullet}
-				@\fire BigBullet bullet
-
-		if @frame % 12 == 0
-			bullet =
-				speed: 3.6
-				direction: math.sin((@frame - 60) / 90) * math.pi / 6 + @\angleToPlayer!
-				color: {
-					192 + 63 * math.sin(@frame / 60 + math.pi),
-					96 + 31 * math.sin(@frame / 60),
-					192 + 63 * math.sin(@frame / 60),
-				}
-
-			for bullet in radial {from: self, bullets: 8, :bullet}
-				@\fire SmallBullet bullet
+	--update: =>
+		--//TODO
 }
 
 s6 = Spellcard {
@@ -169,27 +108,8 @@ s6 = Spellcard {
 	health: 3600
 	timeout: 30 * 60
 
-	update: =>
-		if @frame % 40 == 0
-			bullet =
-				speed: 2.4
-				direction:  @frame / 60 * math.pi / 32
-
-			for bullet in radial {from: self, bullets: 32, :bullet}
-				@\fire BigBullet bullet
-
-		if @frame % 12 == 0
-			bullet =
-				speed: 3.6
-				direction: math.sin((@frame - 60) / 90) * math.pi / 6 + @\angleToPlayer!
-				color: {
-					192 + 63 * math.sin(@frame / 60 + math.pi),
-					96 + 31 * math.sin(@frame / 60),
-					192 + 63 * math.sin(@frame / 60),
-				}
-
-			for bullet in radial {from: self, bullets: 8, :bullet}
-				@\fire SmallBullet bullet
+	--update: =>
+		--//TODO
 }
 
 s7 = Spellcard {
@@ -201,27 +121,8 @@ s7 = Spellcard {
 	health: 1800
 	timeout: 30 * 60
 
-	update: =>
-		if @frame % 40 == 0
-			bullet =
-				speed: 2.4
-				direction:  @frame / 60 * math.pi / 32
-
-			for bullet in radial {from: self, bullets: 32, :bullet}
-				@\fire BigBullet bullet
-
-		if @frame % 12 == 0
-			bullet =
-				speed: 3.6
-				direction: math.sin((@frame - 60) / 90) * math.pi / 6 + @\angleToPlayer!
-				color: {
-					192 + 63 * math.sin(@frame / 60 + math.pi),
-					96 + 31 * math.sin(@frame / 60),
-					192 + 63 * math.sin(@frame / 60),
-				}
-
-			for bullet in radial {from: self, bullets: 8, :bullet}
-				@\fire SmallBullet bullet
+	--update: =>
+		--//TODO
 }
 
 s8 = Spellcard {
@@ -233,27 +134,8 @@ s8 = Spellcard {
 	health: 3600
 	timeout: 30 * 60
 
-	update: =>
-		if @frame % 40 == 0
-			bullet =
-				speed: 2.4
-				direction:  @frame / 60 * math.pi / 32
-
-			for bullet in radial {from: self, bullets: 32, :bullet}
-				@\fire BigBullet bullet
-
-		if @frame % 12 == 0
-			bullet =
-				speed: 3.6
-				direction: math.sin((@frame - 60) / 90) * math.pi / 6 + @\angleToPlayer!
-				color: {
-					192 + 63 * math.sin(@frame / 60 + math.pi),
-					96 + 31 * math.sin(@frame / 60),
-					192 + 63 * math.sin(@frame / 60),
-				}
-
-			for bullet in radial {from: self, bullets: 8, :bullet}
-				@\fire SmallBullet bullet
+	--update: =>
+		--//TODO
 }
 
 s9 = Spellcard {
@@ -265,27 +147,8 @@ s9 = Spellcard {
 	health: 1800
 	timeout: 30 * 60
 
-	update: =>
-		if @frame % 40 == 0
-			bullet =
-				speed: 2.4
-				direction:  @frame / 60 * math.pi / 32
-
-			for bullet in radial {from: self, bullets: 32, :bullet}
-				@\fire BigBullet bullet
-
-		if @frame % 12 == 0
-			bullet =
-				speed: 3.6
-				direction: math.sin((@frame - 60) / 90) * math.pi / 6 + @\angleToPlayer!
-				color: {
-					192 + 63 * math.sin(@frame / 60 + math.pi),
-					96 + 31 * math.sin(@frame / 60),
-					192 + 63 * math.sin(@frame / 60),
-				}
-
-			for bullet in radial {from: self, bullets: 8, :bullet}
-				@\fire SmallBullet bullet
+	--update: =>
+		--//TODO
 }
 
 s10 = Spellcard {
@@ -297,27 +160,8 @@ s10 = Spellcard {
 	health: 3600
 	timeout: 30 * 60
 
-	update: =>
-		if @frame % 40 == 0
-			bullet =
-				speed: 2.4
-				direction:  @frame / 60 * math.pi / 32
-
-			for bullet in radial {from: self, bullets: 32, :bullet}
-				@\fire BigBullet bullet
-
-		if @frame % 12 == 0
-			bullet =
-				speed: 3.6
-				direction: math.sin((@frame - 60) / 90) * math.pi / 6 + @\angleToPlayer!
-				color: {
-					192 + 63 * math.sin(@frame / 60 + math.pi),
-					96 + 31 * math.sin(@frame / 60),
-					192 + 63 * math.sin(@frame / 60),
-				}
-
-			for bullet in radial {from: self, bullets: 8, :bullet}
-				@\fire SmallBullet bullet
+	--update: =>
+		--//TODO
 }
 
 {
