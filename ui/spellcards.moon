@@ -9,6 +9,10 @@ fonts = require "fonts"
 
 state = {}
 
+portraits = {
+	Coactlicue: love.graphics.newImage "data/art/Coactlicue.png"
+}
+
 bossMenuItem = (boss) -> {
 	label: boss.name
 	:boss
@@ -92,7 +96,7 @@ spellcardMenuItem = (stage, boss, spellcard) -> {
 		for i = 1, 3
 			color[i] *= 0.75
 
-		@menu\print "Unknown sign",
+		@menu\print "#{spellcard.sign or "Unknown"} sign",
 			r.x + 48 * sizemod,
 			r.y - 2 + 30 * sizemod,
 			color,
@@ -195,13 +199,39 @@ state.enter = (stage) =>
 
 	@spellcardsMenu = Menu {
 		font: love.graphics.newFont "data/fonts/miamanueva.otf", 24
+
+		onSelectionChange: =>
+			state.hoverTime = 0
 	}
 
+	@hoverTime = 0
+
 	updateSpellcardsList!
+
+drawDifficulties = (thing) =>
+	{:y, sizeModifier: sizemod} = vscreen.rectangle
+	screenWidth = love.graphics.getWidth!
+
+	difficulties = thing.difficulties or {}
+
+	Y = y + (vscreen.height - 120) * sizemod -
+		#difficulties * @descriptionsFont\getHeight!
+
+	for difficulty in *difficulties
+		str = Danmaku.getDifficultyString difficulty
+
+		@spellcardsMenu\print str,
+			screenWidth - 40 * sizemod - @descriptionsFont\getWidth(str),
+			Y,
+			{200, 200, 200},
+			@descriptionsFont
+
+		Y += @descriptionsFont\getHeight!
 
 state.draw = =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.rectangle
 	screenWidth = love.graphics.getWidth!
+	screenHeight = love.graphics.getHeight!
 
 	if state.stage
 		@playStageMenu\draw!
@@ -231,30 +261,53 @@ state.draw = =>
 		love.graphics.print = (text, x, y) ->
 			love.graphics.printf text, x, y, 480 * sizemod, "left"
 
+		-- Illustrations and preview area. ~placeholder
+		love.graphics.setColor 255, 255, 255
+		love.graphics.rectangle "line",
+			screenWidth - (20 + 480) * sizemod,
+			y + (vscreen.height - 680 - 20) * sizemod,
+			480 * sizemod, 600 * sizemod
+
 		if hoveredBoss
 			fontHeight = @descriptionsFont\getHeight!
 
-			Y = h - fontHeight * 1.5
+			portrait = portraits[hoveredBoss.name]
+
+			if portrait
+				sizeRatio = 640 * sizemod / portrait\getHeight!
+				sizeRatio = math.min sizeRatio, 480 * sizemod / portrait\getWidth!
+
+				offset = math.max(0, 0.25 - state.hoverTime) / 0.25
+				print offset
+
+				with c = 255 - 255 * offset
+					love.graphics.setColor c, c, c, c
+
+				love.graphics.draw portrait,
+					screenWidth - (20 + 480) * sizemod +
+						(480 * sizemod - portrait\getWidth! * sizeRatio) / 2 -
+						50 * offset * sizemod,
+					y + (vscreen.height - 680 - 20) * sizemod,
+					nil,
+					sizeRatio, sizeRatio
 
 			_, wrap = @descriptionsFont\getWrap hoveredBoss.description or "???",
-				380 * sizemod
+				440 * sizemod
 
-			-- FIXME: Add portrait or something.
+			Y = y + (vscreen.height - 600) * sizemod - fontHeight * (4.75 - #wrap)
 
 			for i = 1, #wrap
 				@playStageMenu\print wrap[#wrap - i + 1],
-					screenWidth - (20 + 400) * sizemod,
+					screenWidth - (20 + 460) * sizemod,
 					Y,
 					{200, 200, 200},
 					@descriptionsFont
+
 				Y -= fontHeight
+
+			drawDifficulties self, hoveredBoss
 		elseif hoveredSpellcard
 			-- FIXME: Drawing preview here
-			love.graphics.setColor 255, 255, 255
-			love.graphics.rectangle "line",
-				screenWidth - (20 + 480) * sizemod,
-				y + (vscreen.height - 680 - 20) * sizemod,
-				480 * sizemod, 600 * sizemod
 
 			@spellcardsMenu\print "#{hoveredSpellcard.description or "???"}",
 				screenWidth - (20 + 480) * sizemod,
@@ -262,18 +315,7 @@ state.draw = =>
 				{200, 200, 200},
 				@descriptionsFont
 
-			y = (vscreen.height - 680) * sizemod
-
-			for difficulty in *hoveredSpellcard.difficulties
-				str = Danmaku.getDifficultyString difficulty
-
-				@spellcardsMenu\print str,
-					screenWidth - 40 * sizemod - @descriptionsFont\getWidth(str),
-					y,
-					{200, 200, 200},
-					@descriptionsFont
-
-				y += @descriptionsFont\getHeight!
+			drawDifficulties self, hoveredSpellcard
 		elseif hoveredStage
 			-- FIXME: Add background or something.
 			@playStageMenu\print "#{hoveredStage.description or "???"}",
@@ -287,6 +329,8 @@ state.draw = =>
 state.update = (dt) =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen\update!
 	screenWidth = love.graphics.getWidth!
+
+	@hoverTime += dt
 
 	@descriptionsFont = fonts.get "Sniglet-Regular", 18 * sizemod
 

@@ -35,7 +35,8 @@ s1 = Spellcard {
 }
 
 s2 = Spellcard {
-	name: "[Wise Sign] Calling the Brotherhood"
+	name: "Calling the Brotherhood"
+	sign: "Wisdom"
 	difficulties: {
 		Difficulties.Lunatic
 	}
@@ -68,7 +69,8 @@ s3 = Spellcard {
 }
 
 s4 = Spellcard {
-	name: "[Owl Sign] Eye of the Night"
+	name: "Eye of the Night"
+	sign: "Owl"
 	difficulties: {
 		Difficulties.Hard, Difficulties.Lunatic
 	}
@@ -100,7 +102,8 @@ s5 = Spellcard {
 }
 
 s6 = Spellcard {
-	name: "[Shaman Sign] Serpents of the Sun"
+	name: "Serpents of the Sun"
+	sign: "Shaman"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
@@ -126,7 +129,8 @@ s7 = Spellcard {
 }
 
 s8 = Spellcard {
-	name: "[Fire Sign] Descending Spear"
+	name: "Descending Spear"
+	sign: "Fire"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
@@ -152,7 +156,8 @@ s9 = Spellcard {
 }
 
 s10 = Spellcard {
-	name: "[Fire Sign] Godly Artefact"
+	name: "Godly Artefact"
+	sign: "Fire"
 	difficulties: {
 		Difficulties.Hard, Difficulties.Lunatic
 	}

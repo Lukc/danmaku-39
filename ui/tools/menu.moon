@@ -103,6 +103,8 @@ class
 		@width = arg.width or (1024 - 2 * @x)
 		@height = arg.height or (800 - @y)
 
+		@onSelectionChange = arg.onSelectionChange
+
 		@inputCatchMode = false
 
 		for item in *arg
@@ -238,11 +240,16 @@ class
 		elseif item.type == "check"
 			item.value = not item.value
 
+	-- FIXME: Check there’s been an actual selection change before
+	--        triggering things~
 	up: =>
 		@items.selection = (@items.selection - 2) % #@items + 1
 
 		while not @\isSelectable @items[@items.selection]
 			@items.selection = (@items.selection - 2) % #@items + 1
+
+		if @onSelectionChange
+			@\onSelectionChange!
 
 		@\checkOverflows!
 
@@ -251,6 +258,9 @@ class
 
 		while not @\isSelectable @items[@items.selection]
 			@items.selection = (@items.selection) % #@items + 1
+
+		if @onSelectionChange
+			@\onSelectionChange!
 
 		@\checkOverflows!
 
