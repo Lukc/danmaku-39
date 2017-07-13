@@ -155,6 +155,28 @@ class extends Enemy
 		@spellSuccess = true
 		@currentSpell = spell
 
+	roam: (arg) =>
+		interval      = arg.interval   or 60
+		pauseDuration = arg.pauseDuration or 60
+		borderSize    = arg.borderSize or 80
+
+		frame = @frame - @spellStartFrame
+
+		print frame
+
+		switch frame % (interval + pauseDuration)
+			when 0
+				x = math.random borderSize, @game.width - borderSize
+				y = math.random borderSize, 1/3 * @game.height
+
+				dx = x - @x
+				dy = y - @y
+
+				@direction = math.atan2 dy, dx
+				@speed = Entity.distance(self, {:x, :y}) / interval
+			when interval
+				@speed = 0
+
 	die: =>
 		if @spellcards[@currentSpellIndex]
 			@\switchToNextSpell!
