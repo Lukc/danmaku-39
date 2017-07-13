@@ -52,7 +52,7 @@ BossData {
 		circularDrop self, pointItems, 48, items.point
 		circularDrop self, powerItems, 30, items.power
 
-	spellcards[1]
+	--spellcards[1]
 	spellcards[2]
 	spellcards[3]
 	spellcards[4]
