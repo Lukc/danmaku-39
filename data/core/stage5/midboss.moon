@@ -11,7 +11,7 @@
 {:Difficulties} = Danmaku
 
 {:BigBullet, :SmallBullet} = require "data.bullets"
-spellcards = require "data.spellcards"
+spellcards = require "data.core.stage5.spellcards"
 items = require "data.items"
 characters = require "data.characters"
 
@@ -27,7 +27,7 @@ BossData {
 	x: 600 / 2
 	y: 800 / 5
 	name: "Heavenly Guard"
-	description: "Raised from birth to be a guard"
+	description: "Raised from birth to death to be a guard"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
