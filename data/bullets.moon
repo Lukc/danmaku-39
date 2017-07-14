@@ -60,7 +60,7 @@ newBullet = (arg) ->
 BigBullet = do
 	-- FIXME: Cache those.
 	bg = images.get "bullet_1_bg.png"
-	overlay = images.get "bullet_1_overlay.png"
+	overlay = images.get "bullet_2_overlay.png"
 
 	(arg) ->
 		arg or= {}
@@ -161,6 +161,21 @@ BigStarBullet = do
 
 		newBullet arg
 
+SquareBullet = do
+	bg = images.get "bullet_square_bg.png"
+	overlay = images.get "bullet_square_overlay.png"
+
+	(arg) ->
+		arg or= {}
+
+		arg.overlaySprite    or= overlay
+		arg.backgroundSprite or= bg
+
+		arg.defaultRadius or= 48
+		arg.radius        or= 21
+
+		newBullet arg
+
 --------------------------------------
 -- FIXME: SPRITELESS BULLETS FOLLOW --
 --------------------------------------
@@ -235,6 +250,7 @@ SpecialStrangeBullet = do
 
 	:ArrowHead
 	:Diamond
+	:SquareBullet
 
 	:BurningBullet
 
@@ -243,6 +259,7 @@ SpecialStrangeBullet = do
 
 	:StarBullet
 	:BigStarBullet
+
 	:SpecialStrangeBullet
 }
 
