@@ -6,11 +6,38 @@
 
 {:Difficulties} = Danmaku
 
-{:BigBullet, :SmallBullet, :MiniBullet, :HeartBullet} = require "data.bullets"
+{:BigBullet, :SmallBullet, :MiniBullet, :HeartBullet, :HugeBullet} = require "data.bullets"
 -- america no seifuku
 -- maya shindenno no bakuhatsu
 {:radial, :circle, :sinusoid, :rotation, :row} = require "data.helpers"
 {:siphon} = require "data.core.stage3.helpers"
+s2 = Spellcard {
+	name: "Maelstrom gate"
+	health: 3600
+	timeout: 30 * 60
+	position: => {
+		x: @game.width/2
+		y: @game.height/4
+	}
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
+	update: =>
+		if (@frame - @spellStartFrame) == 10
+			for bullet in radial {bullet: {angle: math.pi/3, outOfScreenTime: 2*60}, bullets: 3,from: self, radius: 5}
+				@\fire HugeBullet with bullet
+					.color = {@frame*40 % 255, @frame*40 % 255 +80 , @frame*40 % 160}
+					.speed = 3
+					oldUpdate = .update
+					.update = =>
+						if oldUpdate
+							oldUpdate self
+						if @frame % 10 == 0
+							for bullet in siphon {from:@game.boss, bullet:{x:@x,y:@y, outOfScreenTime: 25*60}, rushSpeed:0}
+								@game.boss\fire SmallBullet with bullet
+									.color = {255, 0, 0}
+									.speed = 0
+}
 
 s1 = Spellcard {
 	name: "Maelstrom gate"
@@ -30,29 +57,41 @@ s1 = Spellcard {
 			print (@frame %50)
 		anglec = 2*@frame/125
 		center = {x:@x,y:@y}
+		rs = 1
+		if @game.difficulty >3
+			rs = 0.4
 		if @first and @frame % 2 == 0 and @frame % 50 > 12
 			portal = false
 			if @frame % 50 == 48 or @frame %50 == 14
 				portal = true
 			for bullet in radial {bullet: {angle: anglec, outOfScreenTime: 30*60}, bullets: 3,from: center, radius: 600}
-				for bullet in siphon {from:center, :bullet,rushSpeed:1,rotSpeed:300}
+				for bullet in siphon {from:center, :bullet,rushSpeed:1,rotSpeed:300*rs}
 					@\fire SmallBullet with bullet
 						.color = {0, 100, 255}
 						.speed = 2
 						.radius = 4
 						if portal == true
-							.radius = 7
+							.radius = 9
 							.color = {255,100,0}
-		if @frame % 6 == 0 and @frame %100 > 50
-			anglec = (@frame % 50)*math.pi*2/150
+		@lapse = 6
+		anglec = (@frame % 50)*math.pi*2/150
+		if @game.difficulty > 2
+			@lapse = 4
+		if @frame % @lapse == 0 and @frame %100 > 50
 			for bullet in radial {bullet: {angle: anglec, outOfScreenTime: 30}, bullets: 3,from: center, radius: 100}
 				@\fire SmallBullet with bullet
-					.color = {50, 255, 50}
-					.speed = 1
+					.color = {50,50,255}
+					if .angle == anglec + math.pi*4/3
+						.color = {50, 255, 50}
+					if .angle == (anglec + math.pi*2/3)
+						.color = {255,105,180}
+					.speed = 2
+					if @game.difficulty > 3
+						.speed = 1
 					.radius = 5
 }
 
-s2 = Spellcard {
+s5 = Spellcard {
 	name: "Explosive Barrel"
 	difficulties: {
 		Difficulties.Normal
