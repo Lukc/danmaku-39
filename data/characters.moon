@@ -7,14 +7,12 @@
 
 niceScreenCleaning = =>
 	if @dyingFrame > 0
-		radius = 8 * @dyingFrame
-		startRadius = radius - 115
-		endRadius = radius + 35
+		radius = 100 - 75 * @dyingFrame / @dyingTime
 
 		for bullet in *@game.bullets
 			d = Entity.distance bullet, self
 
-			if d >= startRadius and d <= endRadius
+			if d <= radius
 				bullet\die!
 
 missileUpdate = =>
