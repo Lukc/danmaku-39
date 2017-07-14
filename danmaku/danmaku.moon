@@ -45,6 +45,7 @@ class
 		@playerBullets = {}
 		@bullets = {}
 		@items = {}
+		@particles = {}
 
 		-- Should contain all of the above, or something like that.
 		@entities = {}
@@ -121,7 +122,7 @@ class
 
 			love.graphics.setColor 255, 255, 255, 255
 
-		for collection in *{@players, @enemies, @playerBullets, @bullets, @items}
+		for collection in *{@players, @enemies, @playerBullets, @bullets, @items, @particles}
 			for entity in *collection
 				entity\draw!
 
@@ -197,7 +198,10 @@ class
 						bullet.player.score += enemy.score
 						@score += enemy.score
 
-		for name in *{"entities", "players", "playerBullets", "enemies", "bullets", "items"}
+		for particle in *@particles
+			particle\update!
+
+		for name in *{"entities", "players", "playerBullets", "enemies", "bullets", "items", "particles"}
 			collection = self[name]
 
 			self[name] = with _ = {}
@@ -230,7 +234,7 @@ class
 			when Item
 				table.insert @items, entity
 			when Entity
-				print "Adding generic entity to the game. wtf is going on?"
+				table.insert @particles, entity
 
 		table.insert @entities, entity
 

@@ -1,4 +1,6 @@
 
+Entity = require "danmaku.entity"
+
 images = require "images"
 
 newBullet = (arg) ->
@@ -241,6 +243,31 @@ SpecialStrangeBullet = do
 			arg.radius = 5
 
 		newBullet arg
+
+Cloud = do
+	sprite = images.get "cloud_1.png"
+	(arg) ->
+		arg or= {}
+
+		color = arg.color or {0, 0, 0}
+		radius = arg.radius or 128
+
+		Entity with arg
+			.touchable or= false -- Should not matter, will be a particle.
+			.speed or= 1.5
+			.outOfScreenTime or= 90 -- Large sprite. Will need it.
+			.radius or= radius
+			.draw or= =>
+				sw, sh = sprite\getWidth!, sprite\getHeight!
+
+				alpha = math.min 255, 255 * @frame / 20
+
+				love.graphics.setColor color[1], color[2], color[3], alpha
+				love.graphics.draw sprite,
+					@x, @y, nil,
+					@radius / sw * 2, radius / sh * 2,
+					sw/2, sh/2
+
 {
 	:HugeBullet
 	:BigBullet
@@ -261,5 +288,7 @@ SpecialStrangeBullet = do
 	:BigStarBullet
 
 	:SpecialStrangeBullet
+
+	:Cloud
 }
 

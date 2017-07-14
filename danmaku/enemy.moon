@@ -26,7 +26,10 @@ class extends Entity
 	--
 	-- @param data Arguments passed to create the `Bullet`.
 	fire: (data) =>
-		bullet = Bullet data
+		bullet = if data.__class
+			data
+		else
+			Bullet data
 
 		@\setDefaultBulletValues bullet, data
 
