@@ -244,6 +244,18 @@ SpecialStrangeBullet = do
 
 		newBullet arg
 
+Curvy = do
+	sprite = images.get "bullet_curvy.png"
+
+	(arg) ->
+		arg or= {}
+
+		arg.overlaySprite or= sprite
+		arg.defaultRadius or= 24
+		arg.radius or= 12
+
+		newBullet arg
+
 Cloud = do
 	sprite = images.get "cloud_1.png"
 	(arg) ->
@@ -288,6 +300,8 @@ Cloud = do
 	:BigStarBullet
 
 	:SpecialStrangeBullet
+
+	:Curvy
 
 	:Cloud
 }

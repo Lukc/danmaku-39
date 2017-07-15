@@ -1,4 +1,6 @@
 
+images = require "images"
+
 {:Entity} = require "danmaku"
 
 clone = (t) ->
@@ -212,7 +214,11 @@ attachedLaser = do
 			.hitbox = Entity.Rectangle
 			.damageable = damageable
 
+-- Try not to use them. Please.
+-- They’re very very broken at the moment.
 laser = do
+	middleSprite = images.get "laser.png"
+
 	(arg) ->
 		arg or= {}
 
@@ -222,6 +228,8 @@ laser = do
 		angle = bulletData.angle or math.pi / 2
 		w     = bulletData.w or 5
 		h     = bulletData.h or 25
+
+		color = bulletData.color or {255, 255, 255}
 
 		origin =
 			x: entity.x
@@ -240,6 +248,7 @@ laser = do
 			.hitbox = Entity.Rectangle
 			.speed = 0
 			.damageable = damageable
+			.spawnTime or= 5
 			.h = 0
 			.update = =>
 				if @height != h
@@ -253,8 +262,54 @@ laser = do
 					if @height == h
 						@speed = speed
 
+				print self, @spawnTime, @spawning
+
 				if oldUpdate
 					oldUpdate self
+			.draw = =>
+				w2 = @width / 2
+				h2 = @height / 2
+
+				c = {unpack color}
+				alpha = 255 * math.min 1,
+					math.min @frame / @spawnTime, (@dyingTime - @dyingFrame) / @dyingTime
+				love.graphics.setColor c[1], c[2], c[3], alpha
+
+				for i = 1, @height
+					d = i - h2
+
+					x = @x + d * math.cos @angle
+					y = @y + d * math.sin @angle
+
+					s = math.sin(math.pi / 2 * math.min(i, @height - i) / h2) *
+						@width / 64
+
+					love.graphics.draw middleSprite,
+						x, y,
+						@angle + math.pi / 2,
+						s, 1,
+						middleSprite\getWidth!/2, 0
+
+			-- Old WIP solution. Should have been better, but CANVASES WERE BROKEN.
+			-- YOU HEAR ME THEY WERE BROKEN LOVE DEVELOPERS NO BAAAKAAA
+			[[
+				canvas = love.graphics.newCanvas @width, @height
+				oldCanvas = love.graphics.getCanvas!
+				love.graphics.setCanvas canvas
+
+				love.graphics.setColor 255, 255, 255, 255
+
+				for i = 1, @height
+					love.graphics.draw middleSprite, w2, i,
+						math.min(i, h2 - i) / @height * 2, nil, nil, -- FIXME; second value shouldn’t be nil.
+						w2, 0
+
+				love.graphics.setCanvas oldCanvas
+
+				love.graphics.draw canvas,
+					@x, @y, nil,
+					w2, h2
+			]]
 
 {
 	:clone
