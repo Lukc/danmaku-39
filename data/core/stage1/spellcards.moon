@@ -1,15 +1,19 @@
 
 {
-	:Entity,
+	:Entity, :Enemy
 	:Spellcard
 	:Danmaku
 } = require "danmaku"
 
 {:Difficulties} = Danmaku
 
-{:BigBullet, :SmallBullet, :MiniBullet, :HugeBullet, :DiamondBullet} = require "data.bullets"
+{
+	:BigBullet, :SmallBullet, :SimpleBullet, :MiniBullet, :HugeBullet
+	:DiamondBullet
+	:ArrowHeadBullet
+} = require "data.bullets"
 
-{:radial, :circle, :sinusoid, :row} = require "data.helpers"
+{:radial, :circle, :sinusoid, :column, :row} = require "data.helpers"
 
 -- Defining Xuhe SpellCards
 	-- s1: 1rst attack (N/H/L)
@@ -46,25 +50,70 @@ s1 = Spellcard {
 }
 
 s2 = Spellcard {
-	name: "Calling the Brotherhood"
+	name: "Call to the Flock"
 	sign: "Wisdom"
 	difficulties: {
 		Difficulties.Lunatic
 	}
 	health: 3600
 	timeout: 30 * 60
+	update: =>
+		f = @frame - @spellStartFrame
 
-	--b1: Entity {
-	--	x: @game.width/6
-	--	y: @game.height/6
-	--}
+		if f == 0
+			for i = 1, 6
+				@game\addEntity Enemy
+					radius: 0
+					update: =>
+						angle = @frame * 2 * math.pi / 360 + math.pi * 2 / 6 * i
 
-	--update: =>
-	--	if @frame%60 == 0
-	--		@\addEntity b1
+						@x = @game.boss.x + @game.width / 4 * math.cos angle
+						@y = @game.boss.y + 70 * math.sin angle
 
-	--//TODO
-	-- quand je serait faire correctement des Entités à des endroits aléatoires sur l'écran
+						if @frame % 150 == 0
+							for bullet in row {
+								from: self, bullets: 3
+								startAngle: -math.pi / 16
+								endAngle: math.pi / 16
+							}
+								@\fire BigBullet with bullet
+									.speed = 2.5
+									.color = {255, 127, 127}
+									.angle += @\angleToPlayer!
+
+						switch i
+							when 1, 4
+								if @frame % 3 == 0
+									@\fire ArrowHeadBullet
+										speed: 9
+										color: {255, 127, 0}
+										angle: @\angleToPlayer! + math.pi / 12
+									@\fire ArrowHeadBullet
+										speed: 9
+										color: {255, 127, 0}
+										angle: @\angleToPlayer! - math.pi / 12
+							when 2, 5
+								if @frame % 3 == 0
+									@\fire ArrowHeadBullet
+										speed: 9
+										color: {255, 0, 0}
+										angle: @\angleToPlayer! + math.pi / 16
+									@\fire ArrowHeadBullet
+										speed: 9
+										color: {255, 0, 0}
+										angle: @\angleToPlayer! - math.pi / 16
+							when 3, 6
+								if @frame % 50 == 0
+									for bullet in radial {
+										from: self
+										bullets: 15
+									}
+										bullet.color = {0, 127, 255}
+										bullet.speed = 5
+										bullet.radius = 7
+
+										@\fire DiamondBullet with bullet
+											.angle += (math.random! - 0.5) * math.pi / 32
 }
 
 
