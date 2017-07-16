@@ -281,6 +281,8 @@ Cloud = do
 					sw/2, sh/2
 
 {
+	:newBullet
+
 	:HugeBullet
 	:BigBullet
 	:SimpleBullet

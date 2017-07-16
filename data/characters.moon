@@ -3,6 +3,8 @@
 	:Entity,
 } = require "danmaku"
 
+{:newBullet} = require "data.bullets"
+
 {:CharacterData, :CharacterVariantData} = require "data.checks"
 
 niceScreenCleaning = =>
@@ -61,8 +63,25 @@ flameUpdate = (growthTime, radiusVariation) ->
 
 			for i = 1, 6
 				angle = math.pi / 2 + math.pi * 2 / 6 * i
-				@\fire
-					spawnTime: 0
+				@\fire newBullet
+					overlaySprite: require("images").get "splash_bullet.png"
+					defaultRadius: 160
+					color: switch i
+						when 1
+							{255, 127, 127}
+						when 2
+							{255, 255, 127}
+						when 3
+							{127, 255, 127}
+						when 4
+							{127, 255, 255}
+						when 5
+							{127, 127, 255}
+						when 6
+							{255, 127, 255}
+						else
+							{255, 255, 255}
+					spawnTime: 10
 					damageable: false
 					radius: 48
 					outOfScreenTime: math.huge
@@ -79,9 +98,13 @@ flameUpdate = (growthTime, radiusVariation) ->
 								bullet\die!
 
 						if @frame % 12 == 0
-							player\fire
+							player\fire newBullet
+								overlaySprite: require("images").get "splash_bullet.png"
+								defaultRadius: 191
+								color: {255, 255, 255, 128}
 								x: @x
 								y: @y
+								speed: 0
 								radius: @radius
 								health: 3 -- damageable, though not easily
 								spawnTime: 0
@@ -128,7 +151,13 @@ flameUpdate = (growthTime, radiusVariation) ->
 				else
 					60 * 6.5
 
-				@\fire
+				@\fire newBullet
+					overlaySprite: require("images").get "splash_bullet.png"
+					defaultRadius: 160
+					color: if i % 3 == 2
+						{127, 255, 127}
+					else
+						{127, 191, 255}
 					spawnTime: 0
 					damageable: false
 					:radius, :angle
@@ -142,7 +171,11 @@ flameUpdate = (growthTime, radiusVariation) ->
 
 						if @speed > 0
 							if @frame % 5 == 0
-								player\fire
+								player\fire newBullet
+									overlaySprite: require("images").get "bullet_curvy.png"
+									defaultRadius: 64
+									color: {255, 255, 255, 191}
+									speed: 0
 									x: @x
 									y: @y
 									radius: @radius
@@ -150,6 +183,8 @@ flameUpdate = (growthTime, radiusVariation) ->
 									health: 5
 									update: =>
 										@radius -= 0.3
+
+										@angle = math.atan2 player.y - @y, player.x - @x
 
 										if @radius <= 0
 											@radius = 0
@@ -189,7 +224,10 @@ flameUpdate = (growthTime, radiusVariation) ->
 
 					if @frame % 4 == 0
 						for i = -1, 1, 2
-							player\fire
+							player\fire newBullet
+								overlaySprite: require("images").get "splash_bullet.png"
+								defaultRadius: 160
+								color: {255, 191, 63}
 								spawnTime: 0
 								angle: i * math.pi / 2 + @frame / 4 * math.pi / 8
 								speed: 4.5
@@ -200,6 +238,10 @@ flameUpdate = (growthTime, radiusVariation) ->
 								update: do
 									flame = flameUpdate(30, 2)
 									=>
+										if @color
+											@color[3] += 0.5
+											@color[2] -= 2
+
 										for bullet in *@game.bullets
 											if bullet\collides self
 												bullet\die!
