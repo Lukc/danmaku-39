@@ -206,22 +206,60 @@ OvalBullet = do
 
 		newBullet arg
 
---------------------------------------
--- FIXME: SPRITELESS BULLETS FOLLOW --
---------------------------------------
-
-ArrowHead = do
-	overlay = images.get "bullet_arrowhead.png"
+HeartBullet = do
+	bg = images.get "bullet_heart_bg.png"
+	overlay = images.get "bullet_heart_overlay.png"
 
 	(arg) ->
 		arg or= {}
 
-		arg.overlaySprite or= overlay
+		arg.overlaySprite    or= overlay
+		arg.backgroundSprite or= bg
 
-		arg.defaultRadius or= 7
-		arg.radius or= 7
+		arg.defaultRadius or= 49
+		arg.radius        or= 8
 
 		newBullet arg
+
+DarkBullet = do
+	backgroundSprite = images.get "bullet_dark_bg.png"
+	overlaySprite = images.get "bullet_dark_overlay.png"
+
+	(arg) ->
+		arg or= {}
+
+		arg.backgroundSprite or= backgroundSprite
+		arg.overlaySprite or= overlaySprite
+		arg.defaultRadius or= 55
+		arg.radius or= 12
+
+		newBullet arg
+
+MiniDarkBullet = do
+	(arg) ->
+		arg or= {}
+
+		arg.radius or= 3
+
+		DarkBullet arg
+
+ArrowHeadBullet = do
+	backgroundSprite = images.get "bullet_arrowhead_bg.png"
+	overlaySprite = images.get "bullet_arrowhead_overlay.png"
+
+	(arg) ->
+		arg or= {}
+
+		arg.backgroundSprite or= backgroundSprite
+		arg.overlaySprite or= overlaySprite
+		arg.defaultRadius or= 7 -- Very big sprite, very small hitbox.
+		arg.radius or= 2.5
+
+		newBullet arg
+
+--------------------------------------
+-- FIXME: SPRITELESS BULLETS FOLLOW --
+--------------------------------------
 
 BurningBullet = do
 	(arg) ->
@@ -232,38 +270,14 @@ BurningBullet = do
 
 		arg
 
-DarkBullet = do
-	(arg) ->
-		arg or= {}
-
-		unless arg.radius
-			arg.radius = 12
-
-		arg
-
-MiniDarkBullet = do
-	(arg) ->
-		arg or= {}
-
-		unless arg.radius
-			arg.radius = 3
-
-		arg
-
-SpecialStrangeBullet = do
-	sprite = images.get "special_strange_bullet.png"
-
-	(arg) ->
-		arg or= {}
-
-		unless arg.sprite
-			arg.sprite = sprite
-		unless arg.radius
-			arg.radius = 5
-
-		newBullet arg
+---
+-- Bullety and yet non-bullet follow.
+---
 
 Curvy = do
+	-- Curvy lasers.
+	-- Have to be fired in very close succession to be of any use.
+	-- DO NOT ABUSE THEM.
 	sprite = images.get "bullet_curvy.png"
 
 	(arg) ->
@@ -276,6 +290,9 @@ Curvy = do
 		newBullet arg
 
 Cloud = do
+	-- Actively hostile particles. Will cloud your screen and make you cry.
+	-- Not very costly, but don’t put them everywhere. They make people
+	-- cry for real.
 	sprite = images.get "cloud_1.png"
 	(arg) ->
 		arg or= {}
@@ -308,7 +325,7 @@ Cloud = do
 	:SmallBullet
 	:MiniBullet
 
-	:ArrowHead
+	:ArrowHeadBullet
 	:OvalBullet
 	:DiamondBullet
 	:SquareBullet
@@ -320,6 +337,8 @@ Cloud = do
 
 	:StarBullet
 	:BigStarBullet
+
+	:HeartBullet
 
 	:SpecialStrangeBullet
 
