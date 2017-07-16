@@ -340,8 +340,6 @@ Cloud = do
 
 	:HeartBullet
 
-	:SpecialStrangeBullet
-
 	:Curvy
 
 	:Cloud
