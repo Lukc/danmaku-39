@@ -60,8 +60,7 @@ newBullet = (arg) ->
 	arg
 
 BigBullet = do
-	bg = images.get "bullet_1_bg.png"
-	overlay = images.get "bullet_2_overlay.png"
+	overlay = images.get "bullet_3_overlay.png"
 
 	(arg) ->
 		arg or= {}
@@ -69,14 +68,14 @@ BigBullet = do
 		arg.backgroundSprite or= bg
 		arg.overlaySprite    or= overlay
 
-		arg.defaultRadius or= 64
+		arg.defaultRadius or= 72
 		arg.radius        or= 21
 
 		newBullet arg
 
 SmallBullet = do
 	bg = images.get "bullet_1_bg.png"
-	overlay = images.get "bullet_1_overlay.png"
+	overlay = images.get "bullet_2_overlay.png"
 
 	(arg) ->
 		arg or= {}
@@ -84,7 +83,7 @@ SmallBullet = do
 		arg.overlaySprite    or= overlay
 		arg.backgroundSprite or= bg
 
-		arg.defaultRadius or= 64
+		arg.defaultRadius or= 72
 		arg.radius        or= 7
 
 		newBullet arg
@@ -114,7 +113,7 @@ SimpleBullet = do
 		arg.overlaySprite    or= overlay
 		arg.backgroundSprite or= bg
 
-		arg.defaultRadius or= 64
+		arg.defaultRadius or= 72
 		arg.radius        or= 12
 
 		newBullet arg
