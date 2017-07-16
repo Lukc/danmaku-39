@@ -178,6 +178,21 @@ SquareBullet = do
 
 		newBullet arg
 
+DiamondBullet = do
+	bg = images.get "bullet_diamond_bg.png"
+	overlay = images.get "bullet_diamond_overlay.png"
+
+	(arg) ->
+		arg or= {}
+
+		arg.overlaySprite    or= overlay
+		arg.backgroundSprite or= bg
+
+		arg.defaultRadius or= 26
+		arg.radius        or= 8
+
+		newBullet arg
+
 --------------------------------------
 -- FIXME: SPRITELESS BULLETS FOLLOW --
 --------------------------------------
@@ -201,15 +216,6 @@ BurningBullet = do
 
 		unless arg.radius
 			arg.radius = 12
-
-		arg
-
-Diamond = do
-	(arg) ->
-		arg or= {}
-
-		unless arg.radius
-			arg.radius = 8
 
 		arg
 
@@ -290,7 +296,7 @@ Cloud = do
 	:MiniBullet
 
 	:ArrowHead
-	:Diamond
+	:DiamondBullet
 	:SquareBullet
 
 	:BurningBullet
