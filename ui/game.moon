@@ -15,6 +15,7 @@ data = require "data"
 highscores = require "highscores"
 vscreen = require "vscreen"
 fonts = require "fonts"
+images = require "images"
 
 Menu = require "ui.tools.menu"
 Grid = require "ui.tools.grid"
@@ -371,24 +372,31 @@ state.draw = =>
 	@danmaku.x = x + 25 * sizemod
 	@danmaku.y = y + 25 * sizemod
 
-	-- XXX: Temporary markers.
 	for item in *@danmaku.items
-		if item.important
-			love.graphics.setColor 255, 0, 0
-			love.graphics.circle "fill",
+		if item.marker
+			sprite = images.get "item_marker_" .. item.marker .. ".png"
+
+			love.graphics.setColor 255, 255, 255
+			love.graphics.draw sprite,
 				@danmaku.x + item.x * danmakuSizemod,
 				@danmaku.y + @danmaku.drawHeight,
-				32 * danmakuSizemod
+				nil, nil, nil,
+				sprite\getWidth!/2, sprite\getHeight!/2
 
-	-- XXX: Temporary markers.
 	if @danmaku.boss
 		boss = @danmaku.boss
 
+		font = fonts.get "Sniglet-Regular", 18
+		w = font\getWidth "Boss"
+
+		c = 223 + (256 - 223) * math.sin @danmaku.frame / 120 * math.pi
+
 		love.graphics.setColor 255, 0, 0
-		love.graphics.circle "fill",
-			@danmaku.x + boss.x * danmakuSizemod,
-			@danmaku.y + @danmaku.drawHeight,
-			32 * danmakuSizemod
+		@menu\print "Boss",
+			@danmaku.x + boss.x * danmakuSizemod - w/2,
+			@danmaku.y + @danmaku.drawHeight - 1,
+			{c, c - 96, c - 64},
+			font
 
 	if @paused or @awaitingPlayerName
 		c = if @resuming

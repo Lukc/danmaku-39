@@ -24,18 +24,20 @@
 					[k] = v
 	power: do
 		sprite = love.graphics.newImage "data/art/item_test_power.png"
+		w2 = sprite\getWidth!/2
+		h2 = sprite\getWidth!/2
 
 		draw = =>
 			love.graphics.setColor 255, 255, 255
-			love.graphics.draw sprite, @x - 16, @y - 16
+			love.graphics.draw sprite, @x - w2, @y - h2
 		collection = (player) =>
 			unless player\addPower 1
 				player.score += 100
 				@game.score += 100
 
 		(arg) -> Item with {
-				important: true
-				radius: 10
+				marker: "power"
+				radius: 18
 				:draw
 				:collection
 			}
@@ -43,14 +45,17 @@
 					[k] = v
 	lifeFragment: do
 		sprite = love.graphics.newImage "data/art/item_test_life.png"
+		w2 = sprite\getWidth!/2
+		h2 = sprite\getWidth!/2
+
 		draw = =>
 			love.graphics.setColor 255, 255, 255
-			love.graphics.draw sprite, @x - 32, @y - 32
+			love.graphics.draw sprite, @x - w2, @y - h2
 		collection = (player) =>
 			player\addFragment "life"
 
 		(arg) -> Item with {
-				important: true
+				marker: "life"
 				radius: 18
 				:draw
 				:collection
@@ -59,15 +64,18 @@
 					[k] = v
 	bombFragment: do
 		sprite = love.graphics.newImage "data/art/item_test_bomb.png"
+		w2 = sprite\getWidth!/2
+		h2 = sprite\getWidth!/2
+
 		draw = =>
 			love.graphics.setColor 255, 255, 255
-			love.graphics.draw sprite, @x - 32, @y - 32
+			love.graphics.draw sprite, @x - w2, @y - h2
 		collection = (player) =>
 			player\addFragment "bomb"
 
 		(arg) -> Item with {
-				important: true
-				radius: 10
+				marker: "bomb"
+				radius: 18
 				:draw
 				:collection
 			}

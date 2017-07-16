@@ -14,7 +14,8 @@ class extends Entity
 		@normalSpeed = @speed
 
 		-- Wether the GUI should try to put a marker below it or not.
-		@important = arg.important or false
+		-- The GUI can put any truish value to identify the item type.
+		@marker = arg.marker or false
 
 		@onCollection = arg.collection or nil
 
