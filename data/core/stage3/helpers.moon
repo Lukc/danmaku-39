@@ -9,8 +9,9 @@ siphon = (arg) ->
 
 	center    = arg.from or {x:0,y:0}
 	bulletData = arg.bullet or {x:100,y:100}
-	rotSpeed = arg.rotSpeed or 125
+	rotSpeed = arg.rotSpeed or 1/125
 	rushSpeed = arg.rushSpeed or 1/4
+	disapearRange = arg.disapear or 50
 	
 	oldUpdate  = bulletData.oldUpdate
 	dx = (bulletData.x-center.x)
@@ -30,10 +31,10 @@ siphon = (arg) ->
 				.update = =>
 					angle = math.atan2(dy,dx)
 					
-					@x = (center.x + (dr - (@frame*rushSpeed)^1.1)*math.cos((@frame/rotSpeed)^1.1+angle))
-					@y = (center.y + (dr - (@frame*rushSpeed)^1.1)*math.sin((@frame/rotSpeed)^1.1+angle))
+					@x = (center.x + (dr - @frame*rushSpeed)*math.cos(@frame*rotSpeed+angle))
+					@y = (center.y + (dr - @frame*rushSpeed)*math.sin(@frame*rotSpeed+angle))
 					
-					if math.sqrt((center.x-@x)^2+(center.y-@y)^2) < 50
+					if math.sqrt((center.x-@x)^2+(center.y-@y)^2) < disapearRange and rushSpeed > 0
 						@\die!
 						
 {
