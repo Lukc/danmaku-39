@@ -23,15 +23,26 @@ Wave = require "data.wave"
 {:circularDrop} = require "data.core.common"
 
 BossData {
-	radius: 32
+	radius: 40
 	x: 600 / 2
 	y: 800 / 5
+	direction: nil
+	speed: 0
 	name: "Coactlicue"
 	title: "War Shaman"
 	description: "Shaman of War and stuff.\nShe has a godly lance that spits fire. Beware its deadly burns."
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
+
+	-- Fonction de mouvement pour Boss : bouge régulièrement sur la gauche et la droite
+	--moveLR: =>
+	--	if @x <= 600
+	--		speed = 3
+	--		direction = -math.pi
+	--	else
+	--		speed = 3
+	--		direction = 0
 
 	endOfSpell: (spell) =>
 		local pointItems, powerItems
@@ -52,6 +63,7 @@ BossData {
 		circularDrop self, pointItems, 48, items.point
 		circularDrop self, powerItems, 30, items.power
 
+	spellcards[5]
 	spellcards[6]
 	spellcards[7]
 	spellcards[8]

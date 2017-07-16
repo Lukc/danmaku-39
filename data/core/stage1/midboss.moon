@@ -23,7 +23,7 @@ Wave = require "data.wave"
 {:circularDrop} = require "data.core.common"
 
 BossData {
-	radius: 32
+	radius: 40
 	x: 600 / 2
 	y: 800 / 5
 	name: "Xuhe"

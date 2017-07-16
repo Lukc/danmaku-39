@@ -129,25 +129,25 @@ StageData {
 				love.graphics.print timeout, 32, 20
 
 	update: Wave.toUpdate {
-		Wave {
-			start: 60
-			interval: 30
-			count: 10
-			(n) =>
-				x = 0 + @width / 10 * (n - 0.5)
-				y = 30
-
-				@\addEntity Bullet SmallBullet
-					:x, :y
-					y: 0
-					spawnTime: 40
-					speed: 7
-					color: {255, 0, 0}
-
-					update: =>
-						if @frame == 0
-							@angle = @\angleToPlayer!
-		}
+		--Wave {
+		--	start: 60
+		--	interval: 30
+		--	count: 10
+		--	(n) =>
+		--		x = 0 + @width / 10 * (n - 0.5)
+		--		y = 30
+		--
+		--		@\addEntity Bullet SmallBullet
+		--			:x, :y
+		--			y: 0
+		--			spawnTime: 40
+		--			speed: 7
+		--			color: {255, 0, 0}
+		--
+		--			update: =>
+		--				if @frame == 0
+		--					@angle = @\angleToPlayer!
+		--}
 		Wave {
 			start: 0
 			interval: 20
@@ -172,14 +172,15 @@ StageData {
 		}
 
 		Wave {
-			name: "Boss wave"
+			start: 20
+			name: "MidBoss wave"
 			=>
 				@\addEntity Boss midboss1
 		}
 
 		Wave {
 			name: "Boss wave"
-			=>
+			=> 
 				@\addEntity Boss boss1
 		}
 	}
