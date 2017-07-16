@@ -60,7 +60,6 @@ newBullet = (arg) ->
 	arg
 
 BigBullet = do
-	-- FIXME: Cache those.
 	bg = images.get "bullet_1_bg.png"
 	overlay = images.get "bullet_2_overlay.png"
 
