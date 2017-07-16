@@ -193,6 +193,21 @@ DiamondBullet = do
 
 		newBullet arg
 
+OvalBullet = do
+	bg = images.get "bullet_oval_bg.png"
+	overlay = images.get "bullet_oval_overlay.png"
+
+	(arg) ->
+		arg or= {}
+
+		arg.overlaySprite    or= overlay
+		arg.backgroundSprite or= bg
+
+		arg.defaultRadius or= 47
+		arg.radius        or= 8
+
+		newBullet arg
+
 --------------------------------------
 -- FIXME: SPRITELESS BULLETS FOLLOW --
 --------------------------------------
@@ -296,6 +311,7 @@ Cloud = do
 	:MiniBullet
 
 	:ArrowHead
+	:OvalBullet
 	:DiamondBullet
 	:SquareBullet
 
