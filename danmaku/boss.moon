@@ -61,10 +61,10 @@ class extends Enemy
 					currentSpell.update self
 					@speed = 0
 
-					if currentSpell.position
-						-- Fixes rounding errors.
-						{:x, :y} = currentSpell.position self
-						@x, @y = x, y
+					-- Should have moved there already, but this fixes
+					-- rounding errors.
+					{:x, :y} = @\getPosition self
+					@x, @y = x, y
 				elseif @frame == @spellEndFrame
 					@spellSuccess = false
 
@@ -116,6 +116,8 @@ class extends Enemy
 
 		spell = @spellcards[@currentSpellIndex]
 
+		@currentSpell = spell
+
 		if spell
 			if oldSpell and oldSpell.endOfLife
 				@lives -= 1
@@ -138,22 +140,27 @@ class extends Enemy
 			@spellStartFrame = @frame + @interSpellDelay
 			@spellEndFrame = @frame + spell.timeout + @interSpellDelay
 
-			if spell.position
-				position = spell.position self
-
-				distance = Entity.distance self, position
-				angle = math.atan2 position.y - @y,
-					position.x - @x
-
-				@speed = distance / @interSpellDelay
-				@angle = angle
+			@\moveTowardsPosition @\getPosition!
 
 			@damageable = false
 		else -- end of spellcards list
 			@health = 1
 
 		@spellSuccess = true
-		@currentSpell = spell
+
+	getPosition: =>
+		if spell and spell.position
+			spell.position self
+		else
+			{x: @x, y: @y}
+
+	moveTowardsPosition: (position) =>
+		distance = Entity.distance self, position
+		angle = math.atan2 position.y - @y,
+			position.x - @x
+
+		@speed = distance / @interSpellDelay
+		@angle = angle
 
 	roam: (arg) =>
 		interval      = arg.interval   or 60
@@ -183,4 +190,7 @@ class extends Enemy
 		else
 			@game\setBoss nil
 			super\die!
+
+	__tostring: =>
+		"<Boss: #{@name}, frame #{@frame}>"
 
