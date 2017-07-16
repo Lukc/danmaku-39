@@ -50,6 +50,7 @@ bossMenuItem = (stage, boss) -> {
 			difficulties: boss.difficulties
 			drawBossData: data.stages[1].drawBossData
 			screenRatio: stage.screenRatio
+			generated: true
 
 			update: =>
 				if @frame > 60 and #@enemies == 0
@@ -109,6 +110,7 @@ spellcardMenuItem = (stage, boss, spellcard) -> {
 			difficulties: spellcard.difficulties
 			drawBossData: data.stages[1].drawBossData
 			screenRatio: stage.screenRatio
+			generated: true
 
 			update: =>
 				if @frame > 60 and #@enemies == 0

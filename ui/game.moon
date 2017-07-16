@@ -99,6 +99,8 @@ state.enter = (options, players) =>
 		:stage
 	} = options
 
+	@startingPower = options.startingPower or 0
+
 	@options = options
 	@playerOptions = players
 
@@ -202,7 +204,10 @@ state.enter = (options, players) =>
 		player.x = @danmaku.width / 2
 		player.y = @danmaku.height * 5 / 6
 
-		table.insert @players, @danmaku\addEntity Player player
+		with danmakuPlayer = @danmaku\addEntity Player player
+			table.insert @players, danmakuPlayer
+
+			danmakuPlayer.power = @startingPower
 
 	@highscore = do
 		if #players == 1

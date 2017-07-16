@@ -107,6 +107,7 @@ play = =>
 		pacific: state.pacific
 		training: state.training
 		difficulty: Danmaku.Difficulties[state.difficulty]
+		startingPower: state.training and 25 or state.startingPower or 0
 	}
 
 	state.manager\setState require("ui.character"), options, state.multiplayer
@@ -121,6 +122,11 @@ state.enter = (stage, noReset) =>
 	@noBombs = false
 	@pacific = false
 	@training = false
+
+	@startingPower = if stage.generated
+		25
+	else
+		false
 
 	@difficulty = Danmaku.getDifficultyString(stage.difficulties[1])
 
