@@ -10,7 +10,7 @@ fonts = require "fonts"
 state = {}
 
 portraits = {
-	Coactlicue: love.graphics.newImage "data/art/Coactlicue.png"
+	Coactlicue: love.graphics.newImage "data/art/portraits/Coactlicue.png"
 }
 
 bossMenuItem = (boss) -> {
