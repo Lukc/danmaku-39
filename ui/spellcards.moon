@@ -13,7 +13,7 @@ portraits = {
 	Coactlicue: love.graphics.newImage "data/art/portraits/Coactlicue.png"
 }
 
-bossMenuItem = (boss) -> {
+bossMenuItem = (stage, boss) -> {
 	label: boss.name
 	:boss
 	draw: (x, y) =>
@@ -160,7 +160,7 @@ updateSpellcardsList = ->
 					unless insertedBossItem
 						insertedBossItem = true
 
-						table.insert stageMenuItems, bossMenuItem boss
+						table.insert stageMenuItems, bossMenuItem stage, boss
 
 					table.insert stageMenuItems, spellcardMenuItem stage, boss, spellcard
 
