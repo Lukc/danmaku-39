@@ -65,7 +65,6 @@ BigBullet = do
 	(arg) ->
 		arg or= {}
 
-		arg.backgroundSprite or= bg
 		arg.overlaySprite    or= overlay
 
 		arg.defaultRadius or= 72
