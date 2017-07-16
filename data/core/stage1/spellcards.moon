@@ -7,7 +7,7 @@
 
 {:Difficulties} = Danmaku
 
-{:BigBullet, :SmallBullet, :MiniBullet, :HugeBullet} = require "data.bullets"
+{:BigBullet, :SmallBullet, :MiniBullet, :HugeBullet, :DiamondBullet} = require "data.bullets"
 
 {:radial, :circle, :sinusoid, :row} = require "data.helpers"
 
@@ -128,11 +128,11 @@ s4 = Spellcard {
 
 		if @frame%60 == 0
 			for bullet in row {from: centerLeft, :bullet, bullets: (2+2*@game.difficulty), startAngle: 2.09, endAngle: 1.05}
-				@\fire SmallBullet with bullet
+				@\fire DiamondBullet with bullet
 					.color = {51, 204, 153} -- cyan
 		if (@frame%60-30) == 0
 			for bullet in row {from: centerRight, :bullet, bullets: (2+2*@game.difficulty), startAngle: 2.09, endAngle: 1.05}
-				@\fire SmallBullet with bullet
+				@\fire DiamondBullet with bullet
 					.color = {255, 204, 0} -- yellow?
 
 	-- //todo
