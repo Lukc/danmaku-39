@@ -3,7 +3,7 @@
 	:Entity,
 } = require "danmaku"
 
-{:newBullet} = require "data.bullets"
+{:newBullet, :BigBullet} = require "data.bullets"
 
 {:CharacterData, :CharacterVariantData} = require "data.checks"
 
@@ -17,21 +17,14 @@ niceScreenCleaning = =>
 			if d <= radius
 				bullet\die!
 
-missileUpdate = =>
+missileUpdate = (directionModifier) =>
 	speedingSequence = 60 * 2
 
 	if @frame <= speedingSequence
 		@speed += 8/speedingSequence
 
-		dx = @x - @player.x
-
-		if dx == 0
-			return
-
-		sign = dx / math.abs(dx)
-
 		if @frame <= 60
-			dx = sign * (60 - @frame) / 60 / 3
+			dx = directionModifier * (60 - @frame) / 60 / 3
 			@x += dx
 
 flameUpdate = (growthTime, radiusVariation) ->
@@ -263,7 +256,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 				-- damage estimation: 10 * 2 / 8 + powerLevel * 6 / 48
 				if @firingFrame and @firingFrame % 8 == 0
 					for i = -1, 1, 2
-						@\fire
+						@\fire BigBullet
 							spawnTime: 0
 							angle: -math.pi/2
 							speed: 12
@@ -276,7 +269,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 					powerLevel = math.floor(@power / 5)
 
 					for i = 1, powerLevel
-						@\fire
+						@\fire BigBullet
 							spawnTime: 0
 							angle: -math.pi / 2
 							speed: 1.5
@@ -284,7 +277,29 @@ flameUpdate = (growthTime, radiusVariation) ->
 							y: @y + 24
 							radius: 7
 							damage: 6
-							update: missileUpdate
+							color: {255, 127, 127}
+							update: =>
+								missileUpdate self, if i == math.floor(0.5 + powerLevel / 2)
+									0
+								elseif i < powerLevel / 2
+									-1
+								else -- i > powerLevel / 2
+									1
+
+								if @frame % 6 == 0
+									@player\fire BigBullet
+										x: @x
+										y: @y
+										spawnTime: 0
+										speed: 0
+										radius: 7
+										color: {223, 95, 95}
+										update: =>
+											@radius -= 7 / 40
+
+											if @radius < 1
+												@radius = 1
+												@\die!
 		}
 		CharacterVariantData {
 			name: "Rifle"
@@ -294,7 +309,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 				-- Damage estimation: 10 * 2 / 8 + powerLevel * 1 / 8
 				if @firingFrame and @firingFrame % 8 == 0
 					for i = -1, 1, 2
-						@\fire
+						@\fire BigBullet
 							spawnTime: 0
 							angle: -math.pi/2
 							speed: 12
@@ -311,7 +326,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 						angle = math.pi * (1 / 2 + 1 / 5 * k)
 						ox = radius * math.cos angle
 						oy = radius * math.sin angle
-						@\fire
+						@\fire BigBullet
 							spawnTime: 0
 							angle: -math.pi / 2 + k * math.pi / 2 / 64
 							speed: 12
@@ -319,6 +334,19 @@ flameUpdate = (growthTime, radiusVariation) ->
 							y: @y + oy
 							radius: 3
 							damage: 1
+							color: switch i
+								when 1
+									{255, 127, 127}
+								when 2
+									{255, 255, 127}
+								when 3
+									{255, 255, 255}
+								when 4
+									{127, 255, 255}
+								when 5
+									{127, 127, 255}
+								else
+									{255, 255, 255}
 		}
 		CharacterVariantData {
 			name: "Flamethrower"
@@ -328,7 +356,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 				-- Damage estimation: 10 * 2 / 8 + 1 * powerLevel / 8
 				if @firingFrame and @firingFrame % 8 == 0
 					for i = -1, 1, 2
-						@\fire
+						@\fire BigBullet
 							spawnTime: 0
 							angle: -math.pi/2
 							speed: 12
@@ -345,7 +373,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 						angle = math.pi * (-1 / 2 + 1 / 5 * k)
 						ox = radius * math.cos angle
 						oy = radius * math.sin angle
-						@\fire
+						@\fire BigBullet
 							spawnTime: 0
 							angle: -math.pi / 2 - k * math.pi / 2 / 32
 							speed: 6.5
@@ -354,6 +382,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 							radius: 3
 							damage: 1
 							update: flameUpdate(24, 1.5)
+							color: {127, 223, 256}
 		}
 	}
 }
