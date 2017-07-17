@@ -5,6 +5,7 @@ Menu = require "ui.tools.menu"
 data = require "data"
 vscreen = require "vscreen"
 fonts = require "fonts"
+images = require "images"
 
 state = {
 	font: love.graphics.newFont "data/fonts/Sniglet-Regular.otf", 24
@@ -57,6 +58,20 @@ state.enter = (options, multiplayer, noReset) =>
 	@selectedVariants = {}
 	@selectedCharacters = [false for i = 1, multiplayer and 4 or 1]
 
+	@particles = with love.graphics.newParticleSystem images.get("splash_bullet.png"), 512
+		\setParticleLifetime 50, 60
+		\setDirection math.pi / 2
+		\setEmissionRate 2
+		\setSizeVariation 1
+		\setSizes 0.1, 0.2, 0.25, 0.35
+		\setLinearAcceleration -1.8, -9, 1.8, 0
+		\setSpeed 0, -12.5
+		\setColors 255, 255, 255, 255,
+			255, 255, 255, 0
+
+		for i = 1, 60
+			\update 1
+
 	local cursors
 	width  = 1024
 	height = 800
@@ -101,6 +116,8 @@ state.enter = (options, multiplayer, noReset) =>
 		cells: data.characters
 		columns: #data.characters
 		rows: 1
+		drawCell: => -- FIXME: Move the appropriate code here, please~
+		drawCursor: =>
 		onSelection: (cursor) =>
 			for i = 1, #@cursors
 				if cursor != @cursors[i]
@@ -181,6 +198,8 @@ state.enter = (options, multiplayer, noReset) =>
 state.update = (dt) =>
 	vscreen\update!
 
+	@particles\update dt
+
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.fullRectangle
 
 	@font = fonts.get "Sniglet-Regular", 24 * sizemod
@@ -253,6 +272,21 @@ state.draw = =>
 			width = r.w - 20
 
 			r.x, r.y + @grid.height - 400 - 10
+
+		do
+			r = @grid\getCellRectangle cursor.index
+
+			with color = cursor.color
+				@particles\setColors color[1], color[2], color[3], 255,
+					color[2], color[2], color[3], 0
+
+			oldScissor = {love.graphics.getScissor!}
+			love.graphics.setScissor r.x, r.y, r.w, r.h
+
+			love.graphics.draw @particles,
+				r.x + r.w / 2, r.y + r.h * 1.25
+
+			love.graphics.setScissor unpack oldScissor
 
 		if @selectedVariants[i]
 			-- That state exists only during multiplayer.
