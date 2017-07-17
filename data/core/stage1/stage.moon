@@ -179,8 +179,9 @@ StageData {
 		}
 
 		Wave {
+			start: 60 * 60 * 15
 			name: "Boss wave"
-			=> 
+			=>
 				@\addEntity Boss boss1
 		}
 	}
