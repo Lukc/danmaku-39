@@ -40,7 +40,7 @@ newBullet = (arg) ->
 		if @dying
 			currentColor[4] = math.min(currentColor[4], 255 - 255 * (@dyingFrame / @dyingTime))
 		if @frame <= 20
-			currentColor[4] = math.min(currentColor[4], 255 * @frame / 20)
+			currentColor[4] = math.min(currentColor[4], 255 * @frame / @spawnTime)
 
 		sizeRatio = @radius / defaultRadius
 
