@@ -6,10 +6,10 @@
 
 {:Difficulties} = Danmaku
 
-{:BigBullet, :SmallBullet, :MiniBullet, :HeartBullet, :HugeBullet, :ArrowHeadBullet} = require "data.bullets"
+{:BigBullet, :SmallBullet, :MiniBullet, :HeartBullet, :HugeBullet, :ArrowHeadBullet, :HeartBullet} = require "data.bullets"
 -- america no seifuku
 -- maya shindenno no bakuhatsu
-{:radial, :circle, :sinusoid, :rotation, :row, :laser, :attachedLaser, :HearthBullet} = require "data.helpers"
+{:radial, :circle, :sinusoid, :rotation, :row, :laser, :attachedLaser} = require "data.helpers"
 {:siphon} = require "data.core.stage3.helpers"
 
 b1 = Spellcard {
@@ -33,7 +33,7 @@ b1 = Spellcard {
 		radius = 80
 		-- Heart Beat
 		if (@frame - @spellStartFrame) % 10 == 0 and (@frame - @spellStartFrame) >= start
-			@\fire HearthBullet with {}
+			@\fire HeartBullet with {}
 				.outOfScreenTime = 60*60
 				.color = {255,0,255}
 				.speed = 0
@@ -43,7 +43,7 @@ b1 = Spellcard {
 				.angle = math.atan2(@game.boss.y-@game.height/4,@game.boss.x-@game.width/2)
 				.direction = .angle
 				.update = =>
-					if (@game.boss.frame - @game.boss.spellStartFrame-1) % (vart) == start or @speed == 1
+					if (@game.boss.frame - @game.boss.spellStartFrame-1) % (vart*2) == start or @speed == 1
 						@speed = 2
 						@change = 1
 					if @change == 1
