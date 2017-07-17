@@ -44,14 +44,14 @@ b1 = Spellcard {
 				.direction = .angle
 				.update = =>
 					if (@game.boss.frame - @game.boss.spellStartFrame-1) % (vart*2) == start or @speed == 1
-						@speed = 1
+						@speed = 1.5
 						@change = 1
 					if @change == 1
 						@speed -= 2/625
 					if @speed == 0
 						@change == 0
 		-- Heart arround boss
-		if (@frame - @spellStartFrame) == start-20
+		[[if (@frame - @spellStartFrame) == start-20
 			for i=1,vart/10
 				@\fire SmallBullet with {}
 					.outOfScreenTime = 60*60
@@ -65,9 +65,9 @@ b1 = Spellcard {
 					.update = =>
 						p = math.pi*i*20/vart
 						@x = @game.boss.x + 3*16*(math.sin p)^3
-						@y = @game.boss.y - 3*(13*(math.cos p) - 5*math.cos(2*p) - 2*math.cos(3*p)-math.cos(4*p))
+						@y = @game.boss.y - 3*(13*(math.cos p) - 5*math.cos(2*p) - 2*math.cos(3*p)-math.cos(4*p))]]
 		-- Shining projectile launcher
-		if (@frame - @spellStartFrame) == start-20
+		[[if (@frame - @spellStartFrame) == start-20
 			@mainBullet = {}
 			@\fire SmallBullet with @mainBullet
 				.color = {200,0,200}
@@ -78,13 +78,19 @@ b1 = Spellcard {
 				.x = @game.width/2
 				.y = @game.height/4
 		if (@frame - @spellStartFrame) %20 == 0 and (@frame - @spellStartFrame) >= start and @mainBullet
-			param = (math.cos @frame/400)*math.pi/2-math.pi/2
-			for bullet in row {startAngle: param-math.pi/8, endAngle: param	+math.pi/8}
+			@stort = math.pi*((@frame)%49)/50
+			for bullet in row {startAngle: math.pi/2+@stort, endAngle:math.pi/2-@stort,bullets:15}
 				@\fire SmallBullet with bullet
 					.color = {@frame*40 % 255, (@frame*40 +125) % 255 , 0}
 					.speed = 2
 					.x = @game.boss.mainBullet.x
-					.y = @game.boss.mainBullet.y
+					.y = @game.boss.mainBullet.y]]
+					
+		if (@frame - @spellStartFrame) % vart == 0 and (@frame - @spellStartFrame) >= start
+			for bullet in radial {bullet: {angle: @\angleToPlayer!, outOfScreenTime: 2*60}, bullets: 10,from: self, radius:20}
+				@\fire SmallBullet with bullet
+					.color = {@frame*40 % 255, (@frame*40 +125) % 255 , 0}
+					.speed = 2
 		
 		[[if (@frame - @spellStartFrame) == 100
 			for i = 0,(bulletsPerCircle-1)
