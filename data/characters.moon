@@ -3,7 +3,7 @@
 	:Entity,
 } = require "danmaku"
 
-{:newBullet, :BigBullet} = require "data.bullets"
+{:newBullet, :BigBullet, :Curvy} = require "data.bullets"
 
 {:CharacterData, :CharacterVariantData} = require "data.checks"
 
@@ -36,6 +36,8 @@ flameUpdate = (growthTime, radiusVariation) ->
 
 			if @radius <= 0
 				@readyForRemoval = true
+
+rifleSprite = require("images").get "bullet_player_rifle.png"
 
 {
 	CharacterData {
@@ -265,35 +267,63 @@ flameUpdate = (growthTime, radiusVariation) ->
 							radius: 3
 							damage: 10
 
-				if @firingFrame and @firingFrame % 48 == 0
-					powerLevel = math.floor(@power / 5)
+				powerLevel = math.floor(@power / 5)
 
+				if @firingFrame and @firingFrame % 8 == 0
 					for i = 1, powerLevel
+						if @firingFrame % 48 != i * 8
+							continue
+
+						originAngle = math.pi * 2 / powerLevel * i + @frame * math.pi * 2 / 150
+						originRadius = if @focusing
+							30
+						else
+							14
+
+						angleModifier = (originAngle % math.pi) * if @focusing
+							1.5
+						else
+							0.75
+
+						color = if @focusing
+							{255, 160, 223}
+						else
+							{255, 91, 91}
+
 						@\fire BigBullet
 							spawnTime: 0
 							angle: -math.pi / 2
 							speed: 1.5
-							x: @x + (i - 1/2 - powerLevel/2) * 18
-							y: @y + 24
+							x: @x + originRadius * math.cos originAngle
+							y: @y + originRadius * math.sin originAngle
 							radius: 7
 							damage: 6
-							color: {255, 127, 127}
+							color: color
 							update: =>
-								missileUpdate self, if i == math.floor(0.5 + powerLevel / 2)
+								if @dying
+									return
+
+								missileUpdate self, angleModifier * if i == math.floor(0.5 + powerLevel / 2)
 									0
 								elseif i < powerLevel / 2
 									-1
 								else -- i > powerLevel / 2
 									1
 
-								if @frame % 6 == 0
+								if @frame % 6 == 1
 									@player\fire BigBullet
 										x: @x
 										y: @y
 										spawnTime: 0
-										speed: 0
+										speed: @speed * 0.9
+										direction: @direction
 										radius: 7
-										color: {223, 95, 95}
+										color: {
+											color[1] - 32,
+											color[2] - 32,
+											color[3] - 32,
+											127
+										}
 										update: =>
 											@radius -= 7 / 40
 
@@ -307,7 +337,7 @@ flameUpdate = (growthTime, radiusVariation) ->
 			maxPower: 5 * 5
 			update: =>
 				-- Damage estimation: 10 * 2 / 8 + powerLevel * 1 / 8
-				if @firingFrame and @firingFrame % 8 == 0
+				if @firingFrame and @firingFrame % 5 == 0
 					for i = -1, 1, 2
 						@\fire BigBullet
 							spawnTime: 0
@@ -326,25 +356,30 @@ flameUpdate = (growthTime, radiusVariation) ->
 						angle = math.pi * (1 / 2 + 1 / 5 * k)
 						ox = radius * math.cos angle
 						oy = radius * math.sin angle
-						@\fire BigBullet
-							spawnTime: 0
-							angle: -math.pi / 2 + k * math.pi / 2 / 64
+
+						@\fire Curvy
+							overlaySprite: rifleSprite
+							spawnTime: 20
+							angle: -math.pi / 2 + k * if @focusing
+								math.pi / 2 / 64
+							else
+								-math.pi / 2 / 32
 							speed: 12
 							x: @x + ox
-							y: @y + oy
-							radius: 3
-							damage: 1
+							y: @y + oy + 32
+							radius: 7
+							damage: 0.5
 							color: switch i
 								when 1
-									{255, 127, 127}
+									{127, 255, 127}
 								when 2
-									{255, 255, 127}
-								when 3
-									{255, 255, 255}
-								when 4
 									{127, 255, 255}
-								when 5
+								when 3
+									{127, 191, 255}
+								when 4
 									{127, 127, 255}
+								when 5
+									{191, 127, 255}
 								else
 									{255, 255, 255}
 		}
@@ -367,22 +402,37 @@ flameUpdate = (growthTime, radiusVariation) ->
 
 					powerLevel = math.floor(@power / 5)
 
-					radius = 48
+					radius = if @focusing
+						48
+					else
+						64
+
 					for i = 1, powerLevel
 						k = (i - 1/2 - powerLevel/2)
-						angle = math.pi * (-1 / 2 + 1 / 5 * k)
+						angle = math.pi * (1 / 2 + 1 / 5 * k)
 						ox = radius * math.cos angle
 						oy = radius * math.sin angle
+
+						flameGrowthTime = 30 -
+							4 * math.abs(i - 0.5 - powerLevel/2) +
+							(@focusing and 10 or -4)
+
 						@\fire BigBullet
 							spawnTime: 0
-							angle: -math.pi / 2 - k * math.pi / 2 / 32
+							angle: -math.pi / 2 - k * math.pi / 2 / 32 * if @focusing
+								-1
+							else
+								2
 							speed: 6.5
 							x: @x + ox
 							y: @y + oy
 							radius: 3
 							damage: 1
-							update: flameUpdate(24, 1.5)
-							color: {127, 223, 256}
+							update: flameUpdate(flameGrowthTime, 1.5)
+							color: if @focusing
+								{127, 223, 255}
+							else
+								{127, 255, 191}
 		}
 	}
 }
