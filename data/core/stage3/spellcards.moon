@@ -9,7 +9,7 @@
 {:BigBullet, :SmallBullet, :MiniBullet, :HeartBullet, :HugeBullet, :ArrowHeadBullet} = require "data.bullets"
 -- america no seifuku
 -- maya shindenno no bakuhatsu
-{:radial, :circle, :sinusoid, :rotation, :row, :laser, :attachedLaser, :HeartBullet} = require "data.helpers"
+{:radial, :circle, :sinusoid, :rotation, :row, :laser, :attachedLaser, :HearthBullet} = require "data.helpers"
 {:siphon} = require "data.core.stage3.helpers"
 
 b1 = Spellcard {
@@ -33,7 +33,7 @@ b1 = Spellcard {
 		radius = 80
 		-- Heart Beat
 		if (@frame - @spellStartFrame) % 10 == 0 and (@frame - @spellStartFrame) >= start
-			@\fire HeartBullet with {}
+			@\fire HearthBullet with {}
 				.outOfScreenTime = 60*60
 				.color = {255,0,255}
 				.speed = 0
