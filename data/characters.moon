@@ -359,7 +359,8 @@ rifleSprite = require("images").get "bullet_player_rifle.png"
 
 						@\fire Curvy
 							overlaySprite: rifleSprite
-							spawnTime: 20
+							spawnTime: 6
+							dyingTime: 6
 							angle: -math.pi / 2 + k * if @focusing
 								math.pi / 2 / 64
 							else
