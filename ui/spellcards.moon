@@ -1,5 +1,5 @@
 
-{:Danmaku, :Boss} = require "danmaku"
+{:Danmaku, :Stage, :Boss, :Player} = require "danmaku"
 
 Menu = require "ui.tools.menu"
 
@@ -17,6 +17,8 @@ bossMenuItem = (stage, boss) -> {
 	label: boss.name
 	:boss
 	draw: (x, y) =>
+		@height = 64 * vscreen.rectangle.sizeModifier
+
 		r = @\getRectangle x, y
 		defaultColor = @\getDefaultColor!
 		sizemod = vscreen.rectangle.sizeModifier
@@ -66,7 +68,7 @@ bossMenuItem = (stage, boss) -> {
 
 spellcardMenuItem = (stage, boss, spellcard) -> {
 	label: spellcard.name
-	:spellcard
+	:spellcard, :boss, :stage
 	draw: (x, y) =>
 		r = @\getRectangle x, y
 		defaultColor = @\getDefaultColor!
@@ -90,19 +92,16 @@ spellcardMenuItem = (stage, boss, spellcard) -> {
 
 			{255, 127 + 64 * o, 127 + 64 * o, @\getDefaultAlpha!}
 
-		@menu\print @label,
-			r.x + 24 * vscreen.rectangle.sizeModifier,
-			r.y - 2,
-			color
-
-		for i = 1, 3
-			color[i] *= 0.75
-
 		@menu\print "#{spellcard.sign or "Unknown"} sign",
-			r.x + 48 * sizemod,
-			r.y - 2 + 30 * sizemod,
+			r.x + 12 * sizemod,
+			r.y - 2,
 			color,
 			fonts.get "Sniglet-Regular", 22 * sizemod
+
+		@menu\print @label,
+			r.x + (12 + 150) * vscreen.rectangle.sizeModifier,
+			r.y - 2,
+			color
 	onSelection: =>
 		newState = require "ui.difficulty"
 		newStage = {
@@ -135,8 +134,8 @@ spellcardMenuItem = (stage, boss, spellcard) -> {
 
 updateSpellcardsList = ->
 	newValues = {
-		maxDisplayedItems: 10
-		itemHeight: 48
+		maxDisplayedItems: 18
+		itemHeight: 24
 		root: true
 	}
 
@@ -242,23 +241,27 @@ state.draw = =>
 
 	@spellcardsMenu\draw!
 
-	hoveredStage = do
+	hoveredSpellcard = unless hoveredBoss or hoveredStage
 		menuItem = @spellcardsMenu.items[@spellcardsMenu.items.selection]
 
 		if menuItem
-			menuItem.stage
+			hoveredStage = menuItem.stage
+			hoveredBoss = menuItem.boss
+
+			menuItem.spellcard
 
 	hoveredBoss = unless hoveredStage
 		menuItem = @spellcardsMenu.items[@spellcardsMenu.items.selection]
 
 		if menuItem
+			hoveredStage = menuItem.stage
 			menuItem.boss
 
-	hoveredSpellcard = unless hoveredBoss or hoveredStage
+	hoveredStage = do
 		menuItem = @spellcardsMenu.items[@spellcardsMenu.items.selection]
 
 		if menuItem
-			menuItem.spellcard
+			menuItem.stage
 
 	with oldPrint = love.graphics.print
 		-- FIXME: Hacky as fuck. Children, don’t do this at home.
@@ -272,7 +275,62 @@ state.draw = =>
 			y + (vscreen.height - 680 - 20) * sizemod,
 			480 * sizemod, 600 * sizemod
 
-		if hoveredBoss
+		if hoveredSpellcard
+			if @hoveredSpellcard != hoveredSpellcard
+				@hoveredSpellcard = hoveredSpellcard
+				spellcard = hoveredSpellcard
+
+				@danmaku = Danmaku
+					x: screenWidth - (20 + 480) * sizemod
+					y: y + (vscreen.height - 680 - 20) * sizemod
+					drawWidth: 480 * sizemod
+					drawHeight: 600 * sizemod
+					difficulty: spellcard.difficulties[#spellcard.difficulties]
+					stage: Stage {
+						generated: true
+						drawBossData: =>
+
+						update: =>
+							if @frame == 1
+								@\addEntity Player {
+									touchable: false
+									draw: =>
+									update: =>
+										@x = @game.width / 2
+										@y = @game.height * 6 / 7
+								}
+							if #@enemies < 1
+								print "Creating new Boss?"
+								boss = {k,v for k,v in pairs hoveredBoss}
+
+								boss[1] = spellcard
+
+								for i = 2, #boss
+									boss[i] = nil
+
+								boss = @\addEntity Boss boss
+
+--								boss.frame = boss.spellStartFrame - 1
+
+							if @boss
+								if @boss.health == 1
+									@boss.readyForRemoval = true
+					}
+
+				-- FIXME: Make this configurable, somehow.
+				while not @danmaku.boss or @danmaku.boss.frame < @danmaku.boss.spellStartFrame
+					@danmaku\update!
+
+			@danmaku\draw!
+
+			@spellcardsMenu\print "#{hoveredSpellcard.description or "???"}",
+				screenWidth - (20 + 480) * sizemod,
+				y + (vscreen.height - 80 - 20) * sizemod,
+				{200, 200, 200},
+				@descriptionsFont
+
+			drawDifficulties self, hoveredSpellcard
+		elseif hoveredBoss
 			fontHeight = @descriptionsFont\getHeight!
 
 			portrait = portraits[hoveredBoss.name]
@@ -310,16 +368,6 @@ state.draw = =>
 				Y -= fontHeight
 
 			drawDifficulties self, hoveredBoss
-		elseif hoveredSpellcard
-			-- FIXME: Drawing preview here
-
-			@spellcardsMenu\print "#{hoveredSpellcard.description or "???"}",
-				screenWidth - (20 + 480) * sizemod,
-				y + (vscreen.height - 80 - 20) * sizemod,
-				{200, 200, 200},
-				@descriptionsFont
-
-			drawDifficulties self, hoveredSpellcard
 		elseif hoveredStage
 			-- FIXME: Add background or something.
 			@playStageMenu\print "#{hoveredStage.description or "???"}",
@@ -336,6 +384,9 @@ state.update = (dt) =>
 
 	@hoverTime += dt
 
+	if @danmaku
+		@danmaku\update!
+
 	@descriptionsFont = fonts.get "Sniglet-Regular", 18 * sizemod
 
 	@playStageMenu.x = 15 * sizemod
@@ -347,7 +398,7 @@ state.update = (dt) =>
 	@spellcardsMenu.y = y + 100 * sizemod
 	@spellcardsMenu.width = screenWidth - (20 + 400) * sizemod
 	@spellcardsMenu.font = fonts.get "Sniglet-Regular", 24 * sizemod
-	@spellcardsMenu.itemHeight = 64 * sizemod
+	@spellcardsMenu.itemHeight = 36 * sizemod
 
 	@playStageMenu\update dt
 	@spellcardsMenu\update dt
