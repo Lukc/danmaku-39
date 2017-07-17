@@ -64,6 +64,7 @@ s2 = Spellcard {
 			for i = 1, 6
 				@game\addEntity Enemy
 					radius: 0
+					damageable: false
 					update: =>
 						angle = @frame * 2 * math.pi / 360 + math.pi * 2 / 6 * i
 
