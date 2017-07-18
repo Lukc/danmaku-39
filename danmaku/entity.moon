@@ -288,11 +288,11 @@ class
 		@dying = true
 		@touchable = false
 
-	angleToPlayer: =>
+	nearestPlayer: =>
 		players = @game.players
 
 		unless #players > 0
-			return math.pi/2, "no player"
+			return nil
 
 		nearest = players[1]
 		shortestDistance = @@.distance self, players[1]
@@ -304,6 +304,14 @@ class
 			if distance < shortestDistance
 				shortestDistance = distance
 				nearest = player
+
+		nearest
+
+	angleToPlayer: =>
+		nearest = @\nearestPlayer!
+
+		unless nearest
+			return math.pi/2, "no player"
 
 		@\angleToCoordinates nearest
 
