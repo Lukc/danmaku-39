@@ -24,11 +24,12 @@ b4 = Spellcard {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 	update: =>
-		if (@frame - @spellStartFrame) % 50 == 0
+		if (@frame - @spellStartFrame) % 60 == 0 and (@frame - @spellStartFrame) % 400 < 300
+			varAngle = (math.random() - 0.5)
 			@\fire ArrowHeadBullet with {}
 				.speed = 5
 				.angle = 0
-				.direction = .angle
+				.direction = .angle + varAngle
 				.color = {0,142,241}
 				.update = =>
 					if @frame%5 ==0
@@ -49,8 +50,8 @@ b4 = Spellcard {
 									@speed = math.abs((@y-@game.players[1].y)/@game.height)+2
 			@\fire ArrowHeadBullet with {}
 				.speed = 5
-				.angle = math.pi
-				.direction = .angle
+				.angle = math.pi 
+				.direction = .angle - varAngle
 				.color = {0,142,241}
 				.update = =>
 					if @frame%5 ==0
