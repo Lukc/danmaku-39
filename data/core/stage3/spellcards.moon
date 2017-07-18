@@ -6,14 +6,150 @@
 
 {:Difficulties} = Danmaku
 
-{:BigBullet, :SmallBullet, :MiniBullet, :HeartBullet, :HugeBullet, :ArrowHeadBullet, :HeartBullet} = require "data.bullets"
+{:BigBullet, :SmallBullet, :MiniBullet, :HeartBullet, :HugeBullet, :ArrowHeadBullet, :HeartBullet, :DiamondBullet, :StarBullet} = require "data.bullets"
 -- america no seifuku
 -- maya shindenno no bakuhatsu
 {:radial, :circle, :sinusoid, :rotation, :row, :laser, :attachedLaser} = require "data.helpers"
 {:siphon} = require "data.core.stage3.helpers"
 
+b4 = Spellcard {
+	name: "Non-Spell"
+	health: 3600
+	timeout: 200 * 60
+	position: => {
+		x: @game.width/2
+		y: @game.height/4
+	}
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
+	update: =>
+		if (@frame - @spellStartFrame) % 50 == 0
+			@\fire ArrowHeadBullet with {}
+				.speed = 5
+				.angle = 0
+				.direction = .angle
+				.color = {0,142,241}
+				.update = =>
+					if @frame%5 ==0
+						savedTime = @frame
+						@game.boss\fire HeartBullet with {}
+							.color = {255,0,255}
+							.x = @x
+							.y = @y
+							.y += math.random()*200 -100
+							.speed = 0
+							.angle = math.pi/2
+							.direction = .angle
+							.update = =>
+								if (@frame + savedTime) == 80
+									@ready = true
+									@speed = 4
+								if @ready
+									@speed = math.abs((@y-@game.players[1].y)/@game.height)+2
+			@\fire ArrowHeadBullet with {}
+				.speed = 5
+				.angle = math.pi
+				.direction = .angle
+				.color = {0,142,241}
+				.update = =>
+					if @frame%5 ==0
+						savedTime = @frame
+						@game.boss\fire HeartBullet with {}
+							.color = {255,0,255}
+							.x = @x
+							.y = @y
+							.y += math.random()*200 -100
+							.speed = 0
+							.angle = math.pi/2
+							.direction = .angle
+							.update = =>
+								if (@frame + savedTime) == 80
+									@ready = true
+									@speed = 4
+								if @ready
+									@speed = math.abs((@y-@game.players[1].y+40)/@game.height)+2
+}
+
+b3 = Spellcard {
+	name: "Bouncing arrows"
+	health: 3600
+	timeout: 200 * 60
+	position: => {
+		x: @game.width/2
+		y: @game.height/4
+	}
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
+	update: =>
+		if (@frame - @spellStartFrame) % 25 == 0
+			@\fire ArrowHeadBullet with {}
+				.speed = 2
+				.angle = math.pi*((@frame- @spellStartFrame)/25 %17)/16
+				.direction = .angle
+				.color = {255,0,255}
+				.update = =>
+					if @x < 1 or @x > @game.width-1
+						@angle = math.pi-@angle
+						@direction = @angle
+						@radius += 0.4
+						@color[2] += 60
+						@color[3] -= 60
+					if @y < 1 or @y > @game.height-1
+						@angle = -@angle
+						@direction = @angle
+						@radius += 0.4
+						@color[2] += 60
+						@color[3] -= 60
+					if @radius > 5
+						@\die!
+}
+
+b2 = Spellcard {
+	name: "Explosive arrow"
+	health: 3600
+	timeout: 200 * 60
+	position: => {
+		x: @game.width/2
+		y: @game.height/4
+	}
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
+	update: =>
+		@game.boss.speed = 0.5
+		@game.boss.direction = @\angleToPlayer!
+		if (@frame - @spellStartFrame) % 25 == 0
+			for bullet in radial {bullet: {angle: @\angleToPlayer!, outOfScreenTime: 2*60}, bullets: 6,from: self, radius:1}
+				@\fire ArrowHeadBullet with bullet
+					.color = {@frame*40 % 255, (@frame*40 +125) % 255 , 0}
+					.speed = 3
+					distVal = Entity.distance(@game.boss,@game.players[1])/.speed
+					.update = =>
+						if @speed > 0
+							if @frame > distVal
+								@speed = 0
+						if @frame == 400
+							@game.boss\fire BigBullet with {}
+								.color = @color
+								.x = @x
+								.y = @y
+								.speed = 0
+								.angle = 0
+								.radius = -10
+								.direction = 0
+								.update = =>
+									@radius += 2
+									if @frame == 20
+										@\die!
+							@\die!
+}
+
+
+
 b1 = Spellcard {
-	name: "Maelstrom gate"
+	name: "kokoro madness"
 	health: 3600
 	timeout: 200 * 60
 	position: => {
@@ -25,7 +161,7 @@ b1 = Spellcard {
 	}
 	update: =>
 		rayon = 100
-		vart = 200
+		vart = 100
 		start = 180
 		t = (math.pi*@frame/vart)
 		@game.boss.x = @game.width/2 + 10*16*(math.sin t)^3
@@ -51,78 +187,11 @@ b1 = Spellcard {
 					if @speed < 0
 						@change == 0
 						@speed = 0
-		-- Heart arround boss
-		[[if (@frame - @spellStartFrame) == start-20
-			for i=1,vart/10
-				@\fire SmallBullet with {}
-					.outOfScreenTime = 60*60
-					.color = {0,255,255}
-					if i % 2 == 0
-						.color = {255,255,0}
-					.speed = 0
-					.radius = 3
-					.angle = 0
-					.direction = 0
-					.update = =>
-						p = math.pi*i*20/vart
-						@x = @game.boss.x + 3*16*(math.sin p)^3
-						@y = @game.boss.y - 3*(13*(math.cos p) - 5*math.cos(2*p) - 2*math.cos(3*p)-math.cos(4*p))]]
-		-- Shining projectile launcher
-		[[if (@frame - @spellStartFrame) == start-20
-			@mainBullet = {}
-			@\fire SmallBullet with @mainBullet
-				.color = {200,0,200}
-				.speed = 0
-				.radius = 20
-				.angle = 0
-				.direction = 0
-				.x = @game.width/2
-				.y = @game.height/4
-		if (@frame - @spellStartFrame) %20 == 0 and (@frame - @spellStartFrame) >= start and @mainBullet
-			@stort = math.pi*((@frame)%49)/50
-			for bullet in row {startAngle: math.pi/2+@stort, endAngle:math.pi/2-@stort,bullets:15}
-				@\fire SmallBullet with bullet
-					.color = {@frame*40 % 255, (@frame*40 +125) % 255 , 0}
-					.speed = 2
-					.x = @game.boss.mainBullet.x
-					.y = @game.boss.mainBullet.y]]
-					
 		if (@frame - @spellStartFrame) % (vart/2) < 38 and (@frame - @spellStartFrame) >= start and (@frame - @spellStartFrame) % 5 == 0
 			for bullet in radial {bullet: {angle: @\angleToPlayer!, outOfScreenTime: 2*60}, bullets: 10,from: self, radius:20}
 				@\fire ArrowHeadBullet with bullet
 					.color = {@frame*40 % 255, (@frame*40 +125) % 255 , 0}
 					.speed = 2
-		
-		[[if (@frame - @spellStartFrame) == 100
-			for i = 0,(bulletsPerCircle-1)
-				@\fire SmallBullet with {}
-					.outOfScreenTime = 60*60
-					.color = {0,255,255}
-					if i % 2 == 0
-						.color = {255,255,0}
-					.speed = 0
-					.angle = i*math.pi * 2 / bulletsPerCircle
-					.direction = i*math.pi * 2 / bulletsPerCircle
-					.update = =>
-						@x = @game.boss.x + radius * math.cos (@angle+@frame/100)
-						@y = @game.boss.y + radius * math.sin (@angle+@frame/100)]]
-		[[if (@frame - @spellStartFrame) % 20 == 0 and (@frame - @spellStartFrame) > 100
-			for bullet in radial {bullet: {angle: @frame/100, outOfScreenTime: 2*60}, bullets: bulletsPerCircle/2,from: self, :radius}
-				@\fire SmallBullet with bullet
-					.color = {@frame*40 % 255, (@frame*40 +125) % 255 , 0}
-					.speed = 2]]
-		[[if (@frame - @spellStartFrame) % 20 == 0 and (@frame - @spellStartFrame) > 100 --attachedlaser
-			@\fire attachedLaser
-				from: self
-				bullet:
-					speed:5
-					angle:@frame/20*math.pi/5
-					h: 800
-					w: 5
-					touchable: false
-					update: =>
-						if @frame == 50
-							@\die!]]
 }
 
 s2 = Spellcard {
@@ -358,6 +427,86 @@ s4 = Spellcard {
 					.direction = direction1
 }
 
+
+[[b2 = Spellcard {
+	name: "Maelstrom gate"
+	health: 3600
+	timeout: 200 * 60
+	position: => {
+		x: @game.width/2
+		y: @game.height/4
+	}
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
+	update: =>
+		rayon = 100
+		vart = 100
+		start = 180
+		bulletsPerCircle = 50
+		t = (math.pi*@frame/vart)
+		@game.boss.x = @game.width/2 + 10*16*(math.sin t)^3
+		@game.boss.y = @game.height/4 - 10*(13*(math.cos t) - 5*math.cos(2*t) - 2*math.cos(3*t)-math.cos(4*t))
+		radius = 80
+		
+		if (@frame - @spellStartFrame) == 100
+			for i = 0,(bulletsPerCircle-1)
+				@\fire SmallBullet with {}
+					.outOfScreenTime = 60*60
+					.color = {0,255,255}
+					if i % 2 == 0
+						.color = {255,255,0}
+					.speed = 0
+					.angle = i*math.pi * 2 / bulletsPerCircle
+					.direction = i*math.pi * 2 / bulletsPerCircle
+					.update = =>
+						@x = @game.boss.x + radius * math.cos (@angle+@frame/100)
+						@y = @game.boss.y + radius * math.sin (@angle+@frame/100)
+		if (@frame - @spellStartFrame) % 20 == 0 and (@frame - @spellStartFrame) > 100
+			for bullet in radial {bullet: {angle: @frame/100, outOfScreenTime: 2*60}, bullets: bulletsPerCircle/2,from: self, :radius}
+				@\fire SmallBullet with bullet
+					.color = {@frame*40 % 255, (@frame*40 +125) % 255 , 0}
+					.speed = 2
+		if (@frame - @spellStartFrame) % 20 == 0 and (@frame - @spellStartFrame) > 100 --attachedlaser
+			@\fire attachedLaser
+				from: self
+				bullet:
+					speed:5
+					angle:@frame/20*math.pi/5
+					h: 800
+					w: 5
+					touchable: false
+					update: =>
+						if @frame == 50
+							@\die!
+		-- Special nazi croix gammée, ne pas utilisé théoriquement.
+		if (@frame - @spellStartFrame) % (frequency+waitingTime) == 0
+			for bullet in radial {bullet: {angle: @frame/100, outOfScreenTime: 2*60}, bullets: 4,from: self, :radius}
+				@\fire HugeBullet with bullet
+					.color = {@frame*40 % 255, (@frame*40 +125) % 255 , 0}
+					.speed = 2
+					goodAngle = @\angleToPlayer!
+					.update = =>
+						if @frame == frequency/2
+							@angle = @angle + math.pi/2
+							@direction = @angle
+						if @frame == frequency and not @dying
+							@\die!
+						if @frame % 5 == 0 and not @dying
+							now = @frame
+							@game.boss\fire DiamondBullet with {}
+								.speed = 0
+								.color = {240,123,126}
+								.direction = goodAngle
+								.angle = math.atan2(@game.boss.y-@y,@game.boss.x-@x)
+								.x = @x
+								.y = @y
+								.update = =>
+									if (@frame + now) == frequency
+										@speed = 1
+		]]
+		
+
 {
-	s1,s2,s3,s4,s5,b1
+	s1,s2,s3,s4,s5,b1,b2,b3,b4
 }
