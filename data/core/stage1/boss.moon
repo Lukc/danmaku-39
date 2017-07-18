@@ -22,6 +22,8 @@ Wave = require "data.wave"
 
 {:circularDrop} = require "data.core.common"
 
+images = require "images"
+
 BossData {
 	radius: 40
 	x: 600 / 2
@@ -43,6 +45,23 @@ BossData {
 	--	else
 	--		speed = 3
 	--		direction = 0
+
+	draw: =>
+		circle = images.get "background_circle.png"
+
+		if @frame <= @spellStartFrame
+			f = @spellStartFrame - @frame
+
+			progress = f / @interSpellDelay
+
+			sizeRatio = progress
+
+			love.graphics.setColor 255, 255, 255, 255 - 512 * progress
+			love.graphics.draw circle,
+				@x, @y,
+				nil,
+				sizeRatio, sizeRatio,
+				circle\getWidth!/2, circle\getHeight!/2
 
 	endOfSpell: (spell) =>
 		local pointItems, powerItems
