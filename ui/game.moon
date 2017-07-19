@@ -267,7 +267,7 @@ state.draw = =>
 			sprite = images.get "portraits/Coactlicue.png"
 
 			love.graphics.draw sprite,
-				x + @danmaku.x / 2, y + h/2,
+				x + (@danmaku.x - x) / 2, y + h/2,
 				nil,
 				@danmaku.drawHeight / sprite\getHeight!, nil,
 				sprite\getWidth!/2,
