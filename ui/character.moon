@@ -58,19 +58,24 @@ state.enter = (options, multiplayer, noReset) =>
 	@selectedVariants = {}
 	@selectedCharacters = [false for i = 1, multiplayer and 4 or 1]
 
-	@particles = with love.graphics.newParticleSystem images.get("splash_bullet.png"), 512
-		\setParticleLifetime 50, 60
-		\setDirection math.pi / 2
-		\setEmissionRate 2
-		\setSizeVariation 1
-		\setSizes 0.1, 0.2, 0.25, 0.35
-		\setLinearAcceleration -1.8, -9, 1.8, 0
-		\setSpeed 0, -12.5
-		\setColors 255, 255, 255, 255,
-			255, 255, 255, 0
+	@particles = {}
+	for i = 1, 4
+		@particles[i] = with love.graphics.newParticleSystem images.get("splash_bullet.png"), 512
+			\setParticleLifetime 50, 60
+			\setDirection math.pi / 2
+			if multiplayer
+				\setEmissionRate 1
+			else
+				\setEmissionRate 2
+			\setSizeVariation 1
+			\setSizes 0.1, 0.2, 0.25, 0.35
+			\setLinearAcceleration -1.8, -9, 1.8, 0
+			\setSpeed 0, -12.5
+			\setColors 255, 255, 255, 255,
+				255, 255, 255, 0
 
-		for i = 1, 60
-			\update 1
+			for _ = 1, 60
+				\update 1
 
 	local cursors
 	width  = 1024
@@ -198,7 +203,8 @@ state.enter = (options, multiplayer, noReset) =>
 state.update = (dt) =>
 	vscreen\update!
 
-	@particles\update dt
+	for i = 1, 4
+		@particles[i]\update dt
 
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen.fullRectangle
 
@@ -277,16 +283,33 @@ state.draw = =>
 			r = @grid\getCellRectangle cursor.index
 
 			with color = cursor.color
-				@particles\setColors color[1], color[2], color[3], 255,
+				@particles[i]\setColors color[1], color[2], color[3], 255,
 					color[2], color[2], color[3], 0
 
 			oldScissor = {love.graphics.getScissor!}
-			love.graphics.setScissor r.x, r.y, r.w, r.h
 
-			love.graphics.draw @particles,
-				r.x + r.w / 2, r.y + r.h * 1.25
+			if #@grid.cursors == 1
+				love.graphics.setScissor r.x, r.y, r.w, r.h
+
+				love.graphics.draw @particles[i],
+					r.x + r.w / 2, r.y + r.h * 1.25
+			else
+				love.graphics.setScissor X, Y, width, height / 3
+
+				love.graphics.draw @particles[i],
+					X + width / 2, Y + height / 2 * 1.25
 
 			love.graphics.setScissor unpack oldScissor
+
+			if #@grid.cursors != 1
+				bullet = images.get "splash_bullet.png"
+				love.graphics.setColor cursor.color
+				love.graphics.draw bullet,
+					r.x + width / 2 / #@grid.cursors * (i - 0.5),
+					h / 2,
+					nil,
+					width / 2 / bullet\getWidth!, nil,
+					bullet\getWidth!/2, bullet\getHeight!/2
 
 		if @selectedVariants[i]
 			-- That state exists only during multiplayer.
