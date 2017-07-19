@@ -12,6 +12,63 @@
 {:radial, :circle, :sinusoid, :rotation, :row, :laser, :attachedLaser} = require "data.helpers"
 {:siphon} = require "data.core.stage3.helpers"
 
+b5 = Spellcard {
+	name: "No kitten were harmed"
+	health: 3600
+	timeout: 200 * 60
+	position: => {
+		x: @game.width/2
+		y: @game.height/4
+	}
+	difficulties: {
+		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
+	}
+	update: =>
+		ratio = 1/400
+		if (@frame - @spellStartFrame) % 1 == 0
+			@\fire HugeBullet with {}
+				.speed = 4
+				.angle = math.random()*math.pi*2
+				.direction = .angle
+				.color = {0,142,241,155}
+				.radius = 5
+				.update = =>
+					if not @maxSpeed
+						@maxSpeed = math.random()+3
+					@speed = math.cos(@frame/50)*@maxSpeed/4+3*@maxSpeed/4
+		if (@frame - @spellStartFrame) % 20 == 0
+			for bullet in radial {bullet: {angle: math.pi*((@frame - @spellStartFrame)*ratio), outOfScreenTime: 2*60}, bullets: 5,from: self, radius:4}
+				@\fire SmallBullet with bullet
+					.speed = 2
+					.color = {255,142,0}
+			for bullet in radial {bullet: {angle: -math.pi*((@frame - @spellStartFrame)*ratio), outOfScreenTime: 2*60}, bullets: 5,from: self, radius:4}
+				@\fire SmallBullet with bullet
+					.speed = 2
+					.color = {255,142,0}
+		if (@frame - @spellStartFrame) % 80 == 0
+			for bullet in radial {bullet: {angle: -math.pi*((@frame - @spellStartFrame)*ratio), outOfScreenTime: 2*60}, bullets: 40,from: self, radius:4}
+				@\fire SmallBullet with bullet
+					.speed = 2
+					.radius = 10
+					.color = {142,255,0}
+					if (@frame - @spellStartFrame) % 160 == 80
+						.color = {255,142,255}
+					oldUpdate = .update
+					.update = =>
+						if oldUpdate
+							oldUpdate self
+						if @radius > 10
+							@radius -= 1
+						t = @angle % (2*math.pi)
+						t2 = (@angle - math.pi) % (2*math.pi)
+						r = (math.pi*(@game.boss.frame+@frame)/200)  % (2*math.pi)
+						r2 = (math.pi+(@game.boss.frame+@frame)/200 - math.pi) % (2*math.pi)
+						s = r + math.pi/4
+						s2 = r2 + math.pi/4
+						if (s2 > t2 and r2 < t2 and t>math.pi) or (s > t and t < t and t<=math.pi) and @radius
+							@radius += 1.5
+}
+
 b4 = Spellcard {
 	name: "Non-Spell"
 	health: 3600
@@ -84,27 +141,34 @@ b3 = Spellcard {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 	update: =>
-		if (@frame - @spellStartFrame) % 25 == 0
-			@\fire ArrowHeadBullet with {}
-				.speed = 2
-				.angle = math.pi*((@frame- @spellStartFrame)/25 %17)/16
-				.direction = .angle
-				.color = {255,0,255}
-				.update = =>
-					if @x < 1 or @x > @game.width-1
-						@angle = math.pi-@angle
-						@direction = @angle
-						@radius += 0.4
-						@color[2] += 60
-						@color[3] -= 60
-					if @y < 1 or @y > @game.height-1
-						@angle = -@angle
-						@direction = @angle
-						@radius += 0.4
-						@color[2] += 60
-						@color[3] -= 60
-					if @radius > 5
-						@\die!
+		if (@frame - @spellStartFrame) % 100 == 0
+			for bullet in radial {bullet: {angle: (math.pi*((@frame- @spellStartFrame)*153)/3578), outOfScreenTime: 2*60}, bullets: 8,from: self, radius:4}
+				@\fire ArrowHeadBullet with bullet
+					.speed = 2
+					.color = {255,0,255}
+					.radius = 2
+					.update = =>
+						if not @lasts
+							@lasts = 1
+						if (@x < 0 or @x > @game.width) and @frame > (@lasts +3)
+							@angle = math.pi-@angle
+							@direction = @angle
+							@radius += 0.4
+							@speed -= 0.1
+							@lasts = @frame
+							@color[2] += 60
+							@color[3] -= 60
+							
+						if (@y < 0 or @y > @game.height) and @frame > (@lasts +3)
+							@angle = -@angle
+							@direction = @angle
+							@radius += 0.4
+							@speed -= 0.1
+							@lasts = @frame
+							@color[2] += 60
+							@color[3] -= 60
+						if @radius > 4
+							@\die!
 }
 
 b2 = Spellcard {
@@ -509,5 +573,5 @@ s4 = Spellcard {
 		
 
 {
-	s1,s2,s3,s4,s5,b1,b2,b3,b4
+	s1,s2,s3,s4,s5,b1,b2,b3,b4,b5
 }
