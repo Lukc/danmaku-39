@@ -274,15 +274,27 @@ state.draw = =>
 				sprite\getHeight!/2
 
 		if @danmaku.boss
-			-- FIXME: hardcoded braindamage
-			sprite = images.get "portraits/Coactlicue.png"
+			oldColor = {love.graphics.getColor!}
 
-			love.graphics.draw sprite,
-				x + @danmaku.drawWidth + 3 * (@danmaku.x - x) / 2, y + h/2,
-				nil,
-				-@danmaku.drawHeight / sprite\getHeight!, @danmaku.drawHeight / sprite\getHeight!,
-				sprite\getWidth!/2,
-				sprite\getHeight!/2
+			sprite = images.get "portraits/#{@danmaku.boss.name}.png"
+
+			if @danmaku.boss.currentSpellIndex <= 1
+				color = [c for c in *oldColor]
+				print @danmaku.boss.frame, @danmaku.boss.spellStartFrame
+				-- FIXME: First 60 is an hardcoded value from danmaku.boss.
+				color[4] = math.min 255, 255 * (@danmaku.boss.frame - 60) / 60
+				love.graphics.setColor color
+
+			if sprite
+				love.graphics.draw sprite,
+					x + @danmaku.drawWidth + 3 * (@danmaku.x - x) / 2, y + h/2,
+					nil,
+					-@danmaku.drawHeight / sprite\getHeight!,
+					@danmaku.drawHeight / sprite\getHeight!,
+					sprite\getWidth!/2,
+					sprite\getHeight!/2
+
+			love.graphics.setColor oldColor
 
 	do
 		-- Background cleaning.
