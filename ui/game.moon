@@ -185,11 +185,11 @@ state.enter = (options, players) =>
 
 	width, height = switch stage.screenRatio
 		when "wide"
-			974, 585
+			1024, 600
 		when "narrow"
-			375, 750
+			400,  800
 		else
-			600, 750
+			640,  800
 
 	@danmaku = Danmaku
 		x: 25
@@ -216,157 +216,6 @@ state.enter = (options, players) =>
 	-- Mostly serves to print entity hitboxes.
 	@danmaku.debug = false
 
-state.drawWideUI = (x, y) =>
-	sizemod = vscreen.rectangle.sizeModifier
-	h = @danmaku.drawHeight + (@danmaku.y - y) * 2
-	totalWidth = @danmaku.drawWidth - 25 * sizemod * (#@players - 1)
-
-	love.graphics.setFont @font
-
-	for i = 1, #@players
-		player = @players[i]
-
-		r = with {
-			w: (totalWidth) / #@players
-			h: vscreen.height * sizemod - h - 25 * sizemod
-			x: x
-			y: y + h
-		}
-			.x += .w * (i - 1) + 25 * sizemod * i
-
-		love.graphics.setColor 255, 255, 255
-		love.graphics.rectangle "line", r.x, r.y, r.w, r.h
-
-		love.graphics.print "B: #{player.bombs}", r.x + 10 * sizemod, r.y + 10 * sizemod
-		love.graphics.print "L: #{player.lives}", r.x + 10 * sizemod, r.y + 50 * sizemod
-		love.graphics.print "S: #{player.score}", r.x + 10 * sizemod, r.y + 90 * sizemod
-
-livesBox =
-	height: 35
-	draw: (player, x, y, sizemod) =>
-		love.graphics.setColor 255, 125, 1955
-		for i = 0, 9
-			if (i + 1) <= player.lives
-				love.graphics.rectangle "line",
-					x + 40 * sizemod * i, y,
-					35 * sizemod, 35 * sizemod
-
-bombsBox =
-	height: 35
-	draw: (player, x, y, sizemod) =>
-		love.graphics.setColor 127, 255, 127
-		for i = 0, 9
-			if (i + 1) <= player.bombs
-				love.graphics.rectangle "line",
-					x + 40 * sizemod * i, y,
-					35 * sizemod, 35 * sizemod
-
-normalPlayerBox =
-	resize: (sizemod) =>
-		x = vscreen.rectangle.x
-
-		@height = 260 * sizemod
-		@width = love.graphics.getWidth! -
-			state.danmaku.drawWidth -
-			(state.danmaku.x - x) * 3
-	draw: (player, x, y, sizemod) =>
-		love.graphics.rectangle "line",
-			x, y,
-			@width, @height
-
-		love.graphics.print "#{player.name}",
-			x + 5 * sizemod, y + 5 * sizemod
-
-		love.graphics.print "Score",
-			x + 5 * sizemod, y + 45 * sizemod
-		love.graphics.print "#{player.score}",
-			x + 250 * sizemod, y + 45 * sizemod
-
-		love.graphics.print "Points",
-			x + 5 * sizemod, y + 75 * sizemod
-		love.graphics.print "#{player.customData.points or 0}",
-			x + 250 * sizemod, y + 75 * sizemod
-
-		love.graphics.print "Graze",
-			x + 5 * sizemod, y + 105 * sizemod
-		love.graphics.print "#{player.graze}",
-			x + 250 * sizemod, y + 105 * sizemod
-
-		livesBox\draw player,
-			x + 5 * sizemod, y + 140 * sizemod,
-			sizemod
-		bombsBox\draw player,
-			x + 5 * sizemod, y + 180 * sizemod,
-			sizemod
-
-		love.graphics.setColor 255, 63, 63
-		love.graphics.rectangle "line",
-			5 * sizemod + x, 220 * sizemod + y,
-			(@width - 5 * 2) * sizemod * (player.power / player.maxPower), 35 * sizemod
-		love.graphics.print "#{player.power}/#{player.maxPower}",
-			5 * sizemod + x, 225 * sizemod + y
-
-		love.graphics.setColor 255, 255, 255
-
-smallPlayerBox =
-	resize: (sizemod) =>
-		@height = 160
-		@width = 405
-	draw: (player, x, y, sizemod) =>
-		love.graphics.rectangle "line", x, y, @width, @height
-
-		love.graphics.print "#{player.name}", x + 5, y + 5
-		love.graphics.print "#{player.score}", x + 250, y + 5
-
-		livesBox\draw player, x + 5, y + 40, sizemod
-		bombsBox\draw player, x + 5, y + 80, sizemod
-
-		love.graphics.setColor 255, 63, 63
-		love.graphics.rectangle "line",
-			5 + x, 120 + y,
-			245 * (player.power / player.maxPower), 35
-		love.graphics.print "#{player.power}/#{player.maxPower}", 5 + x, 125 + y
-
-		love.graphics.setColor 255, 255, 255
-		love.graphics.print "#{player.graze}",
-			250 + x, 125 + y
-
-		love.graphics.setColor 255, 255, 255
-
-state.drawNormalUI = (x, y) =>
-	w = @danmaku.drawWidth + (@danmaku.x - x) * 2
-	sizemod = vscreen.rectangle.sizeModifier
-
-	love.graphics.setFont @font
-
-	love.graphics.setColor 255, 255, 255
-	love.graphics.print "#{love.timer.getFPS!} FPS",
-		x + w + 10 * sizemod, y + 705 * sizemod
-	love.graphics.print "#{#@danmaku.entities} entities",
-		x + w + 10 * sizemod, y + 770 * sizemod
-
-	love.graphics.print "Score",
-		x + w + 10 * sizemod, y + 10 * sizemod
-	love.graphics.print "#{@danmaku.score}",
-		x + w + 255 * sizemod, y + 10 * sizemod
-
-	love.graphics.print "Highscore",
-		x + w + 10 * sizemod, y + 40 * sizemod
-	love.graphics.print "#{math.max @highscore, @danmaku.score}",
-		x + w + 255 * sizemod, y + 40 * sizemod
-
-	box = if #@players > 2
-		smallPlayerBox
-	else
-		normalPlayerBox
-
-	for i, player in ipairs @players
-		box\resize sizemod
-		box\draw player,
-			x + w + 5 * sizemod,
-			y + 80 * sizemod + (i - 1) * (box.height + 5 * sizemod),
-			sizemod
-
 state.draw = =>
 	{:x, :y, :w, :h, sizeModifier: sizemod} = vscreen\update!
 	danmakuSizemod = state.danmaku.drawWidth / state.danmaku.width
@@ -374,8 +223,8 @@ state.draw = =>
 	@danmaku.drawWidth = @danmaku.width * math.floor sizemod
 	@danmaku.drawHeight = @danmaku.height * math.floor sizemod
 
-	@danmaku.x = x + 25 * sizemod
-	@danmaku.y = y + 25 * sizemod
+	@danmaku.x = x + (w - @danmaku.drawWidth) / 2
+	@danmaku.y = y + (h - @danmaku.drawHeight) / 2
 
 	for item in *@danmaku.items
 		if item.marker
@@ -412,12 +261,71 @@ state.draw = =>
 	else
 		love.graphics.setColor 255, 255, 255
 
+	do
+		if #@players == 1
+			-- FIXME: hardcoded braindamage
+			sprite = images.get "portraits/Coactlicue.png"
+
+			love.graphics.draw sprite,
+				x + @danmaku.x / 2, y + h/2,
+				nil,
+				@danmaku.drawHeight / sprite\getHeight!, nil,
+				sprite\getWidth!/2,
+				sprite\getHeight!/2
+
+		if @danmaku.boss
+			-- FIXME: hardcoded braindamage
+			sprite = images.get "portraits/Coactlicue.png"
+
+			love.graphics.draw sprite,
+				x + @danmaku.drawWidth + 3 * (@danmaku.x - x) / 2, y + h/2,
+				nil,
+				-@danmaku.drawHeight / sprite\getHeight!, @danmaku.drawHeight / sprite\getHeight!,
+				sprite\getWidth!/2,
+				sprite\getHeight!/2
+
+	do
+		-- Background cleaning.
+		oldColor = {love.graphics.getColor!}
+		love.graphics.setColor 0, 0, 0
+		love.graphics.rectangle "fill",
+			@danmaku.x, @danmaku.y,
+			@danmaku.drawWidth, @danmaku.drawHeight
+		love.graphics.setColor oldColor
+
 	@danmaku\draw!
 
-	if @danmaku.width >= 700
-		@\drawWideUI x, y
-	else
-		@\drawNormalUI x, y
+	do
+		s = math.floor sizemod
+		love.graphics.setFont fonts.get "Sniglet-Regular", 24 * s
+
+		i = 1
+		for player in *@players
+			sprite = images.get "item_test_life.png"
+			for j = 1, player.lives
+				love.graphics.draw sprite,
+					@danmaku.x + (j - 1) * 32,
+					@danmaku.y + @danmaku.drawHeight - (i * 96 -  0) * s,
+					nil,
+					32 / sprite\getWidth!
+
+			sprite = images.get "item_test_bomb.png"
+			for j = 1, player.bombs
+				love.graphics.draw sprite,
+					@danmaku.x + (j - 1) * 32,
+					@danmaku.y + @danmaku.drawHeight - (i * 96 - 32 + 2) * s,
+					nil,
+					32 / sprite\getWidth!
+
+			sprite = images.get "item_test_power.png"
+			for j = 1, player.power / 5
+				love.graphics.draw sprite,
+					@danmaku.x + (j - 1) * 32,
+					@danmaku.y + @danmaku.drawHeight - (i * 96 - 64 + 4) * s,
+					nil,
+					32 / sprite\getWidth!
+
+			i += 1
 
 	if state.awaitingPlayerName
 		love.graphics.print @playerName .. "_", @nameGrid.x, @nameGrid.y - 50
@@ -445,8 +353,8 @@ state.update = (dt) =>
 		@menu.width = 400 * danmakuSizemod
 		@menu.itemHeight = 64 * danmakuSizemod
 		@menu.font = fonts.get "miamanueva", 32 * danmakuSizemod
-		@menu.x = x + 25 * sizemod + 25 * danmakuSizemod
-		@menu.y = y + 25 * sizemod + 325 * danmakuSizemod
+		@menu.x = @danmaku.x + 32 * danmakuSizemod
+		@menu.y = @danmaku.y + 96 * danmakuSizemod
 		@menu\update dt
 
 		return
@@ -523,10 +431,15 @@ state.keypressed = (key, ...) =>
 	if state.awaitingPlayerName
 		@nameGrid\keypressed key, ...
 	elseif state.paused
-		-- Holy shit, this is the project’s hackiest hack. I think.
-		-- FIXME: I DON’T EVEN KNOW WHAT THIS DOES ANYMORE HALP
-		if key == "escape" and @menu.items.selection == 1 and @menu.items[1].label == "Resume"
-			@menu\back!
+		if key == "escape"
+			state.resuming = @menu.drawTime
+
+			@menu.selectionTime = 0
+			@menu.selectedItem = {
+				onSelection: =>
+					state.paused = false
+					state.resuming = false
+			}
 		else
 			@menu\keypressed key, ...
 	elseif key == "escape"
@@ -543,10 +456,13 @@ state.gamepadpressed = (joystick, button) =>
 			if state.danmaku.endReached
 				return
 
+			state.resuming = @menu.drawTime
+
 			@menu.selectionTime = 0
 			@menu.selectedItem = {
 				onSelection: =>
 					state.paused = false
+					state.resuming = false
 			}
 		else
 			@menu\gamepadpressed joystick, button
