@@ -41,11 +41,13 @@ radial = (arg) ->
 		x = x + radius * math.cos a
 		y = y + radius * math.sin a
 
-		with clone bulletData
+		bd = with clone bulletData
 			.x = x
 			.y = y
 			.angle = a
 			.direction = a
+
+		bd, i
 
 circle = (arg) ->
 	arg or= {}
@@ -75,11 +77,13 @@ circle = (arg) ->
 		x = x + radius * math.cos a
 		y = y + radius * math.sin a
 
-		with clone bulletData
+		bd = with clone bulletData
 			.x = x
 			.y = y
 			.angle = a
 			.direction = angle
+
+		bd, i
 
 sinusoid = (arg) ->
 	arg or= {}
@@ -138,8 +142,10 @@ column = (arg) ->
 		if i > bullets
 			return
 
-		with clone bulletData
+		bd = with clone bulletData
 			.speed = startSpeed + (endSpeed - startSpeed) * (i - 1) / bullets
+
+		bd, i
 
 row = (arg) ->
 	arg or= {}
@@ -160,8 +166,10 @@ row = (arg) ->
 		if i > bullets
 			return
 
-		with clone bulletData
+		bd = with clone bulletData
 			.angle = (.angle or 0) + startAngle + (i - 1) * a
+
+		bd, i
 
 attachedLaser = do
 	update = (parent, duration, oldUpdate) ->
