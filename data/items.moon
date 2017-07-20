@@ -1,7 +1,38 @@
 
 images = require "images"
+fonts = require "fonts"
 
-{:Item} = require "danmaku"
+{:Item, :Entity} = require "danmaku"
+
+TextParticle = (text, x, y, opt) ->
+	opt or= {}
+
+	Entity {
+		:x, :y
+		spawnTime: 20
+		dyingTime: 20
+		update: =>
+			@y -= 1
+
+			if not @dying and @frame == @spawnTime + 20
+				@\die!
+		draw: =>
+			alpha = math.min 255, 255 * @frame / 60
+
+			if @dying
+				alpha = math.min alpha, 255 - 255 * @dyingFrame / @dyingTime
+
+			color = if opt.color
+				[c for c in *opt.color]
+			else
+				{200, 200, 200}
+			color[4] = alpha
+
+			love.graphics.setColor color
+			love.graphics.setFont fonts.get "Sniglet-Regular", opt.size or 15
+			love.graphics.print text,
+				@x, @y
+	}
 
 drawCircle = do
 	circle = images.get "item_circle.png"
@@ -43,6 +74,8 @@ drawCircle = do
 			player.customData.points or= 0
 			player.customData.points += 1
 
+			@game\addEntity TextParticle "1000", player.x, player.y
+
 		(arg) -> Item with {
 				radius: 10
 				:draw
@@ -65,6 +98,13 @@ drawCircle = do
 				player.score += 100
 				@game.score += 100
 
+				@game\addEntity TextParticle "100", player.x, player.y
+			else
+				@game\addEntity TextParticle "1/5 power", player.x, player.y, {
+					color: {255, 127, 127}
+					size: 23
+				}
+
 		(arg) -> Item with {
 				marker: "power"
 				radius: 18
@@ -86,6 +126,11 @@ drawCircle = do
 		collection = (player) =>
 			player\addFragment "life"
 
+			@game\addEntity TextParticle "1/5 life", player.x, player.y, {
+				color: {255, 127, 191}
+				size: 23
+			}
+
 		(arg) -> Item with {
 				marker: "life"
 				radius: 18
@@ -106,6 +151,11 @@ drawCircle = do
 			drawCircle self, {127, 255, 191}
 		collection = (player) =>
 			player\addFragment "bomb"
+
+			@game\addEntity TextParticle "1/5 life", player.x, player.y, {
+				color: {127, 255, 191}
+				size: 23
+			}
 
 		(arg) -> Item with {
 				marker: "bomb"
