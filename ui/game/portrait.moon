@@ -80,6 +80,10 @@ class
 				table.remove @stack, 1
 
 	draw: (dt) =>
+		oldColor = {love.graphics.getColor!}
+
 		for imageData in *@stack
 			imageData\draw self
+
+		love.graphics.setColor oldColor
 
