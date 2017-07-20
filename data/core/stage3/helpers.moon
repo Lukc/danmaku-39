@@ -29,11 +29,10 @@ siphon = (arg) ->
 			
 			with clone bulletData
 				.update = =>
-					angle = math.atan2(dy,dx)
-					
-					@x = (center.x + (dr - @frame*rushSpeed)*math.cos(@frame*rotSpeed+angle))
-					@y = (center.y + (dr - @frame*rushSpeed)*math.sin(@frame*rotSpeed+angle))
-					
+					if not @angles
+						@angles = math.atan2(dy,dx)
+					@x = (center.x + (dr - @frame*rushSpeed)*math.cos(@frame*rotSpeed+@angles))
+					@y = (center.y + (dr - @frame*rushSpeed)*math.sin(@frame*rotSpeed+@angles))
 					if math.sqrt((center.x-@x)^2+(center.y-@y)^2) < disapearRange and rushSpeed > 0
 						@\die!
 						

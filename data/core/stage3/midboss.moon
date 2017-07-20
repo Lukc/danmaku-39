@@ -54,4 +54,6 @@ BossData {
 	spellcards[1]
 	spellcards[2]
 	spellcards[3]
+	spellcards[4]
+	spellcards[5]
 }
