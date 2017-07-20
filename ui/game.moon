@@ -85,6 +85,50 @@ victoryMenu = ->
 		mainMenuItem!
 	}
 
+drawStat = (arg) =>
+	sprite = arg.sprite
+	points = arg.points
+	fragments = arg.fragments
+
+	x = arg.x
+	y = arg.y
+
+	sizeModifier = arg.sizeModifier
+
+	for j = 1, points
+		love.graphics.draw sprite,
+			x + (j - 1) * 32,
+			y,
+			nil,
+			32 / sprite\getWidth!
+
+	if fragments > 0
+		love.graphics.setColor 127, 127, 127
+		love.graphics.draw sprite,
+			x + points * 32 * sizeModifier,
+			y,
+			nil,
+			32 / sprite\getWidth! * sizeModifier
+
+		stencilFunction = ->
+			love.graphics.arc "fill", "pie",
+				x + (points + 0.5) * 32 * sizeModifier,
+				y + 16 * sizeModifier,
+				32 * sizeModifier,
+				-math.pi/2, -math.pi / 2 + 2 * math.pi / 5 * fragments
+		love.graphics.stencil stencilFunction, "replace", 1
+
+		love.graphics.setStencilTest "greater", 0
+
+		love.graphics.setColor 255, 255, 255
+		love.graphics.draw sprite,
+			x + points * 32 * sizeModifier,
+			y,
+			nil,
+			32 / sprite\getWidth! * sizeModifier
+
+		love.graphics.setStencilTest!
+
 state.enter = (options, players) =>
 	@players = {}
 	@paused = false
@@ -289,29 +333,29 @@ state.draw = =>
 
 		i = 1
 		for player in *@players
-			sprite = images.get "item_test_life.png"
-			for j = 1, player.lives
-				love.graphics.draw sprite,
-					@danmaku.x + (j - 1) * 32,
-					@danmaku.y + @danmaku.drawHeight - (i * 96 -  0) * s,
-					nil,
-					32 / sprite\getWidth!
+			drawStat self,
+				sprite: images.get "item_test_life.png"
+				x: @danmaku.x
+				y: @danmaku.y + @danmaku.drawHeight - (i * 96) * s
+				points: player.lives
+				fragments: player.lifeFragments
+				sizeModifier: s
 
-			sprite = images.get "item_test_bomb.png"
-			for j = 1, player.bombs
-				love.graphics.draw sprite,
-					@danmaku.x + (j - 1) * 32,
-					@danmaku.y + @danmaku.drawHeight - (i * 96 - 32 + 2) * s,
-					nil,
-					32 / sprite\getWidth!
+			drawStat self,
+				sprite: images.get "item_test_bomb.png"
+				x: @danmaku.x
+				y: @danmaku.y + @danmaku.drawHeight - (i * 96 - 32) * s
+				points: player.bombs
+				fragments: player.bombFragments
+				sizeModifier: s
 
-			sprite = images.get "item_test_power.png"
-			for j = 1, player.power / 5
-				love.graphics.draw sprite,
-					@danmaku.x + (j - 1) * 32,
-					@danmaku.y + @danmaku.drawHeight - (i * 96 - 64 + 4) * s,
-					nil,
-					32 / sprite\getWidth!
+			drawStat self,
+				sprite: images.get "item_test_power.png"
+				x: @danmaku.x
+				y: @danmaku.y + @danmaku.drawHeight - (i * 96 - 64) * s
+				points: math.floor player.power/5
+				fragments: player.power % 5
+				sizeModifier: s
 
 			i += 1
 
