@@ -31,21 +31,34 @@ class extends Entity
 		return distance <= player.radius + @radius
 
 	update: =>
+		players = {}
+
 		super\doUpdate ->
-			attracted = false
+			nearest = false
+			nearestDistance = math.huge
+			nearestAttraction = nil
 
 			for player in *@game.players
 				distance = math.sqrt((player.x - @x)^2 + (player.y - @y)^2)
 
-				if distance <= player.itemAttractionRadius
-					@direction = math.atan2 player.y - @y, player.x - @x
+				attraction = if distance <= player.itemAttractionRadius
+					"radius"
+				elseif player.y <= @game.height * player.itemCollectionBorder
+					"border"
 
-					@speed = player.itemAttractionSpeed or @speed
+				if attraction
+					if not nearest or distance < nearestDistance
+						nearest = player
+						nearestDistance = distance
+						nearestAttraction = attraction
 
-					attracted = true
-					break
-
-			unless attracted
+			if nearest
+				@direction = math.atan2 nearest.y - @y, nearest.x - @x
+				@speed = if nearestAttraction == "radius"
+					nearest.itemAttractionSpeed or @speed
+				else
+					nearest.itemBorderAttractionSpeed or @speed
+			else
 				@direction = math.pi / 2
 				@speed = @normalSpeed
 

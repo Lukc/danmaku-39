@@ -29,6 +29,8 @@ class extends Enemy
 
 		@itemAttractionSpeed = arg.itemAttractionSpeed or 4
 		@itemAttractionRadius = arg.itemAttractionRadius or 32
+		@itemBorderAttractionSpeed = arg.itemBorderAttractionSpeed or 10
+		@itemCollectionBorder = 3/11
 
 		@grazedBullets = {}
 		@grazeDelay = arg.grazeDelay or 60
