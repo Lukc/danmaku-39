@@ -28,10 +28,12 @@ TextParticle = (text, x, y, opt) ->
 				{200, 200, 200}
 			color[4] = alpha
 
+			font = fonts.get "Sniglet-Regular", opt.size or 15
+
 			love.graphics.setColor color
-			love.graphics.setFont fonts.get "Sniglet-Regular", opt.size or 15
+			love.graphics.setFont font
 			love.graphics.print text,
-				@x, @y
+				@x - font\getWidth(text) / 2, @y - font\getHeight!/2
 	}
 
 drawCircle = do
@@ -79,6 +81,32 @@ drawCircle = do
 		(arg) -> Item with {
 				radius: 10
 				:draw
+				:collection
+			}
+				for k,v in pairs arg
+					[k] = v
+	cancellationPoint: do
+		sprite = love.graphics.newImage "data/art/item_cancellation_point.png"
+
+		update = =>
+			@direction = @\angleToPlayer!
+		draw = =>
+			love.graphics.setColor 255, 255, 255, 127
+			love.graphics.draw sprite, @x - 16, @y - 16
+		collection = (player) =>
+			player.score += 50
+			@game.score += 50
+
+			player.customData.points or= 0
+			player.customData.points += 1
+
+			@game\addEntity TextParticle "50", player.x, player.y
+
+		(arg) -> Item with {
+				radius: 7
+				speed: 12
+				:draw
+				:update
 				:collection
 			}
 				for k,v in pairs arg

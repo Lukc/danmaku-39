@@ -23,5 +23,13 @@ class extends Entity
 		@damage = arg.damage or 1
 		@damageType = arg.damageType or "bullet"
 
+		@onCancellation = arg.cancellation
+
+	cancel: =>
+		@\die!
+
+		if @onCancellation
+			@\onCancellation!
+
 	__tostring: => "<Bullet: frame #{@frame}>"
 

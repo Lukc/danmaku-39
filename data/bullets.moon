@@ -3,6 +3,8 @@ Entity = require "danmaku.entity"
 
 images = require "images"
 
+items = require "data.items"
+
 newBullet = (arg) ->
 	arg or= {}
 
@@ -56,6 +58,11 @@ newBullet = (arg) ->
 
 		if oldDraw
 			oldDraw self
+
+	arg.cancellation = =>
+		@game\addEntity items.cancellationPoint
+			x: @x
+			y: @y
 
 	arg
 

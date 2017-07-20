@@ -49,6 +49,9 @@ class extends Entity
 				@direction = math.pi / 2
 				@speed = @normalSpeed
 
+			if @onUpdate
+				@\onUpdate!
+
 	collected: (player) =>
 		if @onCollection
 			@\onCollection player
