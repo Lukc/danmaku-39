@@ -26,7 +26,7 @@ BossData {
 	radius: 32
 	x: 600 / 2
 	y: 800 / 5
-	name: "Teotlaco"
+	name: "Teotlalco"
 	description: "Proud and mighty Chief"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
