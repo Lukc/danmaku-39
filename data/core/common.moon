@@ -1,19 +1,23 @@
 
+items = require "data.items"
+
 fonts = require "fonts"
+
+circularDrop = (entity, count, radius, constructor) ->
+	for i = 1, count
+		a = math.pi * 2 / count * i
+
+		x = entity.x + radius * math.cos a
+		y = entity.y + radius * math.sin a
+
+		entity.game\addEntity constructor
+			:x, :y
 
 {
 	titleFont: love.graphics.newFont 42
 	subtitleFont: love.graphics.newFont 24
 
-	circularDrop: (entity, count, radius, constructor) ->
-		for i = 1, count
-			a = math.pi * 2 / count * i
-
-			x = entity.x + radius * math.cos a
-			y = entity.y + radius * math.sin a
-
-			entity.game\addEntity constructor
-				:x, :y
+	:circularDrop
 
 	drawBossData: =>
 		with x, y = @boss.x, @boss.y
@@ -99,5 +103,23 @@ fonts = require "fonts"
 
 				love.graphics.setFont font
 				love.graphics.print timeout, 32, 20
+	endOfSpell: (spell) =>
+		local pointItems, item
+
+		unless spell.name
+			item = items.power
+			pointItems = 0
+		elseif @spellSuccess
+			item = items.lifeFragment
+			pointItems = 12
+		else
+			item = items.bombFragment
+			pointItems = 8
+
+		circularDrop self, pointItems, 64, items.point
+
+		@game\addEntity item
+			x: @x
+			y: @y
 }
 

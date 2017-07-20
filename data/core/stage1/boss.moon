@@ -20,7 +20,7 @@ characters = require "data.characters"
 Wave = require "data.wave"
 {:StageData, :ModData, :BossData} = require "data.checks"
 
-{:circularDrop} = require "data.core.common"
+{:endOfSpell} = require "data.core.common"
 
 images = require "images"
 
@@ -36,15 +36,6 @@ BossData {
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
-
-	-- Fonction de mouvement pour Boss : bouge régulièrement sur la gauche et la droite
-	--moveLR: =>
-	--	if @x <= 600
-	--		speed = 3
-	--		direction = -math.pi
-	--	else
-	--		speed = 3
-	--		direction = 0
 
 	draw: =>
 		circle = images.get "background_circle.png"
@@ -63,24 +54,7 @@ BossData {
 				sizeRatio, sizeRatio,
 				circle\getWidth!/2, circle\getHeight!/2
 
-	endOfSpell: (spell) =>
-		local pointItems, powerItems
-
-		if @spellSuccess
-			@game\addEntity items.lifeFragment
-				x: @x
-				y: @y
-			pointItems = 12
-			powerItems = 8
-		else
-			@game\addEntity items.bombFragment
-				x: @x
-				y: @y
-			pointItems = 8
-			powerItems = 6
-
-		circularDrop self, pointItems, 48, items.point
-		circularDrop self, powerItems, 30, items.power
+	:endOfSpell
 
 	spellcards[5]
 	spellcards[6]
