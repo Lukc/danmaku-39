@@ -20,6 +20,8 @@ images = require "images"
 Menu = require "ui.tools.menu"
 Grid = require "ui.tools.grid"
 
+Portrait = require "ui.game.portrait"
+
 state = {
 }
 
@@ -90,6 +92,12 @@ state.enter = (options, players) =>
 	@resuming = false
 
 	@playerName = data.config.lastUsedName
+
+	@playerPortrait = Portrait
+		width: math.huge
+	@bossPortrait = Portrait
+		width: math.huge
+		mirrored: true
 
 	@font = fonts.get nil, 24
 
@@ -261,40 +269,8 @@ state.draw = =>
 	else
 		love.graphics.setColor 255, 255, 255
 
-	do
-		if #@players == 1
-			-- FIXME: hardcoded braindamage
-			sprite = images.get "portraits/Coactlicue.png"
-
-			love.graphics.draw sprite,
-				x + (@danmaku.x - x) / 2, y + h/2,
-				nil,
-				@danmaku.drawHeight / sprite\getHeight!, nil,
-				sprite\getWidth!/2,
-				sprite\getHeight!/2
-
-		if @danmaku.boss
-			oldColor = {love.graphics.getColor!}
-
-			sprite = images.get "portraits/#{@danmaku.boss.name}.png"
-
-			if @danmaku.boss.currentSpellIndex <= 1
-				color = [c for c in *oldColor]
-				print @danmaku.boss.frame, @danmaku.boss.spellStartFrame
-				-- FIXME: First 60 is an hardcoded value from danmaku.boss.
-				color[4] = math.min 255, 255 * (@danmaku.boss.frame - 60) / 60
-				love.graphics.setColor color
-
-			if sprite
-				love.graphics.draw sprite,
-					x + @danmaku.drawWidth + 3 * (@danmaku.x - x) / 2, y + h/2,
-					nil,
-					-@danmaku.drawHeight / sprite\getHeight!,
-					@danmaku.drawHeight / sprite\getHeight!,
-					sprite\getWidth!/2,
-					sprite\getHeight!/2
-
-			love.graphics.setColor oldColor
+	@playerPortrait\draw!
+	@bossPortrait\draw!
 
 	do
 		-- Background cleaning.
@@ -379,6 +355,29 @@ state.update = (dt) =>
 		@menu = victoryMenu!
 
 		return
+
+	-- FIXME: hardcoded braindamage
+	@playerPortrait\push images.get "portraits/Coactlicue.png"
+
+	if @danmaku.boss
+		name = @danmaku.boss.name
+
+		sprite = images.get "portraits/#{name}.png"
+
+		if sprite
+			@bossPortrait\push sprite
+	else
+		@bossPortrait\push!
+
+	@playerPortrait.x = x + (@danmaku.x - x) / 2
+	@playerPortrait.y = y + h/2
+	@playerPortrait.height = h
+	@playerPortrait\update dt
+
+	@bossPortrait.x = x + @danmaku.drawWidth + 3 * (@danmaku.x - x) / 2
+	@bossPortrait.y = y + h/2
+	@bossPortrait.height = h
+	@bossPortrait\update dt
 
 	allJoysticks = love.joystick.getJoysticks!
 	for i = 1, #@players
