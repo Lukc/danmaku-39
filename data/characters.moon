@@ -103,7 +103,7 @@ rifleSprite = require("images").get "bullet_player_rifle.png"
 								speed: 0
 								radius: @radius
 								health: 3 -- damageable, though not easily
-								spawnTime: 0
+								spawnTime: 20
 								update: =>
 									if @radius == 0
 										return
@@ -175,7 +175,7 @@ rifleSprite = require("images").get "bullet_player_rifle.png"
 									x: @x
 									y: @y
 									radius: @radius
-									spawnTime: 0
+									spawnTime: 20
 									health: 5
 									update: =>
 										@radius -= 0.3
