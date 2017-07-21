@@ -64,9 +64,13 @@ drawCircle = do
 
 {
 	point: do
+		background = images.get "item_circle_inner.png"
 		sprite = love.graphics.newImage "data/art/item_test_point.png"
 
 		draw = =>
+			love.graphics.setColor 63, 127, 255, 223
+			love.graphics.draw background, @x, @y, nil, 0.33, 0.33,
+				background\getWidth!/2, background\getHeight!/2
 			love.graphics.setColor 255, 255, 255
 			love.graphics.draw sprite, @x - 16, @y - 16
 		collection = (player) =>
