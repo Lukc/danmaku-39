@@ -17,7 +17,7 @@ TextParticle = (text, x, y, opt) ->
 			if not @dying and @frame == @spawnTime + 20
 				@\die!
 		draw: =>
-			alpha = math.min 255, 255 * @frame / 60
+			alpha = math.min 255, 255 * @frame / @spawnTime
 
 			if @dying
 				alpha = math.min alpha, 255 - 255 * @dyingFrame / @dyingTime
@@ -62,6 +62,15 @@ drawCircle = do
 			wmod, hmod,
 			circle\getWidth!/2, circle\getHeight!/2
 
+drawMarker = do
+	marker = images.get "marker_small.png"
+
+	(color) =>
+		love.graphics.setColor color
+		love.graphics.draw marker,
+			@x, @game.height, nil, nil, nil,
+			marker\getWidth!/2, marker\getHeight!
+
 {
 	point: do
 		background = images.get "item_circle_inner.png"
@@ -73,6 +82,8 @@ drawCircle = do
 				background\getWidth!/2, background\getHeight!/2
 			love.graphics.setColor 255, 255, 255
 			love.graphics.draw sprite, @x - 16, @y - 16
+
+			drawMarker self, {63, 127, 255, 63}
 		collection = (player) =>
 			player.score += 1000
 			@game.score += 1000
@@ -124,7 +135,9 @@ drawCircle = do
 			love.graphics.setColor 255, 255, 255
 			love.graphics.draw sprite, @x - w2, @y - h2
 
-			drawCircle self, {255, 127, 127}
+			drawCircle self, {255, 63, 63}
+
+			drawMarker self, {255, 63, 63}
 		collection = (player) =>
 			unless player\addPower 1
 				player.score += 100
@@ -158,6 +171,7 @@ drawCircle = do
 			love.graphics.draw sprite, @x - w2, @y - h2
 
 			drawCircle self, {255, 127, 191}
+			drawMarker self, {255, 127, 191}
 		collection = (player) =>
 			player\addFragment "life"
 
@@ -184,6 +198,7 @@ drawCircle = do
 			love.graphics.draw sprite, @x - w2, @y - h2
 
 			drawCircle self, {127, 255, 191}
+			drawMarker self, {127, 255, 191}
 		collection = (player) =>
 			player\addFragment "bomb"
 

@@ -278,17 +278,6 @@ state.draw = =>
 	@danmaku.x = x + (w - @danmaku.drawWidth) / 2
 	@danmaku.y = y + (h - @danmaku.drawHeight) / 2
 
-	for item in *@danmaku.items
-		if item.marker
-			sprite = images.get "item_marker_" .. item.marker .. ".png"
-
-			love.graphics.setColor 255, 255, 255
-			love.graphics.draw sprite,
-				@danmaku.x + item.x * danmakuSizemod,
-				@danmaku.y + @danmaku.drawHeight,
-				nil, nil, nil,
-				sprite\getWidth!/2, sprite\getHeight!/2
-
 	if @danmaku.boss
 		boss = @danmaku.boss
 

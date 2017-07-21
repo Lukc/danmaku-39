@@ -1,6 +1,7 @@
 
 items = require "data.items"
 
+images = require "images"
 fonts = require "fonts"
 
 circularDrop = (entity, count, radius, constructor) ->
@@ -72,6 +73,15 @@ drawBossHealthBar = (entity) =>
 
 		love.graphics.setLineWidth 1
 
+drawMarker = do
+	marker = images.get "marker_big.png"
+
+	(color) =>
+		love.graphics.setColor color
+		love.graphics.draw marker,
+			@x, @game.height, nil, nil, nil,
+			marker\getWidth!/2, marker\getHeight!
+
 {
 	titleFont: love.graphics.newFont 42
 	subtitleFont: love.graphics.newFont 24
@@ -79,6 +89,18 @@ drawBossHealthBar = (entity) =>
 	:circularDrop
 
 	drawBossData: =>
+		if @boss.currentSpell
+			do
+				now = 1 - (@boss.frame - @boss.spellStartFrame) / @boss.currentSpell.timeout
+				d = 10 + 50 * now
+				i = math.sin @frame / d
+
+				drawMarker @boss, {
+					255,
+					63 + (255 - 63) / 2 * (1 + i),
+					63 + (255 - 63) / 2 * (1 + i)
+				}
+
 		drawBossHealthBar self, @boss
 
 		font = fonts.get "miamanueva", 24
