@@ -126,9 +126,12 @@ drawCircle = do
 				player.score += 100
 				@game.score += 100
 
-				@game\addEntity TextParticle "100", player.x, player.y
+				@game\addEntity TextParticle "10000", player.x, player.y, {
+					color: {255, 255, 127}
+					size: 18
+				}
 			else
-				@game\addEntity TextParticle "1/5 power", player.x, player.y, {
+				@game\addEntity TextParticle "power shard", player.x, player.y, {
 					color: {255, 127, 127}
 					size: 23
 				}
@@ -154,7 +157,7 @@ drawCircle = do
 		collection = (player) =>
 			player\addFragment "life"
 
-			@game\addEntity TextParticle "1/5 life", player.x, player.y, {
+			@game\addEntity TextParticle "life shard", player.x, player.y, {
 				color: {255, 127, 191}
 				size: 23
 			}
@@ -180,7 +183,7 @@ drawCircle = do
 		collection = (player) =>
 			player\addFragment "bomb"
 
-			@game\addEntity TextParticle "1/5 life", player.x, player.y, {
+			@game\addEntity TextParticle "life shard", player.x, player.y, {
 				color: {127, 255, 191}
 				size: 23
 			}
