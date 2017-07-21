@@ -187,7 +187,7 @@ drawCircle = do
 		collection = (player) =>
 			player\addFragment "bomb"
 
-			@game\addEntity TextParticle "life shard", player.x, player.y, {
+			@game\addEntity TextParticle "spell shard", player.x, player.y, {
 				color: {127, 255, 191}
 				size: 23
 			}
