@@ -239,5 +239,11 @@ check = (reference) =>
 			maxPower:       Number
 			update:         Function
 		}
+	WaveData: =>
+		check self, {
+			name:           String
+			timeout:        Number
+			update:         Mandatory(Function)
+		}
 }
 

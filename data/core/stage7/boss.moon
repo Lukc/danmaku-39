@@ -17,7 +17,6 @@ characters = require "data.characters"
 
 {:circle, :laser} = require "data.helpers"
 
-Wave = require "data.wave"
 {:StageData, :ModData, :BossData} = require "data.checks"
 
 {:endOfSpell} = require "data.core.common"
