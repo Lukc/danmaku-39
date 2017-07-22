@@ -178,28 +178,7 @@ boss4 = Spellcard {
 									@speed = 4
 								if @ready
 									@speed = math.abs((@y-@game.players[1].y)/@game.height)+2
-			@\fire ArrowHeadBullet with {}
-				.speed = 5
-				.angle = math.pi 
-				.direction = .angle - varAngle
-				.color = {0,142,241}
-				.update = =>
-					if @frame%5 ==0
-						savedTime = @frame
-						@game.boss\fire HeartBullet with {}
-							.color = {255,0,255}
-							.x = @x
-							.y = @y
-							.y += math.random()*200 -100
-							.speed = 0
-							.angle = math.pi/2
-							.direction = .angle
-							.update = =>
-								if (@frame + savedTime) == 80
-									@ready = true
-									@speed = 4
-								if @ready
-									@speed = math.abs((@y-@game.players[1].y+40)/@game.height)+2
+			
 }
 
 boss5 = Spellcard {
@@ -326,7 +305,7 @@ boss6 = Spellcard {
 midBoss1 = Spellcard {
 	name: "Maelstrom gate"
 	health: 3600
-	timeout: 30 * 60
+	timeout: 60 * 60
 	position: => {
 		x: @game.width/2
 		y: @game.height/4
@@ -378,7 +357,7 @@ midBoss1 = Spellcard {
 midBoss2 = Spellcard {
 	name: "Maelstromic gate"
 	health: 3600
-	timeout: 200 * 60
+	timeout: 50 * 60
 	position: => {
 		x: @game.width/2
 		y: @game.height/4
@@ -451,7 +430,7 @@ midBoss3 = Spellcard {
 	}
 	description: "a spiral"
 	health: 1000
-	timeout: 60 * 60
+	timeout: 40 * 60
 	position: => {
 		x: @game.width/2
 		y: @game.height/4
@@ -494,22 +473,32 @@ midBoss3 = Spellcard {
 }
 
 midBoss4 = Spellcard {
-	name: "Annoying girl"
+	name: "Non-Spell"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 	health: 3600
-	timeout: 30 * 60
+	timeout: 36 * 60
 	update: =>
+		h = @game.height
+		w = @game.width
 		-- Flower spell card
-		if @frame % 6 == 0
-			direction1 = math.pow(@frame, 2)*(math.pow(@x, 2) + math.pow(@y, 2))
-			for bullet in radial {from: self, bullets: 5, :bullet}
-				@\fire HeartBullet with bullet
-					.color = {204, 0, 0}
-					.speed = 8
-					.radius = 40
-					.direction = direction1
+		if (@frame - @spellStartFrame) == 100
+			for bullet in *{{x:5,y:h/4},{x:5,y:2*h/4},{x:5,y:3*h/4},{x:w-5,y:h/4},{x:w-5,y:2*h/4},{x:w-5,y:3*h/4}}
+				@\fire HugeBullet with bullet
+					.speed = 0
+					.update = =>
+						if not @baseY
+							@baseY = @y
+						@y = @baseY+h*math.cos(@frame/200)/4
+						if @frame %80 == 0
+							for bullet in radial {from: self, bullets: 20, bullet:{outOfScreenTime:60*5},radius:0}
+								@game.boss\fire SmallBullet with bullet
+									.color = {204, 0, 0}
+									.speed = 2
+									.radius = 4
+									.x = @x
+									.y = @y
 }
 
 midBoss5 = Spellcard {

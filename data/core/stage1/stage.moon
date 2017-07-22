@@ -96,21 +96,9 @@ StageData {
 			count: 9
 			(n) =>
 				for i = -1, 1, 2
-					@\addEntity items.power
+					@\addEntity 
 						x: @width / 2 + 25 * i * n
 						y: @height / 9 - 50
-
-					@\addEntity items.lifeFragment
-						x: @width / 2 + 25 * i * n
-						y: @height / 9 - 10
-
-					@\addEntity items.bombFragment
-						x: @width / 2 + 25 * i * n
-						y: @height / 9 + 30
-
-					@\addEntity items.point
-						x: @width / 2 + 25 * i * n
-						y: @height / 90
 		}
 
 		Wave {
