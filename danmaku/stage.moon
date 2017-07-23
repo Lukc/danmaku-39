@@ -34,7 +34,7 @@ class
 		@boss = nil -- For reference.
 
 		@waves = {}
-		for input in *arg.waves
+		for input in *(arg.waves or {})
 			table.insert @waves, Wave input
 
 		if #@waves > 0
