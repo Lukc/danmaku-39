@@ -219,6 +219,7 @@ check = (reference) =>
 			x:              Mandatory(Number)
 			y:              Mandatory(Number)
 			radius:         Number
+			difficulties:   Mandatory(Table(Number))
 			endOfSpell:     Function
 		}
 	CharacterData: =>
