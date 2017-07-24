@@ -55,11 +55,11 @@ bossMenuItem = (stage, boss) -> {
 			generated: true
 
 			update: =>
-				if @frame > 60 and #@enemies == 0
+				if @frame == 1
+					@\addEntity Boss boss
+				elseif @frame > 60 and #@enemies == 0
 					@\endOfStage!
 
-			[1]: =>
-				@\addEntity Boss boss
 		}
 
 		state.manager\setState newState, newStage
@@ -112,21 +112,20 @@ spellcardMenuItem = (stage, boss, spellcard) -> {
 			generated: true
 
 			update: =>
-				if @frame > 60 and #@enemies == 0
+				if @frame == 1
+					boss = {k,v for k,v in pairs boss}
+
+					boss[1] = spellcard
+
+					for i = 2, #boss
+						boss[i] = nil
+
+					for i = 1, #boss
+						print i, boss[i]
+
+					@\addEntity Boss boss
+				elseif @frame > 60 and #@enemies == 0
 					@\endOfStage!
-
-			[1]: =>
-				boss = {k,v for k,v in pairs boss}
-
-				boss[1] = spellcard
-
-				for i = 2, #boss
-					boss[i] = nil
-
-				for i = 1, #boss
-					print i, boss[i]
-
-				@\addEntity Boss boss
 		}
 
 		state.manager\setState newState, newStage
