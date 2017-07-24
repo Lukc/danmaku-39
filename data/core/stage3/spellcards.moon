@@ -490,13 +490,13 @@ midBoss4 = Spellcard {
 					.update = =>
 						if not @baseY
 							@baseY = @y
-						@y = @baseY+h*math.cos(@frame/200)/4
-						if @frame %80 == 0
+						@y = @baseY+h*math.cos(@frame/100)/4
+						if @frame %200 == 0
 							for bullet in radial {from: self, bullets: 20, bullet:{outOfScreenTime:60*5},radius:0}
 								@game.boss\fire SmallBullet with bullet
 									.color = {204, 0, 0}
-									.speed = 2
-									.radius = 4
+									.speed = 1
+									.radius = 8
 									.x = @x
 									.y = @y
 }
