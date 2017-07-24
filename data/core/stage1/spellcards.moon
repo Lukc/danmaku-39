@@ -13,7 +13,7 @@
 	:ArrowHeadBullet
 } = require "data.bullets"
 
-{:radial, :circle, :sinusoid, :column, :row} = require "data.helpers"
+{:radial, :circle, :sinusoid, :column, :row, :attachedLaser} = require "data.helpers"
 
 -- Defining Xuhe SpellCards
 	-- s1: 1rst attack (N/H/L)
@@ -22,31 +22,109 @@
 	-- s4: [Owl Sign] Eye of the Night (H/L)
 
 s1 = Spellcard {
-	name: nil
+	name: "tudu"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 	health: 1800
-	timeout: 30 * 60
-	startA: 0
-	endA: 0
+	timeout: 60 * 60
 
 	update: =>
-		@\roam {120, 120, 80}
-		bullet = {
-			color: {204, 0, 204}, --light purple
-			speed: 0 + @game.difficulty
-		}
-
-		if @frame%60 == 0
-			@startA = (@\angleToPlayer!)-math.pi/4
-			@endA = (@\angleToPlayer!)+math.pi/4
-			for bullet in row {from: self, :bullet, bullets: (9+2*@game.difficulty), startAngle: @startA, endAngle: @endA}
-				@\fire SmallBullet bullet
-		
-		if (@frame-10)%60 == 0
-			for bullet in row {from: self, :bullet, bullets: (9+2*@game.difficulty), startAngle: @startA, endAngle: @endA}
-				@\fire SmallBullet bullet
+		f = @frame - @spellStartFrame
+		if f == 50
+			for i = 0,5
+				@\fire attachedLaser
+					from: {x: @game.boss.x+20+5*i,y: @game.boss.y+40-20*i,radius: 0}
+					bullet:
+						color: {255,150,150}
+						angle: 0
+						w: 5
+						h: 800
+						radius: 0
+						damageabe: false
+						update: =>
+							finalAngle = -math.pi*42/30
+							@angle -= math.sqrt(math.abs(@angle-finalAngle))*(@angle-finalAngle)/math.abs(@angle-finalAngle)/300
+				@\fire attachedLaser
+					from: {x: @game.boss.x-20-5*i,y: @game.boss.y+40-20*i,radius: 0}
+					bullet:
+						color: {255,150,150}
+						angle: -math.pi
+						w: 5
+						h: 800
+						radius: 10
+						damageabe: false
+						update: =>
+							finalAngle = math.pi*12/30
+							@angle -= math.sqrt(math.abs(@angle-finalAngle))*(@angle-finalAngle)/math.abs(@angle-finalAngle)/300
+		if f == 50
+			for i = 0,20
+				@\fire SmallBullet with {}
+					.color = {50,255,255}
+					.x = @game.width*9/10
+					.y = 5
+					.speed = 0
+					.outOfScreenTime = 60*20
+					.radius = 10
+					.update = =>
+						yTarget = @game.height*(5+i)/22
+						yLarg = @game.height*5/11
+						if not @movement and @y > yTarget
+							@movement = 0
+							@isMoving = true
+						if @y < yTarget
+							@y -= math.sqrt(math.abs(@angle-yTarget))*(@angle-yTarget)/math.abs(@angle-yTarget)/5
+						if (@game.frame % 200) > 37 and @movement
+							@y += math.sin(@movement)*yLarg/326
+							@movement += 13*math.pi/163
+						if (@game.frame % 200) == 0 and @isMoving
+							@isMoving = false
+							@firing = true
+						if (@game.frame % 200) == 50
+							@isMoving = true
+						if (@game.frame % 200) == 5 and @firing
+							@radius = 10
+							@firing = false
+							@game.boss\fire attachedLaser
+								from: self
+								bullet:
+									color: {255,150,150}
+									angle: math.pi
+									speed: 0
+									w: 2
+									h: @game.width*4/5
+									touchable: false
+									update: =>
+										if @width < 5
+											@width += 0.5
+										if @width == 5
+											@touchable = true
+										if @frame == 20
+											@\die!
+			for i = 0,20
+				@\fire SmallBullet with {}
+					.color = {50,255,255}
+					.x = @game.width/10
+					.y = 5
+					.speed = 0
+					.radius = 10
+					.outOfScreenTime = 60*20
+					.update = =>
+						yTarget = @game.height*(5+i)/22
+						yLarg = @game.height*5/11
+						if not @movement and @y > yTarget
+							@movement = 0
+							@isMoving = true
+						if @y < yTarget
+							@y -= math.sqrt(math.abs(@angle-yTarget))*(@angle-yTarget)/math.abs(@angle-yTarget)/5
+						if (@game.frame % 200) > 37 and @movement
+							@y += math.sin(@movement)*yLarg/326
+							@movement += 13*math.pi/163
+						if (@game.frame % 200) == 0 and @isMoving
+							@isMoving = false
+							@firing = true
+						if (@game.frame % 200) == 50
+							@isMoving = true
 }
 
 s2 = Spellcard {
