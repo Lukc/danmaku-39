@@ -44,29 +44,45 @@ drawCircle = do
 		wmod = math.cos @frame/60
 		hmod = 1
 
+		color = [c for c in *color]
+		color[4] or= 255
+
+		alphaModifier = 1
+		sizeModifier = 1
+
+		if @dying
+			alphaModifier = 1 - @dyingFrame / @dyingTime
+			sizeModifier = 1 + @dyingFrame / @dyingTime
+
+			color[4] *= alphaModifier
+
 		love.graphics.setColor color
 		love.graphics.draw innerCircle, @x, @y,
 			nil,
-			nil, nil,
+			sizeModifier, sizeModifier,
 			innerCircle\getWidth!/2, innerCircle\getHeight!/2
 
 		love.graphics.setColor [c + 32 for c in *color]
 		love.graphics.draw circle, @x, @y,
 			nil,
-			nil, nil,
+			sizeModifier, sizeModifier,
 			circle\getWidth!/2, circle\getHeight!/2
 
 		love.graphics.setColor color
 		love.graphics.draw circle, @x, @y,
 			math.cos(@frame/60),
-			wmod, hmod,
+			wmod * sizeModifier, hmod * sizeModifier,
 			circle\getWidth!/2, circle\getHeight!/2
 
 drawMarker = do
 	marker = images.get "marker_small.png"
 
 	(color) =>
-		love.graphics.setColor color
+		alpha = color[4] or 255
+		if @dying
+			alpha *= 1 - @dyingFrame / @dyingTime
+
+		love.graphics.setColor color[1], color[2], color[3], alpha
 		love.graphics.draw marker,
 			@x, @game.height, nil, nil, nil,
 			marker\getWidth!/2, marker\getHeight!
@@ -77,14 +93,20 @@ drawMarker = do
 		sprite = love.graphics.newImage "data/art/item_test_point.png"
 
 		draw = =>
-			love.graphics.setColor 63, 127, 255, 223
-			love.graphics.draw background, @x, @y, nil, 0.33, 0.33,
-				background\getWidth!/2, background\getHeight!/2
-			love.graphics.setColor 255, 255, 255
+			alphaModifier = 1 - @dyingFrame / @dyingTime
+
+			love.graphics.setColor 63, 127, 255, 223 * alphaModifier
+			love.graphics.draw background, @x, @y, nil, 0.4, 0.4,
+				background\getWidth! / 2, background\getHeight! / 2
+
+			love.graphics.setColor 255, 255, 255, 255 * alphaModifier
 			love.graphics.draw sprite, @x - 16, @y - 16
 
 			drawMarker self, {63, 127, 255, 63}
 		collection = (player) =>
+			@speed = 0
+			@direction = -math.pi / 2
+
 			player.score += 1000
 			@game.score += 1000
 
@@ -95,6 +117,7 @@ drawMarker = do
 
 		(arg) -> Item with {
 				radius: 10
+				dyingTime: 10
 				:draw
 				:collection
 			}
@@ -106,9 +129,14 @@ drawMarker = do
 		update = =>
 			@direction = @\angleToPlayer!
 		draw = =>
+			alphaModifier = 1 - @dyingFrame / @dyingTime
+
 			love.graphics.setColor 255, 255, 255, 127
 			love.graphics.draw sprite, @x - 16, @y - 16
 		collection = (player) =>
+			@speed = 0
+			@direction = -math.pi / 2
+
 			player.score += 50
 			@game.score += 50
 
@@ -120,6 +148,7 @@ drawMarker = do
 		(arg) -> Item with {
 				radius: 7
 				speed: 12
+				dyingTime: 10
 				:draw
 				:update
 				:collection
@@ -132,13 +161,25 @@ drawMarker = do
 		h2 = sprite\getWidth!/2
 
 		draw = =>
-			love.graphics.setColor 255, 255, 255
-			love.graphics.draw sprite, @x - w2, @y - h2
+			alphaModifier = 1
+			sizeModifier = 1
+
+			if @dying
+				alphaModifier = 1 - @dyingFrame / @dyingTime
+				sizeModifier = 1 + @dyingFrame / @dyingTime
+
+			love.graphics.setColor 255, 255, 255, 255 * alphaModifier
+			love.graphics.draw sprite, @x, @y, nil,
+				sizeModifier, sizeModifier,
+				w2, h2
 
 			drawCircle self, {255, 63, 63}
 
 			drawMarker self, {255, 63, 63}
 		collection = (player) =>
+			@speed = 0
+			@direction = -math.pi / 2
+
 			unless player\addPower 1
 				player.score += 100
 				@game.score += 100
@@ -156,6 +197,7 @@ drawMarker = do
 		(arg) -> Item with {
 				marker: "power"
 				radius: 18
+				dyingTime: 60
 				:draw
 				:collection
 			}
@@ -167,12 +209,24 @@ drawMarker = do
 		h2 = sprite\getWidth!/2
 
 		draw = =>
-			love.graphics.setColor 255, 255, 255
-			love.graphics.draw sprite, @x - w2, @y - h2
+			alphaModifier = 1
+			sizeModifier = 1
+
+			if @dying
+				alphaModifier = 1 - @dyingFrame / @dyingTime
+				sizeModifier = 1 + @dyingFrame / @dyingTime
+
+			love.graphics.setColor 255, 255, 255, 255 * alphaModifier
+			love.graphics.draw sprite, @x, @y, nil,
+				sizeModifier, sizeModifier,
+				w2, h2
 
 			drawCircle self, {255, 127, 191}
 			drawMarker self, {255, 127, 191}
 		collection = (player) =>
+			@speed = 0
+			@direction = -math.pi / 2
+
 			player\addFragment "life"
 
 			@game\addEntity TextParticle "life shard", player.x, player.y, {
@@ -194,12 +248,24 @@ drawMarker = do
 		h2 = sprite\getWidth!/2
 
 		draw = =>
-			love.graphics.setColor 255, 255, 255
-			love.graphics.draw sprite, @x - w2, @y - h2
+			alphaModifier = 1
+			sizeModifier = 1
+
+			if @dying
+				alphaModifier = 1 - @dyingFrame / @dyingTime
+				sizeModifier = 1 + @dyingFrame / @dyingTime
+
+			love.graphics.setColor 255, 255, 255, 255 * alphaModifier
+			love.graphics.draw sprite, @x, @y, nil,
+				sizeModifier, sizeModifier,
+				w2, h2
 
 			drawCircle self, {127, 255, 191}
 			drawMarker self, {127, 255, 191}
 		collection = (player) =>
+			@speed = 0
+			@direction = -math.pi / 2
+
 			player\addFragment "bomb"
 
 			@game\addEntity TextParticle "spell shard", player.x, player.y, {
