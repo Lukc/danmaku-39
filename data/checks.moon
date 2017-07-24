@@ -218,6 +218,7 @@ check = (reference) =>
 			name:           Mandatory(String)
 			x:              Mandatory(Number)
 			y:              Mandatory(Number)
+			difficulties:   Mandatory(Table(Number))
 			radius:         Number
 			endOfSpell:     Function
 		}
