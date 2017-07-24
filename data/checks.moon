@@ -51,6 +51,12 @@ simpleMatch = (expectation) ->
 				else
 					typeString
 
+Nil = do
+	setmetatable {
+		matches: simpleMatch "nil"
+	}, {
+		__tostring: => "Nil"
+	}
 String = do
 	setmetatable {
 		matches: simpleMatch "string"
@@ -145,7 +151,7 @@ Mandatory = (Type) ->
 		__tostring: => tostring(Type)
 	}
 
-check = (reference) =>
+check = (name, reference) =>
 	keysList = [{:key, :value} for key, value in pairs reference]
 
 	table.sort keysList, (a, b) ->
@@ -173,15 +179,16 @@ check = (reference) =>
 			{key}
 
 		for key in *keys
-			if not @[key]
-				oops "missing '#{key}' argument"
-			else
-				success, mismatch = value.matches @[key]
-				if not success
+			success, mismatch = value.matches @[key]
+
+			unless success
+				if not @[key]
+					oops "#{name}: missing '#{key}' argument"
+				else
 					errors = true
 
-					ohshit "provided '#{key}' argument has the wrong type"
-					ohshit "* #{value} expected, got #{mismatch}"
+					ohshit "#{name}: provided '#{key}' argument has the wrong type"
+					ohshit "#{table.concat [" " for i = 1, #name]}* #{value} expected, got #{mismatch}"
 
 	if errors
 		error "errors registered while loading data"
@@ -193,19 +200,17 @@ check = (reference) =>
 	:warning
 
 	StageData: =>
-		check self, {
+		check self, "StageData", {
 			title:          Mandatory(String)
 			subtitle:       Mandatory(String)
 			difficulties:   Mandatory(Table(Number))
 			drawTitle:      Function
 			drawBossData:   Function
 			drawBackground: Function
-			update:         Function
-
-			[Number]:       Function
+			update:         Or(Function, Nil)
 		}
 	ModData: =>
-		check self, {
+		check self, "ModData", {
 			name:           Mandatory(String)
 			bosses:         Table(Table())
 			stages:         Table(Table())
@@ -214,7 +219,7 @@ check = (reference) =>
 			characterVariants: Table(Table())
 		}
 	BossData: =>
-		check self, {
+		check self, "BossData", {
 			name:           Mandatory(String)
 			x:              Mandatory(Number)
 			y:              Mandatory(Number)
@@ -223,7 +228,7 @@ check = (reference) =>
 			endOfSpell:     Function
 		}
 	CharacterData: =>
-		check self, {
+		check self, "CharacterData", {
 			name:           Mandatory(String)
 			title:          Mandatory(String)
 			mainAttackName: Mandatory(String)
@@ -233,16 +238,16 @@ check = (reference) =>
 			death:          Function
 		}
 	CharacterVariantData: =>
-		check self, {
+		check self, "CharacterVariantData", {
 			name:           Mandatory(String)
 			description:    Mandatory(String)
 			maxPower:       Number
 			update:         Function
 		}
 	WaveData: =>
-		check self, {
-			name:           String
-			timeout:        Number
+		check self, "WaveData", {
+			name:           Or(String, Nil)
+			timeout:        Or(Number, Nil)
 			update:         Mandatory(Function)
 		}
 }
