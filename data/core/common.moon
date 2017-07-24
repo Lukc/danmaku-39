@@ -82,6 +82,74 @@ drawMarker = do
 			@x, @game.height, nil, nil, nil,
 			marker\getWidth!/2, marker\getHeight!
 
+drawSpellcardAnimation = =>
+	str = "Spellcard attack!"
+
+	frame = @boss.frame - @boss.spellStartFrame
+	progress = frame / 120
+
+	font = fonts.get "Sniglet-Regular", 64
+	love.graphics.setFont font
+
+	do
+		ox = 100
+		oy = 100
+		alpha = 255
+
+		if progress < 0.33
+			alpha -= (1 - progress / 0.33) * 255
+
+			p = math.sin(math.pi / 2 * (1 - progress / 0.33))
+
+			ox -= p * 100
+			oy += p * 100
+		elseif progress > 0.66
+			alpha -= (progress - 0.66) / 0.33 * 255
+
+			p = math.sin(math.pi / 2 * (progress - 0.66) / 0.33)
+
+			ox += p * 100
+			oy -= p * 100
+
+		love.graphics.setColor 240, 240, 255, alpha
+		love.graphics.print str, ox, @height/2 - 100 + oy,
+			-math.pi / 4
+
+	font = fonts.get "Sniglet-Regular", 18
+	love.graphics.setFont font
+
+	alpha = 255 * 2 * if progress > 0.5
+		1 - progress
+	else
+		progress
+
+	if progress >= 0 and progress <= 1
+		for i = 1, 19
+			ox = (@width - font\getWidth str) / 2
+			oy = i * @height / 19 + 72
+
+			if i % 2 == 0
+				ox += -50 * progress
+				oy +=  50 * progress
+			else
+				ox +=  50 * progress
+				oy += -50 * progress
+
+			if i % 2 == 0
+				ox += @width / 4
+			if i % 3 == 0
+				ox -= @width / 4
+			if i % 4 == 0
+				ox += @width / 4
+			if i % 6 == 0
+				ox -= @width / 4
+
+			love.graphics.setColor 221, 221, 221, alpha
+			love.graphics.print str,
+				ox,
+				oy,
+				-math.pi/4
+
 {
 	titleFont: love.graphics.newFont 42
 	subtitleFont: love.graphics.newFont 24
@@ -89,17 +157,20 @@ drawMarker = do
 	:circularDrop
 
 	drawBossData: =>
-		if @boss.currentSpell
-			do
-				now = 1 - (@boss.frame - @boss.spellStartFrame) / @boss.currentSpell.timeout
-				d = 10 + 50 * now
-				i = math.sin @frame / d
+		spell = @boss.currentSpell
+		if spell
+			now = 1 - (@boss.frame - @boss.spellStartFrame) / spell.timeout
+			d = 10 + 50 * now
+			i = math.sin @frame / d
 
-				drawMarker @boss, {
-					255,
-					63 + (255 - 63) / 2 * (1 + i),
-					63 + (255 - 63) / 2 * (1 + i)
-				}
+			drawMarker @boss, {
+				255,
+				63 + (255 - 63) / 2 * (1 + i),
+				63 + (255 - 63) / 2 * (1 + i)
+			}
+
+			if spell.name
+				drawSpellcardAnimation self
 
 		drawBossHealthBar self, @boss
 
