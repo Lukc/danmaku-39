@@ -134,68 +134,24 @@ s2 = Spellcard {
 		Difficulties.Lunatic
 	}
 	health: 3600
-	timeout: 30 * 60
+	timeout: 230 * 60
 	update: =>
 		f = @frame - @spellStartFrame
-
-		if f == 0
-			for i = 1, 6
-				@game\addEntity Enemy
-					radius: 0
-					damageable: false
-					update: =>
-						angle = @frame * 2 * math.pi / 360 + math.pi * 2 / 6 * i
-
-						@x = @game.boss.x + @game.width / 4 * math.cos angle
-						@y = @game.boss.y + 70 * math.sin angle
-
-						if @frame % 150 == 0
-							for bullet in row {
-								from: self, bullets: 3
-								startAngle: -math.pi / 16
-								endAngle: math.pi / 16
-							}
-								@\fire BigBullet with bullet
-									.speed = 2.5
-									.color = {255, 127, 127}
-									.angle += @\angleToPlayer!
-
-						switch i
-							when 1, 4
-								if @frame % 3 == 0
-									@\fire ArrowHeadBullet
-										speed: 9
-										color: {255, 127, 0}
-										angle: @\angleToPlayer! + math.pi / 12
-									@\fire ArrowHeadBullet
-										speed: 9
-										color: {255, 127, 0}
-										angle: @\angleToPlayer! - math.pi / 12
-							when 2, 5
-								if @frame % 3 == 0
-									@\fire ArrowHeadBullet
-										speed: 9
-										color: {255, 0, 0}
-										angle: @\angleToPlayer! + math.pi / 16
-									@\fire ArrowHeadBullet
-										speed: 9
-										color: {255, 0, 0}
-										angle: @\angleToPlayer! - math.pi / 16
-							when 3, 6
-								if @frame % 50 == 0
-									for bullet in radial {
-										from: self
-										bullets: 15
-									}
-										bullet.color = {0, 127, 255}
-										bullet.speed = 5
-										bullet.radius = 7
-
-										@\fire DiamondBullet with bullet
-											.angle += (math.random! - 0.5) * math.pi / 32
+		if f % 83 == 20
+			for bullet in radial {bullets: 40, from: self, radius: 80}
+				@\fire SmallBullet with bullet
+					.color = {180,80,180}
+					.speed = 2
+					.outOfScreenTime = 60
+					.living = =>
+						fVar = @game.boss\angleToPlayer! % (math.pi*2)
+						if fVar >= math.pi/2
+							@angle += 0.02
+						if fVar < math.pi/2
+							@angle -= 0.w02
+						@direction = @angle
+				
 }
-
-
 
 s3 = Spellcard {
 	name: nil
