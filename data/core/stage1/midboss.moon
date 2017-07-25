@@ -34,7 +34,7 @@ BossData {
 
 	:endOfSpell
 
-	--spellcards[1]
+	spellcards[1]
 	spellcards[2]
 	spellcards[3]
 	spellcards[4]
