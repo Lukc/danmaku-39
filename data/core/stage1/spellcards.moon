@@ -137,24 +137,28 @@ s2 = Spellcard {
 	timeout: 230 * 60
 	update: =>
 		f = @frame - @spellStartFrame
-		if f % 140 == 20
-			for bullet in radial {bullets: 20, from: self, radius: 80}
+		if f % 80 == 20
+			for bullet in radial {bullets: 20, from: self, radius: 80, bullet:{angle:@game.boss\angleToPlayer!+math.random()}}
 				@\fire SmallBullet with bullet
 					.color = {180,80,180}
-					.speed = 1.2
+					.speed = 5
 					.outOfScreenTime = 60*20
 					.update = =>
 						fVar = @game.boss\angleToPlayer! % (math.pi*2)
 						if fVar >= math.pi/2
 							@angle += 0.05
+							@speed = 1
 						if fVar < math.pi/2
 							@angle -= 0.05
+							@speed = 1
 						d = math.atan2(@y-@game.boss.y,@x-@game.boss.x) % (2*math.pi)
 						t = (math.pi-d+@angle) % (math.pi*2)
 						if t <= math.pi*18/32
 							@angle += 0.05
 						if t > math.pi*46/32
 							@angle -= 0.05
+						if (t <= math.pi*18.5/32) or (t > math.pi*45.5/32)
+							@speed = 5
 						@angle = @angle % (math.pi*2)
 						@direction = @angle
 						@color = {200*t/math.pi,255-200*t/math.pi,255-200*t/math.pi}
