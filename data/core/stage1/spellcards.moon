@@ -131,26 +131,33 @@ s2 = Spellcard {
 	name: "Call to the Flock"
 	sign: "Wisdom"
 	difficulties: {
-		Difficulties.Lunatic
+		Difficulties.Normal
 	}
 	health: 3600
 	timeout: 230 * 60
 	update: =>
 		f = @frame - @spellStartFrame
-		if f % 83 == 20
-			for bullet in radial {bullets: 40, from: self, radius: 80}
+		if f % 140 == 20
+			for bullet in radial {bullets: 20, from: self, radius: 80}
 				@\fire SmallBullet with bullet
 					.color = {180,80,180}
-					.speed = 2
-					.outOfScreenTime = 60
-					.living = =>
+					.speed = 1.2
+					.outOfScreenTime = 60*20
+					.update = =>
 						fVar = @game.boss\angleToPlayer! % (math.pi*2)
 						if fVar >= math.pi/2
-							@angle += 0.02
+							@angle += 0.05
 						if fVar < math.pi/2
-							@angle -= 0.w02
+							@angle -= 0.05
+						d = math.atan2(@y-@game.boss.y,@x-@game.boss.x) % (2*math.pi)
+						t = (math.pi-d+@angle) % (math.pi*2)
+						if t <= math.pi*18/32
+							@angle += 0.05
+						if t > math.pi*46/32
+							@angle -= 0.05
+						@angle = @angle % (math.pi*2)
 						@direction = @angle
-				
+						@color = {200*t/math.pi,255-200*t/math.pi,255-200*t/math.pi}
 }
 
 s3 = Spellcard {
