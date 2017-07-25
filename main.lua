@@ -5,10 +5,9 @@ require "moonscript"
 if love.system.getOS() == "Windows" then
 	oldOpen = io.open
 	io.open = function(file, ...)
-		print(file:sub(1, 1))
 		local absolute = false
 
-		if string.sub(file, 2, 1) == ":" then -- Windows™, duh~
+		if string.sub(file, 2, 2) == ":" then -- Windows™, duh~
 			absolute = true
 		end
 
