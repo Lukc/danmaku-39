@@ -21,7 +21,7 @@
 	-- s3: 2nd attack (N/H/L)
 	-- s4: [Owl Sign] Eye of the Night (H/L)
 
-s1 = Spellcard {
+midBoss1 = Spellcard {
 	name: "tudu"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
@@ -42,7 +42,7 @@ s1 = Spellcard {
 						h: 800
 						radius: 0
 						damageabe: false
-						update: =>
+						living: =>
 							finalAngle = -math.pi*42/30
 							@angle -= math.sqrt(math.abs(@angle-finalAngle))*(@angle-finalAngle)/math.abs(@angle-finalAngle)/300
 				@\fire attachedLaser
@@ -54,7 +54,7 @@ s1 = Spellcard {
 						h: 800
 						radius: 10
 						damageabe: false
-						update: =>
+						living: =>
 							finalAngle = math.pi*12/30
 							@angle -= math.sqrt(math.abs(@angle-finalAngle))*(@angle-finalAngle)/math.abs(@angle-finalAngle)/300
 		if f == 50
@@ -66,7 +66,7 @@ s1 = Spellcard {
 					.speed = 0
 					.outOfScreenTime = 60*20
 					.radius = 10
-					.update = =>
+					.living = =>
 						yTarget = @game.height*(5+i)/22
 						yLarg = @game.height*5/11
 						if not @movement and @y > yTarget
@@ -94,7 +94,7 @@ s1 = Spellcard {
 									w: 2
 									h: @game.width*4/5
 									touchable: false
-									update: =>
+									living: =>
 										if @width < 5
 											@width += 0.5
 										if @width == 5
@@ -109,7 +109,7 @@ s1 = Spellcard {
 					.speed = 0
 					.radius = 10
 					.outOfScreenTime = 60*20
-					.update = =>
+					.living = =>
 						yTarget = @game.height*(5+i)/22
 						yLarg = @game.height*5/11
 						if not @movement and @y > yTarget
@@ -127,21 +127,21 @@ s1 = Spellcard {
 							@isMoving = true
 }
 
-s2 = Spellcard {
+midBoss2 = Spellcard {
 	name: "Call to the Flock"
 	sign: "Wisdom"
 	difficulties: {
-		Difficulties.Normal
+		Difficulties.Lunatic
 	}
 	health: 3600
-	timeout: 230 * 60
+	timeout: 40 * 60
 	update: =>
 		f = @frame - @spellStartFrame
-		if f % 80 == 20
-			for bullet in radial {bullets: 20, from: self, radius: 80, bullet:{angle:@game.boss\angleToPlayer!+math.random()}}
+		if f % 100 == 20
+			for bullet in radial {bullets: 12, from: self, radius: 80, bullet:{angle:@game.boss\angleToPlayer!+math.random()}}
 				@\fire SmallBullet with bullet
 					.color = {180,80,180}
-					.speed = 5
+					.speed = 4
 					.outOfScreenTime = 60*20
 					.update = =>
 						fVar = @game.boss\angleToPlayer! % (math.pi*2)
@@ -162,16 +162,41 @@ s2 = Spellcard {
 						@angle = @angle % (math.pi*2)
 						@direction = @angle
 						@color = {200*t/math.pi,255-200*t/math.pi,255-200*t/math.pi}
+		if f % 100 == 70
+			for bullet in radial {bullets: 12, from: self, radius: 80, bullet:{angle:@game.boss\angleToPlayer!+math.random()}}
+				@\fire SmallBullet with bullet
+					.color = {180,80,180}
+					.speed = 4
+					.outOfScreenTime = 60*20
+					.update = =>
+						fVar = @game.boss\angleToPlayer! % (math.pi*2)
+						if fVar >= math.pi/2
+							@angle -= 0.05
+							@speed = 1
+						if fVar < math.pi/2
+							@angle += 0.05
+							@speed = 1
+						d = math.atan2(@y-@game.boss.y,@x-@game.boss.x) % (2*math.pi)
+						t = (math.pi-d+@angle) % (math.pi*2)
+						if t <= math.pi*18/32
+							@angle += 0.05
+						if t > math.pi*46/32
+							@angle -= 0.05
+						if (t <= math.pi*18.5/32) or (t > math.pi*45.5/32)
+							@speed = 5
+						@angle = @angle % (math.pi*2)
+						@direction = @angle
+						@color = {200*t/math.pi,255-200*t/math.pi,255-200*t/math.pi}
 }
 
-s3 = Spellcard {
+midBoss3 = Spellcard {
 	name: nil
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 
 	health: 1800
-	timeout: 30 * 60
+	timeout: 40 * 60
 	bool: 0
 
 	update: =>
@@ -184,25 +209,16 @@ s3 = Spellcard {
 		}
 
 		origin = {x:@x, y:@y}
-		for i=1,3
-
-			if (@frame + i*20) % 200 == 0
-				for bullet in radial {bullets: 12, from: origin, radius: 100}
-					@\fire BigBullet with bullet
-						oldUpdate = .update
-						.update = =>
-							@angle += Entity.distance(self,origin)/(500*@frame+1)
-							@direction = @angle
-							if oldUpdate
-								oldUpdate self
-				for bullet in radial {bullets: 16, from: origin, radius: 100}
-					@\fire BigBullet with bullet
-						oldUpdate = .update
-						.update = =>
-							@angle -= Entity.distance(self,origin)/(500*@frame+1)
-							@direction = @angle
-							if oldUpdate
-								oldUpdate self
+		if (@frame + i*20) % 200 == 0
+			for bullet in radial {bullets: 16, from: origin, radius: 100}
+				@\fire SmallBullet with bullet
+					oldUpdate = .update
+					.direction = @\angleToPlayer!
+					.update = =>
+						@angle -= Entity.distance(self,origin)/(500*@frame+1)
+						@direction = @angle
+						if oldUpdate
+							oldUpdate self
 }
 
 s4 = Spellcard {
@@ -387,6 +403,6 @@ s10 = Spellcard {
 }
 
 {
-	s1, s2, s3, s4, s5, s6, s7, s8, s9, s10
+	midBoss1, midBoss2, midBoss3, s4, s5, s6, s7, s8, s9, s10
 }
 
