@@ -138,7 +138,7 @@ class
 			if @onUpdate
 				@\onUpdate!
 
-			if not @dying and @onLiving
+			if (not @dying) and @onLiving
 				@\onLiving!
 
 	---
