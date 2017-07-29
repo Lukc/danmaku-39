@@ -21,5 +21,6 @@
 	Danmaku: require "danmaku.danmaku"
 	Boss:    require "danmaku.boss"
 	Spellcard: require "danmaku.spellcard"
+	Wave:    require "danmaku.wave"
 }
 

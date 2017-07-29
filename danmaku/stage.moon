@@ -7,6 +7,8 @@
 --
 -- @classmod Stage
 
+Wave = require "danmaku.wave"
+
 class
 	---
 	-- Stages constructor.
@@ -29,12 +31,15 @@ class
 
 		@frame = 0
 
-		@frameEvents = {}
-		for key, value in pairs arg
-			if type(key) == "number"
-				@frameEvents[key] = value
-
 		@boss = nil -- For reference.
+
+		@waves = {}
+		for input in *(arg.waves or {})
+			table.insert @waves, Wave input
+
+		if #@waves > 0
+			@currentWave = @waves[1]
+			@currentWaveIndex = 1
 
 		@onDrawBackground = arg.drawBackground
 		@onDraw = arg.draw
@@ -59,8 +64,12 @@ class
 	update: =>
 		@frame += 1
 
-		if @frameEvents[@frame]
-			@frameEvents[@frame] @game, self
+		if @currentWave
+			@currentWave\update @game, self
+
+			if @currentWave\isFinished!
+				@currentWaveIndex += 1
+				@currentWave = @waves[currentWaveIndex]
 
 		if @onUpdate
 			@.onUpdate @game, self

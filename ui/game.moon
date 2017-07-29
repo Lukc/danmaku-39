@@ -20,6 +20,8 @@ images = require "images"
 Menu = require "ui.tools.menu"
 Grid = require "ui.tools.grid"
 
+Portrait = require "ui.game.portrait"
+
 state = {
 }
 
@@ -83,6 +85,50 @@ victoryMenu = ->
 		mainMenuItem!
 	}
 
+drawStat = (arg) =>
+	sprite = arg.sprite
+	points = arg.points
+	fragments = arg.fragments
+
+	x = arg.x
+	y = arg.y
+
+	sizeModifier = arg.sizeModifier
+
+	for j = 1, points
+		love.graphics.draw sprite,
+			x + (j - 1) * 32,
+			y,
+			nil,
+			32 / sprite\getWidth!
+
+	if fragments > 0
+		love.graphics.setColor 127, 127, 127
+		love.graphics.draw sprite,
+			x + points * 32 * sizeModifier,
+			y,
+			nil,
+			32 / sprite\getWidth! * sizeModifier
+
+		stencilFunction = ->
+			love.graphics.arc "fill", "pie",
+				x + (points + 0.5) * 32 * sizeModifier,
+				y + 16 * sizeModifier,
+				32 * sizeModifier,
+				-math.pi/2, -math.pi / 2 + 2 * math.pi / 5 * fragments
+		love.graphics.stencil stencilFunction, "replace", 1
+
+		love.graphics.setStencilTest "greater", 0
+
+		love.graphics.setColor 255, 255, 255
+		love.graphics.draw sprite,
+			x + points * 32 * sizeModifier,
+			y,
+			nil,
+			32 / sprite\getWidth! * sizeModifier
+
+		love.graphics.setStencilTest!
+
 state.enter = (options, players) =>
 	@players = {}
 	@paused = false
@@ -90,6 +136,12 @@ state.enter = (options, players) =>
 	@resuming = false
 
 	@playerName = data.config.lastUsedName
+
+	@playerPortrait = Portrait
+		width: math.huge
+	@bossPortrait = Portrait
+		width: math.huge
+		mirrored: true
 
 	@font = fonts.get nil, 24
 
@@ -226,17 +278,6 @@ state.draw = =>
 	@danmaku.x = x + (w - @danmaku.drawWidth) / 2
 	@danmaku.y = y + (h - @danmaku.drawHeight) / 2
 
-	for item in *@danmaku.items
-		if item.marker
-			sprite = images.get "item_marker_" .. item.marker .. ".png"
-
-			love.graphics.setColor 255, 255, 255
-			love.graphics.draw sprite,
-				@danmaku.x + item.x * danmakuSizemod,
-				@danmaku.y + @danmaku.drawHeight,
-				nil, nil, nil,
-				sprite\getWidth!/2, sprite\getHeight!/2
-
 	if @danmaku.boss
 		boss = @danmaku.boss
 
@@ -261,28 +302,8 @@ state.draw = =>
 	else
 		love.graphics.setColor 255, 255, 255
 
-	do
-		if #@players == 1
-			-- FIXME: hardcoded braindamage
-			sprite = images.get "portraits/Coactlicue.png"
-
-			love.graphics.draw sprite,
-				x + (@danmaku.x - x) / 2, y + h/2,
-				nil,
-				@danmaku.drawHeight / sprite\getHeight!, nil,
-				sprite\getWidth!/2,
-				sprite\getHeight!/2
-
-		if @danmaku.boss
-			-- FIXME: hardcoded braindamage
-			sprite = images.get "portraits/Coactlicue.png"
-
-			love.graphics.draw sprite,
-				x + @danmaku.drawWidth + 3 * (@danmaku.x - x) / 2, y + h/2,
-				nil,
-				-@danmaku.drawHeight / sprite\getHeight!, @danmaku.drawHeight / sprite\getHeight!,
-				sprite\getWidth!/2,
-				sprite\getHeight!/2
+	@playerPortrait\draw!
+	@bossPortrait\draw!
 
 	do
 		-- Background cleaning.
@@ -301,29 +322,29 @@ state.draw = =>
 
 		i = 1
 		for player in *@players
-			sprite = images.get "item_test_life.png"
-			for j = 1, player.lives
-				love.graphics.draw sprite,
-					@danmaku.x + (j - 1) * 32,
-					@danmaku.y + @danmaku.drawHeight - (i * 96 -  0) * s,
-					nil,
-					32 / sprite\getWidth!
+			drawStat self,
+				sprite: images.get "item_test_life.png"
+				x: @danmaku.x
+				y: @danmaku.y + @danmaku.drawHeight - (i * 96) * s
+				points: player.lives
+				fragments: player.lifeFragments
+				sizeModifier: s
 
-			sprite = images.get "item_test_bomb.png"
-			for j = 1, player.bombs
-				love.graphics.draw sprite,
-					@danmaku.x + (j - 1) * 32,
-					@danmaku.y + @danmaku.drawHeight - (i * 96 - 32 + 2) * s,
-					nil,
-					32 / sprite\getWidth!
+			drawStat self,
+				sprite: images.get "item_test_bomb.png"
+				x: @danmaku.x
+				y: @danmaku.y + @danmaku.drawHeight - (i * 96 - 32) * s
+				points: player.bombs
+				fragments: player.bombFragments
+				sizeModifier: s
 
-			sprite = images.get "item_test_power.png"
-			for j = 1, player.power / 5
-				love.graphics.draw sprite,
-					@danmaku.x + (j - 1) * 32,
-					@danmaku.y + @danmaku.drawHeight - (i * 96 - 64 + 4) * s,
-					nil,
-					32 / sprite\getWidth!
+			drawStat self,
+				sprite: images.get "item_test_power.png"
+				x: @danmaku.x
+				y: @danmaku.y + @danmaku.drawHeight - (i * 96 - 64) * s
+				points: math.floor player.power/5
+				fragments: player.power % 5
+				sizeModifier: s
 
 			i += 1
 
@@ -367,6 +388,29 @@ state.update = (dt) =>
 		@menu = victoryMenu!
 
 		return
+
+	-- FIXME: hardcoded braindamage
+	@playerPortrait\push images.get "portraits/Coactlicue.png"
+
+	if @danmaku.boss
+		name = @danmaku.boss.name
+
+		sprite = images.get "portraits/#{name}.png"
+
+		if sprite
+			@bossPortrait\push sprite
+	else
+		@bossPortrait\push!
+
+	@playerPortrait.x = x + (@danmaku.x - x) / 2
+	@playerPortrait.y = y + h/2
+	@playerPortrait.height = h
+	@playerPortrait\update dt
+
+	@bossPortrait.x = x + @danmaku.drawWidth + 3 * (@danmaku.x - x) / 2
+	@bossPortrait.y = y + h/2
+	@bossPortrait.height = h
+	@bossPortrait\update dt
 
 	allJoysticks = love.joystick.getJoysticks!
 	for i = 1, #@players

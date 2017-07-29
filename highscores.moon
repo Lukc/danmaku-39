@@ -75,7 +75,7 @@ setmetatable {
 
 		if success
 			print "Highscores loaded."
-			cache = value
+			cache = value or {}
 
 			value
 		else

@@ -15,6 +15,7 @@ niceScreenCleaning = =>
 			d = Entity.distance bullet, self
 
 			if d <= radius
+				-- Doesn’t deserve cancellation bonus, duh~
 				bullet\die!
 
 missileUpdate = (directionModifier) =>
@@ -90,7 +91,7 @@ rifleSprite = require("images").get "bullet_player_rifle.png"
 
 						for bullet in *@game.bullets
 							if bullet\collides self
-								bullet\die!
+								bullet\cancel!
 
 						if @frame % 12 == 0
 							player\fire newBullet
@@ -102,7 +103,7 @@ rifleSprite = require("images").get "bullet_player_rifle.png"
 								speed: 0
 								radius: @radius
 								health: 3 -- damageable, though not easily
-								spawnTime: 0
+								spawnTime: 20
 								update: =>
 									if @radius == 0
 										return
@@ -115,7 +116,7 @@ rifleSprite = require("images").get "bullet_player_rifle.png"
 
 									for bullet in *@game.bullets
 										if bullet\collides self
-											bullet\die!
+											bullet\cancel!
 
 						if @frame >= 60 * 8
 							@\die!
@@ -174,7 +175,7 @@ rifleSprite = require("images").get "bullet_player_rifle.png"
 									x: @x
 									y: @y
 									radius: @radius
-									spawnTime: 0
+									spawnTime: 20
 									health: 5
 									update: =>
 										@radius -= 0.3
@@ -187,11 +188,11 @@ rifleSprite = require("images").get "bullet_player_rifle.png"
 
 										for bullet in *@game.bullets
 											if bullet\collides self
-												bullet\die!
+												bullet\cancel!
 
 						for bullet in *@game.bullets
 							if bullet\collides self
-								bullet\die!
+								bullet\cancel!
 
 						if @frame >= timeout
 							@\die!
@@ -239,7 +240,7 @@ rifleSprite = require("images").get "bullet_player_rifle.png"
 
 										for bullet in *@game.bullets
 											if bullet\collides self
-												bullet\die!
+												bullet\cancel!
 
 										flame self
 

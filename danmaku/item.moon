@@ -23,6 +23,9 @@ class extends Entity
 	-- They also give them power, points or other advantages on collision,
 	-- and tend to be attracted to players when close enough.
 	collides: (player) =>
+		if @dying
+			return false
+
 		if player.__class != Player
 			return false
 
@@ -31,27 +34,50 @@ class extends Entity
 		return distance <= player.radius + @radius
 
 	update: =>
+		players = {}
+
 		super\doUpdate ->
-			attracted = false
+			if not @dying
+				nearest = false
+				nearestDistance = math.huge
+				nearestAttraction = nil
 
-			for player in *@game.players
-				distance = math.sqrt((player.x - @x)^2 + (player.y - @y)^2)
+				for player in *@game.players
+					distance = math.sqrt((player.x - @x)^2 + (player.y - @y)^2)
 
-				if distance <= player.itemAttractionRadius
-					@direction = math.atan2 player.y - @y, player.x - @x
+					attraction = if distance <= player.itemAttractionRadius
+						"radius"
+					elseif player.y <= @game.height * player.itemCollectionBorder
+						"border"
 
-					@speed = player.itemAttractionSpeed or @speed
+					if attraction
+						if not nearest or distance < nearestDistance
+							nearest = player
+							nearestDistance = distance
+							nearestAttraction = attraction
 
-					attracted = true
-					break
+				if nearest
+					@direction = math.atan2 nearest.y - @y, nearest.x - @x
+					@speed = if nearestAttraction == "radius"
+						nearest.itemAttractionSpeed or @speed
+					else
+						nearest.itemBorderAttractionSpeed or @speed
+				else
+					@direction = math.pi / 2
+					@speed = @normalSpeed
 
-			unless attracted
-				@direction = math.pi / 2
-				@speed = @normalSpeed
+			if @onUpdate
+				@\onUpdate!
 
 	collected: (player) =>
+		if @dying
+			return
+
 		if @onCollection
 			@\onCollection player
+		else
+			@speed = 0
+			@direction = -math.pi / 2
 
-		@readyForRemoval = true
+		@dying = true
 

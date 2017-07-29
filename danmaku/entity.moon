@@ -74,6 +74,7 @@ class
 		@onUpdate = arg.update
 		@onDraw = arg.draw
 		@onDeath = arg.death
+		@onLiving = arg.living
 
 		@dx, @dy = 0, 0
 
@@ -136,6 +137,9 @@ class
 		@\doUpdate ->
 			if @onUpdate
 				@\onUpdate!
+
+			if (not @dying) and @onLiving
+				@\onLiving!
 
 	---
 	-- Used internally to update entities.

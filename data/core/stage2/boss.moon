@@ -17,39 +17,21 @@ characters = require "data.characters"
 
 {:circle, :laser} = require "data.helpers"
 
-Wave = require "data.wave"
 {:StageData, :ModData, :BossData} = require "data.checks"
 
-{:circularDrop} = require "data.core.common"
+{:endOfSpell} = require "data.core.common"
 
 BossData {
 	radius: 32
 	x: 600 / 2
 	y: 800 / 5
-	name: "Teotlaco"
+	name: "Teotlalco"
 	description: "Proud and mighty Chief"
 	difficulties: {
 		Difficulties.Normal, Difficulties.Hard, Difficulties.Lunatic
 	}
 
-	endOfSpell: (spell) =>
-		local pointItems, powerItems
-
-		if @spellSuccess
-			@game\addEntity items.lifeFragment
-				x: @x
-				y: @y
-			pointItems = 12
-			powerItems = 8
-		else
-			@game\addEntity items.bombFragment
-				x: @x
-				y: @y
-			pointItems = 8
-			powerItems = 6
-
-		circularDrop self, pointItems, 48, items.point
-		circularDrop self, powerItems, 30, items.power
+	:endOfSpell
 
 	spellcards[4]
 	spellcards[5]

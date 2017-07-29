@@ -3,6 +3,8 @@ Entity = require "danmaku.entity"
 
 images = require "images"
 
+items = require "data.items"
+
 newBullet = (arg) ->
 	arg or= {}
 
@@ -56,6 +58,11 @@ newBullet = (arg) ->
 
 		if oldDraw
 			oldDraw self
+
+	arg.cancellation = =>
+		@game\addEntity items.cancellationPoint
+			x: @x
+			y: @y
 
 	arg
 
@@ -261,13 +268,60 @@ ArrowHeadBullet = do
 --------------------------------------
 
 BurningBullet = do
+	sprite = images.get "bullet_3_overlay.png"
+
 	(arg) ->
 		arg or= {}
 
-		unless arg.radius
-			arg.radius = 12
+		oldDraw = arg.draw
+		oldUpate = arg.update
 
-		arg
+		color = arg.color or {255, 255, 255}
+		color = [c for c in *color]
+		for i = 1, 3
+			color[i] = math.min 255, color[i] + 64
+
+		arg.overlaySprite or= sprite
+
+		arg.defaultRadius or= 72
+		arg.radius        or= 6
+
+		arg.outOfScreenTime or= 600 -- 10s. Is a lot, but there’s tons of particles as well.
+
+		particles = with love.graphics.newParticleSystem sprite, 256
+			\setSizeVariation 1
+			\setColors color[1], color[2], color[3], color[4] or 255,
+				color[1], color[2], color[3], color[4] or 255,
+				color[1], color[2], color[3], 0
+
+		arg.draw = =>
+			if oldDraw
+				oldDraw self
+
+			love.graphics.setColor 255, 255, 255, 255
+			love.graphics.draw particles, 0, 0
+
+		arg.update = =>
+			with particles
+				\setSizes 0, @radius / sprite\getWidth!, 0
+				\setAreaSpread "uniform", @radius, @radius
+				\setPosition @x, @y
+				\setParticleLifetime @speed / 4, @speed / 4
+				\setEmissionRate @speed * 15
+
+--				dx = @speed * math.cos @direction
+--				dy = @speed * math.sin @direction
+
+				\setSpeed @speed
+				\setDirection @direction
+				\setRadialAcceleration 125, 0
+
+			if oldUpdate
+				oldUpdate self
+
+			particles\update 1/60
+
+		newBullet arg
 
 ---
 -- Bullety and yet non-bullet follow.

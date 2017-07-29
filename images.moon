@@ -6,7 +6,11 @@ cache = {
 {
 	get: (name) ->
 		unless cache[name]
-			cache[name] = love.graphics.newImage "data/art/" .. name
+			success, image = pcall ->
+				love.graphics.newImage "data/art/" .. name
+
+			if success
+				cache[name] = image
 
 		return cache[name]
 }
